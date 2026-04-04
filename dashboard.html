@@ -4,151 +4,381 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simontok - Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.6}
+    a{text-decoration:none;color:inherit}
+    button{cursor:pointer;font-family:inherit;font-size:inherit}
+
+    .page{max-width:1320px;margin:0 auto;padding:24px 16px;min-height:100vh}
+
+    /* Header */
+    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px}
+    .topbar-label{font-size:11px;text-transform:uppercase;letter-spacing:.25em;color:#64748b}
+    .topbar h1{font-size:32px;font-weight:800;margin-top:2px}
+    .topbar p{color:#64748b;font-size:14px;margin-top:4px}
+    .topbar-actions{display:flex;gap:8px}
+    .btn-nav{border:1px solid #e2e8f0;background:#fff;padding:10px 18px;border-radius:16px;font-size:14px;font-weight:600;color:#334155;transition:all .2s}
+    .btn-nav:hover{background:#f1f5f9;transform:translateY(-1px)}
+    .btn-nav.primary{background:#2563eb;color:#fff;border-color:#2563eb}
+    .btn-nav.primary:hover{background:#3b82f6}
+
+    /* Stats */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:20px;text-align:center;transition:transform .2s,box-shadow .2s;cursor:default}
+    .stat:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
+    .stat-icon{font-size:28px;margin-bottom:8px}
+    .stat-num{font-size:38px;font-weight:800}
+    .stat-label{font-size:13px;color:#64748b;margin-top:4px}
+    .stat.total .stat-num{color:#0f172a}
+    .stat.todo .stat-num{color:#334155}
+    .stat.doing .stat-num{color:#2563eb}
+    .stat.done .stat-num{color:#059669}
+    .stat.blocked .stat-num{color:#dc2626}
+
+    /* Content Grid */
+    .content{display:grid;gap:20px;grid-template-columns:1fr}
+    @media(min-width:1024px){.content{grid-template-columns:1fr 380px}}
+
+    /* Cards */
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:transform .2s}
+    .card:hover{transform:translateY(-2px)}
+    .card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .card-title h2{font-size:20px;font-weight:700}
+    .card-title h3{font-size:17px;font-weight:700}
+
+    /* Search & Filter */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .search-input{flex:1;min-width:200px;border:1px solid #e2e8f0;padding:12px 16px;border-radius:16px;outline:none;transition:border-color .2s,box-shadow .2s}
+    .search-input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+    .filter-btn{border:1px solid #e2e8f0;background:#fff;padding:10px 16px;border-radius:16px;font-size:13px;font-weight:600;transition:all .2s}
+    .filter-btn:hover{background:#f1f5f9}
+    .filter-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+
+    /* Table */
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th{padding:12px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#64748b;border-bottom:2px solid #e2e8f0}
+    td{padding:14px 12px;border-bottom:1px solid #f1f5f9;font-size:14px}
+    tr{cursor:pointer;transition:background .15s}
+    tr:hover td{background:#f8fafc}
+    .badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:600}
+    .b-todo{background:#f1f5f9;color:#334155}
+    .b-doing{background:#dbeafe;color:#1d4ed8}
+    .b-done{background:#d1fae5;color:#047857}
+    .b-blocked{background:#ffe4e6;color:#be123c}
+    .p-high{color:#dc2626;font-weight:600}
+    .p-medium{color:#d97706;font-weight:600}
+    .p-low{color:#059669;font-weight:600}
+
+    /* Charts */
+    .charts{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+    @media(max-width:700px){.charts{grid-template-columns:1fr}}
+    .chart-card{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:20px}
+    .chart-card canvas{width:100%!important;height:240px!important}
+
+    /* Sidebar */
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+
+    /* Priority list */
+    .priority-list{display:flex;flex-direction:column;gap:10px}
+    .priority-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:#f8fafc;border:1px solid #f1f5f9;cursor:pointer;transition:all .2s}
+    .priority-item:hover{background:#eff6ff;border-color:#bfdbfe}
+    .priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .priority-item-title{font-size:14px;font-weight:600;color:#0f172a;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .priority-item-meta{font-size:11px;color:#64748b}
+
+    /* Empty & Loading */
+    .empty{text-align:center;padding:32px;color:#94a3b8;font-size:14px}
+    .loading{text-align:center;padding:40px;color:#94a3b8}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-overlay.active{display:flex}
+    .modal-box{width:min(600px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.22);position:relative;animation:popIn .25s ease;max-height:88vh;overflow-y:auto}
+    .modal-box h3{margin-bottom:14px;font-size:22px;font-weight:700}
+    .modal-box p{line-height:1.7;color:#334155;margin-bottom:8px}
+    .modal-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:34px;cursor:pointer;color:#64748b;line-height:1}
+    .modal-close:hover{color:#0f172a}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .modal-item{padding:14px;border-radius:16px;background:#f8fafc;border:1px solid rgba(15,23,42,.06)}
+    .modal-item strong{display:block;font-size:12px;color:#64748b;margin-bottom:4px}
+    .modal-item span{font-size:16px;font-weight:700;color:#0f172a}
+    .modal-note{margin-top:14px;padding:14px;border-radius:16px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:14px;line-height:1.7;white-space:pre-wrap}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+    .btn-m-edit{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:600;transition:background .2s}
+    .btn-m-edit:hover{background:#3b82f6}
+    .btn-m-close{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;padding:10px 16px;border-radius:12px;font-weight:600}
+    .btn-m-close:hover{background:#e2e8f0}
+    @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+    @media(max-width:600px){.modal-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.stats{grid-template-columns:1fr}}
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
-  <div class="min-h-screen max-w-7xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+<body>
+  <div class="page">
+    <div class="topbar">
       <div>
-        <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Dashboard</div>
-        <h1 class="text-3xl font-bold">Monitoring Kinerja</h1>
+        <div class="topbar-label">Dashboard</div>
+        <h1>Monitoring Kinerja</h1>
+        <p>Data realtime dari Google Spreadsheet</p>
       </div>
-      <a href="index.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">← Kembali</a>
+      <div class="topbar-actions">
+        <a href="index.html" class="btn-nav">← Kembali</a>
+        <a href="entri.html" class="btn-nav primary">+ Entri Data</a>
+      </div>
     </div>
-    <div id="app" class="space-y-6"></div>
+
+    <div id="loadingState" class="loading">⏳ Memuat data dari Spreadsheet...</div>
+    <div id="app" style="display:none"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="popupModal" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <div id="modalBody"></div>
+    </div>
   </div>
 
   <script>
+    // ⚠️ GANTI DENGAN URL DEPLOYMENT ANDA
     const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
-    const state = { data: [], search: '', filter: 'All', selectedId: null };
 
-    const statusClass = {
-      'To Do': 'bg-slate-100 text-slate-700 ring-1 ring-slate-200',
-      'Doing': 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
-      'Done': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-      'Blocked': 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
-    };
+    let DATA = [];
+    let searchQ = '';
+    let filterStatus = 'All';
+    let chartStatus, chartPriority;
 
-    const priorityClass = {
-      High: 'text-rose-600',
-      Medium: 'text-amber-600',
-      Low: 'text-emerald-600'
-    };
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const badgeCls = s => ({'To Do':'b-todo','Doing':'b-doing','Done':'b-done','Blocked':'b-blocked'}[s]||'b-todo');
+    const priCls = s => ({'High':'p-high','Medium':'p-medium','Low':'p-low'}[s]||'');
 
-    const esc = s => String(s || '')
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;');
+    // Modal
+    const modal = document.getElementById('popupModal');
+    const modalBody = document.getElementById('modalBody');
+    function openPopup(h){ modalBody.innerHTML=h; modal.classList.add('active'); }
+    function closePopup(){ modal.classList.remove('active'); }
+    document.getElementById('closeModal').addEventListener('click', closePopup);
+    modal.addEventListener('click', e=>{ if(e.target===modal) closePopup(); });
 
-    async function loadData() {
-      const r = await fetch(API_URL + '?action=list');
-      const j = await r.json();
-      state.data = j.data || [];
-      if (!state.selectedId && state.data.length) state.selectedId = state.data[0].id;
-      render();
-    }
-
-    function filtered() {
-      return state.data
-        .filter(t => state.filter === 'All' || t.status === state.filter)
-.filter(t => `${t.title} ${t.note} ${t.priority}`.toLowerCase().includes(state.search.toLowerCase()));
-    }
-
-    function detail(task) {
-      if (!task) return '<div class="rounded-3xl border border-slate-200 bg-white p-6 text-slate-500">Pilih task.</div>';
-      return `
-        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Task detail</div>
-              <h2 class="mt-1 text-2xl font-bold text-slate-900">${esc(task.title)}</h2>
-            </div>
-            <span class="rounded-full px-3 py-1.5 text-xs ${statusClass[task.status] || statusClass['To Do']}">${esc(task.status)}</span>
-          </div>
-          <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
-            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Priority</div><div class="mt-1 font-medium ${priorityClass[task.priority] || 'text-slate-700'}">${esc(task.priority)}</div></div>
-            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Due date</div><div class="mt-1 font-medium text-slate-700">${esc(task.due_date || '-')}</div></div>
-            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Updated</div><div class="mt-1 font-medium text-slate-700">${esc(task.updated_at || '-')}</div></div>
-            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Created</div><div class="mt-1 font-medium text-slate-700">${esc(task.created_at || '-')}</div></div>
-          </div>
-          <div class="mt-5">
-            <div class="text-sm font-semibold mb-2 text-slate-800">Note</div>
-            <div class="rounded-2xl bg-slate-50 p-4 text-sm text-slate-700 whitespace-pre-wrap">${esc(task.note || 'Tidak ada catatan')}</div>
-          </div>
+    function showDetail(id){
+      const t = DATA.find(x=>String(x.id)===String(id));
+      if(!t) return;
+      openPopup(`
+        <h3>📋 Detail Task</h3>
+        <p style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:16px">${esc(t.title)}</p>
+        <div class="modal-grid">
+          <div class="modal-item"><strong>Status</strong><span class="badge ${badgeCls(t.status)}" style="font-size:13px;padding:4px 14px">${esc(t.status)}</span></div>
+          <div class="modal-item"><strong>Priority</strong><span class="${priCls(t.priority)}">${esc(t.priority||'-')}</span></div>
+          <div class="modal-item"><strong>Due Date</strong><span>${esc(t.due_date||'Tidak ada')}</span></div>
+          <div class="modal-item"><strong>Updated</strong><span>${esc(t.updated_at||'-')}</span></div>
+          <div class="modal-item"><strong>Created</strong><span>${esc(t.created_at||'-')}</span></div>
+          <div class="modal-item"><strong>ID</strong><span style="font-size:11px;color:#94a3b8">${esc(t.id)}</span></div>
         </div>
-      `;
+        ${t.note?'<div class="modal-note"><strong>📝 Catatan:</strong><br>'+esc(t.note)+'</div>':'<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>'}
+        <div class="modal-footer">
+          <a href="entri.html" class="btn-m-edit">✏️ Edit di Entri</a>
+          <button class="btn-m-close" onclick="closePopup()">Tutup</button>
+        </div>
+      `);
     }
 
-    function render() {
+    // Load
+    async function loadData(){
+      try{
+        const r = await fetch(API_URL+'?action=list');
+        const j = await r.json();
+        if(!j.ok) throw new Error(j.message);
+        DATA = j.data || [];
+        document.getElementById('loadingState').style.display='none';
+        document.getElementById('app').style.display='';
+        render();
+      } catch(err){
+        document.getElementById('loadingState').innerHTML='<div style="color:#be123c">⚠️ Gagal memuat: '+esc(err.message)+'<br><button onclick="loadData()" style="margin-top:8px;color:#2563eb;background:none;border:none;cursor:pointer">Coba lagi</button></div>';
+      }
+    }
+
+    function getFiltered(){
+      return DATA
+        .filter(t=> filterStatus==='All' || t.status===filterStatus)
+        .filter(t=> (t.title+' '+t.note+' '+t.priority).toLowerCase().includes(searchQ.toLowerCase()));
+    }
+
+    function render(){
       const app = document.getElementById('app');
-      const tasks = filtered();
-      const selected = tasks.find(t => String(t.id) === String(state.selectedId)) || tasks[0] || null;
-      const total = state.data.length;
-      const todo = tasks.filter(t => t.status === 'To Do').length;
-      const doing = tasks.filter(t => t.status === 'Doing').length;
-      const done = tasks.filter(t => t.status === 'Done').length;
+      const tasks = getFiltered();
+      const total = DATA.length;
+      const todo = DATA.filter(t=>t.status==='To Do').length;
+      const doing = DATA.filter(t=>t.status==='Doing').length;
+      const done = DATA.filter(t=>t.status==='Done').length;
+      const blocked = DATA.filter(t=>t.status==='Blocked').length;
+
+      // Urgent tasks (High priority, not Done)
+      const urgent = DATA.filter(t=>t.priority==='High'&&t.status!=='Done').slice(0,5);
 
       app.innerHTML = `
-        <div class="grid gap-6 xl:grid-cols-[280px_1fr_360px]">
-          <aside class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div class="space-y-3 text-sm">
-              <button data-filter="All" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'All' ? 'bg-slate-100' : 'hover:bg-slate-50'}">All <span class="float-right text-slate-500">${total}</span></button>
-              <button data-filter="To Do" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'To Do' ? 'bg-slate-100' : 'hover:bg-slate-50'}">To Do <span class="float-right text-slate-500">${todo}</span></button>
-              <button data-filter="Doing" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'Doing' ? 'bg-slate-100' : 'hover:bg-slate-50'}">Doing <span class="float-right text-slate-500">${doing}</span></button>
-              <button data-filter="Done" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'Done' ? 'bg-slate-100' : 'hover:bg-slate-50'}">Done <span class="float-right text-slate-500">${done}</span></button>
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat total"><div class="stat-icon">📊</div><div class="stat-num">${total}</div><div class="stat-label">Total Task</div></div>
+          <div class="stat todo"><div class="stat-icon">📋</div><div class="stat-num">${todo}</div><div class="stat-label">To Do</div></div>
+          <div class="stat doing"><div class="stat-icon">⚡</div><div class="stat-num">${doing}</div><div class="stat-label">Doing</div></div>
+          <div class="stat done"><div class="stat-icon">✅</div><div class="stat-num">${done}</div><div class="stat-label">Done</div></div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts">
+          <div class="chart-card">
+            <div class="card-title"><h3>Status Overview</h3></div>
+            <canvas id="chartStatus"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="card-title"><h3>Priority Breakdown</h3></div>
+            <canvas id="chartPriority"></canvas>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content" style="margin-top:20px">
+          <div>
+            <!-- Toolbar -->
+            <div class="toolbar">
+              <input id="searchInput" class="search-input" placeholder="🔍 Cari task..." value="${esc(searchQ)}" />
+              <button class="filter-btn ${filterStatus==='All'?'active':''}" data-f="All">Semua</button>
+              <button class="filter-btn ${filterStatus==='To Do'?'active':''}" data-f="To Do">To Do</button>
+              <button class="filter-btn ${filterStatus==='Doing'?'active':''}" data-f="Doing">Doing</button>
+              <button class="filter-btn ${filterStatus==='Done'?'active':''}" data-f="Done">Done</button>
+              <button class="filter-btn ${filterStatus==='Blocked'?'active':''}" data-f="Blocked">Blocked</button>
             </div>
-          </aside>
 
-          <main class="space-y-6">
-            <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-                <div>
-                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500">Overview</div>
-                  <h2 class="mt-1 text-2xl font-bold text-slate-900">Dashboard Monitoring</h2>
-</div>
-                <input id="search" value="${esc(state.search)}" placeholder="Cari task..." class="w-full xl:w-80 rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+            <!-- Table -->
+            <div class="card">
+              <div class="card-title">
+                <h2>Daftar Task</h2>
+                <span style="font-size:13px;color:#64748b">${tasks.length} task</span>
               </div>
-
-              <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Total</div><div class="mt-2 text-3xl font-bold text-slate-900">${total}</div></div>
-                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">To Do</div><div class="mt-2 text-3xl font-bold text-slate-900">${todo}</div></div>
-                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Doing</div><div class="mt-2 text-3xl font-bold text-slate-900">${doing}</div></div>
-                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Done</div><div class="mt-2 text-3xl font-bold text-slate-900">${done}</div></div>
-              </div>
-            </section>
-
-            <section class="rounded-3xl border border-slate-200 bg-white p-4 overflow-hidden shadow-sm">
-              <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                  <thead class="text-slate-500 border-b border-slate-200">
-                    <tr><th class="py-3 px-3">Task</th><th class="py-3 px-3">Status</th><th class="py-3 px-3">Priority</th><th class="py-3 px-3">Due</th><th class="py-3 px-3">Updated</th></tr>
-                  </thead>
+              ${tasks.length ? `
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Updated</th></tr></thead>
                   <tbody>
-                    ${tasks.map(t => `
-                      <tr data-open="${t.id}" class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
-                        <td class="py-4 px-3 font-medium text-slate-900">${esc(t.title)}</td>
-                        <td class="py-4 px-3"><span class="rounded-full px-2.5 py-1 text-xs ${statusClass[t.status] || statusClass['To Do']}">${esc(t.status)}</span></td>
-                        <td class="py-4 px-3 ${priorityClass[t.priority] || 'text-slate-600'}">${esc(t.priority)}</td>
-                        <td class="py-4 px-3 text-slate-700">${esc(t.due_date || '-')}</td>
-                        <td class="py-4 px-3 text-slate-700">${esc(t.updated_at || '-')}</td>
+                    ${tasks.map(t=>`
+                      <tr data-id="${esc(t.id)}">
+                        <td style="font-weight:600;color:#0f172a;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.title)}</td>
+                        <td><span class="badge ${badgeCls(t.status)}">${esc(t.status)}</span></td>
+                        <td class="${priCls(t.priority)}">${esc(t.priority)}</td>
+                        <td style="color:#64748b">${esc(t.due_date||'-')}</td>
+                        <td style="color:#64748b">${esc(t.updated_at||'-')}</td>
                       </tr>
                     `).join('')}
                   </tbody>
                 </table>
               </div>
-            </section>
-          </main>
+              ` : '<div class="empty">Tidak ada task ditemukan.</div>'}
+            </div>
+          </div>
 
-          <aside class="space-y-4">
-            ${detail(selected)}
-          </aside>
+          <!-- Sidebar -->
+          <div class="sidebar">
+            <div class="card">
+              <div class="card-title"><h3>🔥 Prioritas Tinggi</h3></div>
+              ${urgent.length ? `
+              <div class="priority-list">
+                ${urgent.map(t=>`
+                  <div class="priority-item" data-id="${esc(t.id)}">
+                    <div class="priority-dot" style="background:${t.status==='Blocked'?'#dc2626':t.status==='Doing'?'#2563eb':'#64748b'}"></div>
+                    <div class="priority-item-title">${esc(t.title)}</div>
+                    <div class="priority-item-meta">${esc(t.due_date||'No date')}</div>
+                  </div>
+                `).join('')}
+              </div>
+              ` : '<div class="empty">Tidak ada task prioritas tinggi. 🎉</div>'}
+            </div>
+
+            <div class="card">
+              <div class="card-title"><h3>📈 Ringkasan</h3></div>
+              <div style="font-size:14px;color:#475569;line-height:2">
+                <div>Total task: <strong>${total}</strong></div>
+                <div>Selesai: <strong>${done}</strong> <span style="color:#059669">(${total?Math.round(done/total*100):0}%)</span></div>
+                <div>Blocked: <strong style="color:#dc2626">${blocked}</strong></div>
+                <div>Prioritas High: <strong>${DATA.filter(t=>t.priority==='High').length}</strong></div>
+              </div>
+            </div>
+
+            <div class="card" style="text-align:center">
+              <button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh Data</button>
+            </div>
+          </div>
         </div>
       `;
 
-      document.getElementById('search').addEventListener('input', e => { state.search = e.target.value; render(); });
-      document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => { state.filter = b.getAttribute('data-filter'); render(); }));
-      document.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => { state.selectedId = el.getAttribute('data-open'); render(); }));
+      // Events
+      document.getElementById('searchInput').addEventListener('input', e=>{ searchQ=e.target.value; render(); });
+      document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{ filterStatus=b.dataset.f; render(); }));
+      document.querySelectorAll('tr[data-id]').forEach(r=>r.addEventListener('click',()=>showDetail(r.dataset.id)));
+      document.querySelectorAll('.priority-item[data-id]').forEach(r=>r.addEventListener('click',()=>showDetail(r.dataset.id)));
+
+      // Charts
+      renderCharts(todo, doing, done, blocked);
+    }
+
+    function renderCharts(todo, doing, done, blocked){
+      if(chartStatus) chartStatus.destroy();
+      if(chartPriority) chartPriority.destroy();
+
+      const high = DATA.filter(t=>t.priority==='High').length;
+      const med = DATA.filter(t=>t.priority==='Medium').length;
+      const low = DATA.filter(t=>t.priority==='Low').length;
+
+      chartStatus = new Chart(document.getElementById('chartStatus'),{
+        type:'doughnut',
+        data:{
+          labels:['To Do','Doing','Done','Blocked'],
+          datasets:[{
+            data:[todo,doing,done,blocked],
+            backgroundColor:['#94a3b8','#3b82f6','#10b981','#ef4444'],
+            borderWidth:0,
+            spacing:4,
+            borderRadius:6
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          cutout:'65%',
+          plugins:{
+            legend:{position:'bottom',labels:{color:'#475569',padding:14,usePointStyle:true,pointStyleWidth:10}}
+          }
+        }
+      });
+
+      chartPriority = new Chart(document.getElementById('chartPriority'),{
+        type:'bar',
+        data:{
+          labels:['High','Medium','Low'],
+          datasets:[{
+            label:'Jumlah',
+            data:[high,med,low],
+            backgroundColor:['#ef4444','#f59e0b','#10b981'],
+            borderRadius:12,
+            borderSkipped:false
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false}
+          },
+          scales:{
+            y:{beginAtZero:true,ticks:{color:'#64748b',stepSize:1},grid:{color:'rgba(0,0,0,.04)'}},
+            x:{ticks:{color:'#475569'},grid:{display:false}}
+          }
+        }
+      });
     }
 
     window.addEventListener('DOMContentLoaded', loadData);
