@@ -5,16 +5,483 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simontok - Entri</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Animasi loading spinner */
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    /* =============================================
+       RESET & BASE
+       ============================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* =============================================
+       LAYOUT
+       ============================================= */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .header-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #64748b;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: #64748b;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      color: #334155;
+      transition: background 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: #f1f5f9;
+    }
+
+    .main-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr 360px;
+      }
+    }
+
+    /* =============================================
+       CARD
+       ============================================= */
+    .card {
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #64748b;
+    }
+
+    .card h2 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .card h3 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    /* =============================================
+       BUTTONS
+       ============================================= */
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 16px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #3b82f6;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-cancel {
+      background: #fff;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      border-radius: 16px;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-delete {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+      padding: 12px 16px;
+      border-radius: 16px;
+      display: none;
+      transition: background 0.2s;
+    }
+
+    .btn-delete:hover {
+      background: #ffe4e6;
+    }
+
+    .btn-delete.show {
+      display: inline-block;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #2563eb;
+      font-size: 14px;
+      padding: 0;
+    }
+
+    .btn-link:hover {
+      text-decoration: underline;
+    }
+
+    /* =============================================
+       FORM
+       ============================================= */
+    .form-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .col-span-2 {
+        grid-column: span 2;
+      }
+    }
+
+    .form-grid label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    .form-grid label .required {
+      color: #e11d48;
+    }
+
+    .form-input {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 16px;
+      outline: none;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .form-mode {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 4px;
+      color: #2563eb;
+    }
+
+    .form-mode.editing {
+      color: #d97706;
+    }
+
+    /* =============================================
+       MESSAGE
+       ============================================= */
+    .message {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .message.error {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+
+    /* =============================================
+       SIDEBAR
+       ============================================= */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .guide-list {
+      margin-top: 12px;
+      padding-left: 20px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    .guide-list li {
+      margin-bottom: 8px;
+    }
+
+    .task-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-item {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .task-item:hover {
+      background: #f8fafc;
+    }
+
+    .task-item.active {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .task-item-title {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 14px;
+    }
+
+    .task-item-meta {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-todo {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .badge-doing {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .badge-done {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .badge-blocked {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+
+    .badge-priority {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .task-empty {
+      border: 2px dashed #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .loading-text {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+      display: none;
+      margin-top: 16px;
+    }
+
+    .loading-text.show {
+      display: block;
+    }
+
+    /* =============================================
+       STATS
+       ============================================= */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      border-radius: 16px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-box .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .stat-box .stat-label {
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .stat-todo {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .stat-doing {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .stat-done {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    .stat-blocked {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+
+    /* =============================================
+       SPINNER
+       ============================================= */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .spinner {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border: 2px solid rgba(255, 255, 255, 0.3);
       border-top-color: #fff;
       border-radius: 50%;
@@ -22,64 +489,51 @@
       vertical-align: middle;
       margin-right: 6px;
     }
-    .spinner-dark {
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      border-top-color: #3b82f6;
-    }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900">
-  <div class="min-h-screen max-w-7xl mx-auto px-4 py-6">
+<body>
+  <div class="container">
 
     <!-- HEADER -->
-    <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+    <div class="header">
       <div>
-        <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Entri</div>
-        <h1 class="text-3xl font-bold">Input / Edit Task</h1>
-        <p class="text-slate-500 mt-1">Simpan data langsung ke Google Spreadsheet.</p>
+        <div class="header-label">Entri</div>
+        <h1>Input / Edit Task</h1>
+        <p>Simpan data langsung ke Google Spreadsheet.</p>
       </div>
-      <div class="flex gap-2">
-        <a href="index.html"
-          class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm hover:bg-slate-50 transition">←
-          Kembali</a>
-        <a href="dashboard.html"
-          class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm hover:bg-slate-50 transition">Dashboard</a>
+      <div class="header-actions">
+        <a href="index.html" class="btn-outline">← Kembali</a>
+        <a href="dashboard.html" class="btn-outline">Dashboard</a>
       </div>
     </div>
 
     <!-- MAIN GRID -->
-    <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
+    <div class="main-grid">
 
       <!-- FORM SECTION -->
-      <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div class="flex items-center justify-between gap-3 flex-wrap">
+      <section class="card">
+        <div class="card-header">
           <div>
-            <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Form</div>
-            <h2 class="text-2xl font-bold text-slate-900">Tambah / Edit Task</h2>
-            <p id="formMode" class="text-xs text-blue-600 mt-1 font-medium">Mode: Tambah Baru</p>
+            <div class="card-label">Form</div>
+            <h2>Tambah / Edit Task</h2>
+            <p id="formMode" class="form-mode">➕ Mode: Tambah Baru</p>
           </div>
-          <button id="newBtn"
-            class="rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500 transition">
-            + New Task
-          </button>
+          <button id="newBtn" class="btn-primary">+ New Task</button>
         </div>
 
-        <form id="taskForm" class="mt-6 grid gap-4 md:grid-cols-2">
+        <form id="taskForm" class="form-grid">
           <input type="hidden" id="taskId" name="id" value="" />
 
-          <div class="md:col-span-2">
-            <label for="title" class="text-sm font-medium text-slate-700">Task <span
-                class="text-rose-500">*</span></label>
-            <input id="title" name="title"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition"
-              placeholder="Contoh: Kirim surat pemeriksaan" required />
+          <div class="col-span-2">
+            <label for="title">Task <span class="required">*</span></label>
+            <input id="title" name="title" class="form-input" placeholder="Contoh: Kirim surat pemeriksaan"
+              required />
           </div>
 
           <div>
-            <label for="status" class="text-sm font-medium text-slate-700">Status</label>
-            <select id="status" name="status"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <label for="status">Status</label>
+            <select id="status" name="status" class="form-input">
               <option>To Do</option>
               <option>Doing</option>
               <option>Done</option>
@@ -88,9 +542,8 @@
           </div>
 
           <div>
-            <label for="priority" class="text-sm font-medium text-slate-700">Priority</label>
-            <select id="priority" name="priority"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" class="form-input">
               <option>High</option>
               <option selected>Medium</option>
               <option>Low</option>
@@ -98,48 +551,37 @@
           </div>
 
           <div>
-            <label for="due_date" class="text-sm font-medium text-slate-700">Due date</label>
-            <input id="due_date" name="due_date" type="date"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition" />
+            <label for="due_date">Due date</label>
+            <input id="due_date" name="due_date" type="date" class="form-input" />
           </div>
 
           <div>
-            <label for="updated_at" class="text-sm font-medium text-slate-700">Updated</label>
-            <input id="updated_at" name="updated_at" type="date"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition" />
+            <label for="updated_at">Updated</label>
+            <input id="updated_at" name="updated_at" type="date" class="form-input" />
           </div>
 
-          <div class="md:col-span-2">
-            <label for="note" class="text-sm font-medium text-slate-700">Note</label>
-            <textarea id="note" name="note" rows="5"
-              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition"
+          <div class="col-span-2">
+            <label for="note">Note</label>
+            <textarea id="note" name="note" rows="5" class="form-input"
               placeholder="Catatan singkat..."></textarea>
           </div>
 
-          <div class="md:col-span-2 flex items-center justify-end gap-3 pt-2">
-            <button type="button" id="deleteBtn"
-              class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 hover:bg-rose-100 transition">
-              🗑 Hapus
-            </button>
-            <button type="button" id="cancelBtn"
-              class="rounded-2xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-100 transition">
-              Batal
-            </button>
-            <button type="submit" id="submitBtn"
-              class="rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500 transition">
-              Simpan
-            </button>
+          <div class="col-span-2 form-actions">
+            <button type="button" id="deleteBtn" class="btn-delete">🗑 Hapus</button>
+            <button type="button" id="cancelBtn" class="btn-cancel">Batal</button>
+            <button type="submit" id="submitBtn" class="btn-primary">Simpan</button>
           </div>
         </form>
 
-        <div id="message" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm transition-all"></div>
+        <div id="message" class="message"></div>
       </section>
 
       <!-- SIDEBAR -->
-      <aside class="space-y-4">
-        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 class="text-lg font-semibold text-slate-900">Panduan singkat</h3>
-          <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc pl-5">
+      <aside class="sidebar">
+
+        <div class="card">
+          <h3>Panduan singkat</h3>
+          <ul class="guide-list">
             <li>Isi task lalu klik <strong>Simpan</strong>.</li>
             <li>Task baru akan masuk ke Spreadsheet.</li>
             <li>Klik task di daftar bawah untuk <strong>edit</strong>.</li>
@@ -147,29 +589,27 @@
           </ul>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-slate-900">Data terakhir</h3>
-            <button id="refreshBtn" class="text-sm text-blue-600 hover:underline transition">Refresh</button>
+        <div class="card">
+          <div class="card-header">
+            <h3>Data terakhir</h3>
+            <button id="refreshBtn" class="btn-link">Refresh</button>
           </div>
-          <div id="taskListLoading" class="mt-4 hidden text-center text-sm text-slate-400">
-            <span class="spinner spinner-dark"></span> Memuat data...
-          </div>
-          <div id="taskList" class="mt-4 space-y-3 text-sm text-slate-600"></div>
+          <div id="taskListLoading" class="loading-text">⏳ Memuat data...</div>
+          <div id="taskList" class="task-list"></div>
         </div>
 
-        <!-- Stats ringkas -->
-        <div id="statsCard" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm hidden">
-          <h3 class="text-lg font-semibold text-slate-900">Statistik</h3>
-          <div id="statsContent" class="mt-3 grid grid-cols-2 gap-3 text-sm"></div>
+        <div id="statsCard" class="card" style="display:none;">
+          <h3>Statistik</h3>
+          <div id="statsContent" class="stats-grid"></div>
         </div>
+
       </aside>
     </div>
   </div>
 
   <script>
     // =============================================
-    // KONFIGURASI - Ganti dengan URL Apps Script Anda
+    // KONFIGURASI
     // =============================================
     const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
 
@@ -218,28 +658,27 @@
     function updateFormMode() {
       const modeEl = el('formMode');
       const deleteBtn = el('deleteBtn');
+
       if (state.editingId) {
         modeEl.textContent = '✏️ Mode: Edit Task';
-        modeEl.className = 'text-xs text-amber-600 mt-1 font-medium';
-        deleteBtn.classList.remove('hidden');
+        modeEl.className = 'form-mode editing';
+        deleteBtn.classList.add('show');
       } else {
         modeEl.textContent = '➕ Mode: Tambah Baru';
-        modeEl.className = 'text-xs text-blue-600 mt-1 font-medium';
-        deleteBtn.classList.add('hidden');
+        modeEl.className = 'form-mode';
+        deleteBtn.classList.remove('show');
       }
     }
 
     let messageTimeout;
     function showMessage(text, ok = true) {
       const box = el('message');
-      box.className = 'mt-5 rounded-2xl px-4 py-3 text-sm '
-        + (ok
-          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-          : 'bg-rose-50 text-rose-700 border border-rose-200');
+      box.className = 'message show ' + (ok ? 'success' : 'error');
       box.textContent = text;
-      box.classList.remove('hidden');
       clearTimeout(messageTimeout);
-      messageTimeout = setTimeout(() => box.classList.add('hidden'), 3000);
+      messageTimeout = setTimeout(() => {
+        box.classList.remove('show');
+      }, 3000);
     }
 
     // =============================================
@@ -250,11 +689,10 @@
       const loadingEl = el('taskListLoading');
 
       try {
-        loadingEl.classList.remove('hidden');
+        loadingEl.classList.add('show');
         listEl.innerHTML = '';
 
         const res = await fetch(API_URL + '?action=list');
-
         if (!res.ok) throw new Error('HTTP ' + res.status);
 
         const json = await res.json();
@@ -263,46 +701,46 @@
         renderStats();
       } catch (err) {
         console.error('loadData error:', err);
-        listEl.innerHTML = `
-          <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-rose-600">
-            ⚠️ Gagal memuat data: ${esc(err.message)}
-            <button onclick="loadData()" class="block mt-2 text-sm text-blue-600 underline">Coba lagi</button>
-          </div>`;
+        listEl.innerHTML =
+          '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2;">'
+          + '⚠️ Gagal memuat data: ' + esc(err.message)
+          + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px;">Coba lagi</button>'
+          + '</div>';
       } finally {
-        loadingEl.classList.add('hidden');
+        loadingEl.classList.remove('show');
       }
     }
 
     // =============================================
     // RENDER: LIST
     // =============================================
+    function statusBadgeClass(status) {
+      const map = {
+        'To Do': 'badge-todo',
+        'Doing': 'badge-doing',
+        'Done': 'badge-done',
+        'Blocked': 'badge-blocked'
+      };
+      return map[status] || 'badge-todo';
+    }
+
     function renderList() {
       const list = el('taskList');
 
       if (!state.data.length) {
-        list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-4 text-slate-500 text-center">Belum ada data.</div>';
+        list.innerHTML = '<div class="task-empty">Belum ada data.</div>';
         return;
       }
 
-      const statusColor = {
-        'To Do': 'bg-slate-100 text-slate-700',
-        'Doing': 'bg-blue-100 text-blue-700',
-        'Done': 'bg-emerald-100 text-emerald-700',
-        'Blocked': 'bg-rose-100 text-rose-700'
-      };
-
       list.innerHTML = state.data.slice().reverse().map((t) => {
-        const colorClass = statusColor[t.status] || 'bg-slate-100 text-slate-700';
         const isEditing = state.editingId && String(state.editingId) === String(t.id);
         return `
-          <button data-edit="${esc(t.id)}"
-            class="w-full text-left rounded-2xl border p-4 hover:bg-slate-50 transition
-                   ${isEditing ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200' : 'border-slate-200'}">
-            <div class="font-medium text-slate-900">${esc(t.title || '-')}</div>
-            <div class="mt-2 flex flex-wrap gap-2 text-xs">
-              <span class="rounded-full px-2 py-0.5 ${colorClass}">${esc(t.status || '-')}</span>
-              <span class="rounded-full px-2 py-0.5 bg-slate-100 text-slate-600">${esc(t.priority || '-')}</span>
-              <span class="text-slate-400">${esc(t.due_date || 'No date')}</span>
+          <button data-edit="${esc(t.id)}" class="task-item${isEditing ? ' active' : ''}">
+            <div class="task-item-title">${esc(t.title || '-')}</div>
+            <div class="task-item-meta">
+              <span class="badge ${statusBadgeClass(t.status)}">${esc(t.status || '-')}</span>
+              <span class="badge badge-priority">${esc(t.priority || '-')}</span>
+              <span style="color:#94a3b8;">${esc(t.due_date || 'No date')}</span>
             </div>
           </button>`;
       }).join('');
@@ -320,27 +758,27 @@
       const content = el('statsContent');
 
       if (!state.data.length) {
-        card.classList.add('hidden');
+        card.style.display = 'none';
         return;
       }
 
-      card.classList.remove('hidden');
+      card.style.display = '';
       const counts = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
       state.data.forEach((t) => {
         if (counts.hasOwnProperty(t.status)) counts[t.status]++;
       });
 
       const items = [
-        { label: 'To Do', count: counts['To Do'], color: 'text-slate-700 bg-slate-100' },
-        { label: 'Doing', count: counts['Doing'], color: 'text-blue-700 bg-blue-100' },
-        { label: 'Done', count: counts['Done'], color: 'text-emerald-700 bg-emerald-100' },
-        { label: 'Blocked', count: counts['Blocked'], color: 'text-rose-700 bg-rose-100' }
+        { label: 'To Do', count: counts['To Do'], cls: 'stat-todo' },
+        { label: 'Doing', count: counts['Doing'], cls: 'stat-doing' },
+        { label: 'Done', count: counts['Done'], cls: 'stat-done' },
+        { label: 'Blocked', count: counts['Blocked'], cls: 'stat-blocked' }
       ];
 
       content.innerHTML = items.map((i) => `
-        <div class="rounded-2xl ${i.color} p-3 text-center">
-          <div class="text-2xl font-bold">${i.count}</div>
-          <div class="text-xs mt-1">${i.label}</div>
+        <div class="stat-box ${i.cls}">
+          <div class="stat-number">${i.count}</div>
+          <div class="stat-label">${i.label}</div>
         </div>
       `).join('');
     }
@@ -358,7 +796,7 @@
       el('updated_at').value = todayISO();
       el('note').value = '';
       updateFormMode();
-      renderList(); // update highlight
+      renderList();
     }
 
     // =============================================
@@ -378,10 +816,8 @@
       el('note').value = task.note || '';
 
       updateFormMode();
-      renderList(); // update highlight
+      renderList();
       showMessage('📝 Task dimuat untuk diedit', true);
-
-      // Scroll ke form di mobile
       el('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -409,8 +845,6 @@
         });
       }
 
-      // ✅ FIX CORS: Google Apps Script tidak menerima application/json via CORS
-      // Gunakan Content-Type: text/plain agar tidak trigger preflight OPTIONS request
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -437,7 +871,7 @@
       const task = state.data.find((t) => String(t.id) === String(state.editingId));
       const confirmText = task ? task.title : state.editingId;
 
-      if (!confirm(`Yakin ingin menghapus task:\n"${confirmText}"?`)) return;
+      if (!confirm('Yakin ingin menghapus task:\n"' + confirmText + '"?')) return;
 
       const tasks = state.data.filter((t) => String(t.id) !== String(state.editingId));
 
@@ -475,8 +909,7 @@
     // Submit form
     el('taskForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      if (state.loading) return; // prevent double submit
+      if (state.loading) return;
 
       const payload = {
         title: el('title').value.trim(),
@@ -510,23 +943,23 @@
       }
     });
 
-    // New task button
+    // New task
     el('newBtn').addEventListener('click', () => {
       clearForm();
       el('title').focus();
       showMessage('➕ Mode input baru aktif', true);
     });
 
-    // Cancel button
+    // Cancel
     el('cancelBtn').addEventListener('click', () => {
       clearForm();
       showMessage('🔄 Form dibersihkan', true);
     });
 
-    // Delete button
+    // Delete
     el('deleteBtn').addEventListener('click', deleteTask);
 
-    // Refresh button
+    // Refresh
     el('refreshBtn').addEventListener('click', () => {
       if (!state.loading) loadData();
     });
