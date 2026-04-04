@@ -336,9 +336,60 @@
 
   <script>
     // ============================================================
+// AUTH GUARD — Paste di paling atas <script>
+// ============================================================
+var API_URL = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
+var SESSION = null;
+
+function getSession() {
+  try {
+    var s = localStorage.getItem('simontok-session');
+    if (s) SESSION = JSON.parse(s);
+  } catch(e) { SESSION = null; }
+  if (!SESSION || !SESSION.token) {
+    alert('Silakan login terlebih dahulu.');
+    window.location.href = 'index.html';
+    return false;
+  }
+  return true;
+}
+
+// Panggil di awal
+if (!getSession()) throw new Error('Not logged in');
+
+// Helper: tambah auth ke URL
+function authURL(action) {
+  return API_URL + '?action=' + action 
+    + '&user=' + encodeURIComponent(SESSION.username) 
+    + '&token=' + encodeURIComponent(SESSION.token);
+}
+
+// Helper: tambah auth ke POST body
+function authBody(obj) {
+  obj.user = SESSION.username;
+  obj.token = SESSION.token;
+  return obj;
+}
+
+// Contoh GET:
+// fetch(authURL('list')).then(...)
+
+// Contoh POST:
+// fetch(authURL('add'), {
+//   method: 'POST',
+//   headers: {'Content-Type':'text/plain'},
+//   body: JSON.stringify(authBody({ action:'add', task:{...} }))
+// })
+
+// Logout function
+function logout() {
+  localStorage.removeItem('simontok-session');
+  window.location.href = 'index.html';
+}
+    // ============================================================
     // ⚠️ GANTI URL DEPLOYMENT ANDA
     // ============================================================
-    var API_URL = 'https://script.google.com/macros/s/AKfycbzLd1KC46K67Gw-KY2ovEUmijXN4-P3Ycls3WfxXObe8ro5v4zg8IczLBuzRzpuJyeW/exec';
+    var API_URL = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
 
     var DATA = [];
     var searchQ = '';
@@ -461,7 +512,7 @@
     // LOAD
     // ============================================================
     function loadData() {
-      return fetch(API_URL + '?action=list')
+      return fetch(authURL('list'))
         .then(function (r) { return r.json(); })
         .then(function (j) {
           if (!j.ok) throw new Error(j.message);
