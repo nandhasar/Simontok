@@ -3,30 +3,669 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simontok</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>SIMONTOK — Sistem Monitoring Organisasi Kerja</title>
+  <style>
+    :root {
+      --bg:#f8fafc;--bg2:#ffffff;--bg3:#f1f5f9;
+      --text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;
+      --blue:#2563eb;--blue2:#3b82f6;--blue3:#1d4ed8;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;
+      --purple:#7c3aed;--purple2:#8b5cf6;--purple-bg:#ede9fe;
+      --green:#059669;--green-bg:#d1fae5;
+      --red:#dc2626;--red-bg:#fee2e2;
+      --yellow:#d97706;--yellow-bg:#fef3c7;
+      --border:#e2e8f0;--border2:#f1f5f9;
+      --shadow:0 1px 3px rgba(0,0,0,.06);
+      --shadow2:0 8px 30px rgba(0,0,0,.08);
+      --shadow3:0 20px 60px rgba(0,0,0,.12);
+      --radius:20px;--radius2:14px;
+    }
+    [data-theme="dark"]{
+      --bg:#0f172a;--bg2:#1e293b;--bg3:#1e293b;
+      --text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;
+      --blue:#3b82f6;--blue2:#60a5fa;--blue3:#2563eb;--blue-bg:#1e3a5f;--blue-bg2:#172554;
+      --purple:#8b5cf6;--purple2:#a78bfa;--purple-bg:#2e1065;
+      --green:#34d399;--green-bg:#064e3b;
+      --red:#f87171;--red-bg:#450a0a;
+      --yellow:#fbbf24;--yellow-bg:#451a03;
+      --border:#334155;--border2:#334155;
+      --shadow:0 1px 3px rgba(0,0,0,.2);
+      --shadow2:0 8px 30px rgba(0,0,0,.3);
+      --shadow3:0 20px 60px rgba(0,0,0,.4);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    button{cursor:pointer;font-family:inherit}
+
+    /* NAV */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 20px;transition:all .3s}
+    .nav.scrolled{background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    .nav-brand{display:flex;align-items:center;gap:10px}
+    .nav-logo{width:40px;height:40px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:800;flex-shrink:0;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+    .nav-brand h1{font-size:20px;font-weight:800;letter-spacing:-.02em}
+    .nav-links{display:flex;align-items:center;gap:6px}
+    .nav-link{padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;border:none;background:transparent}
+    .nav-link:hover{background:var(--bg3)}
+    .nav-link.primary{background:var(--blue);color:#fff}
+    .nav-link.primary:hover{background:var(--blue2)}
+    .nav-link.icon{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
+    .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);align-items:center;justify-content:center;font-size:20px}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:100px 20px 60px}
+    .hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+    .hero-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.15}
+    .hero-blob-1{width:600px;height:600px;background:#3b82f6;top:-100px;right:-100px}
+    .hero-blob-2{width:500px;height:500px;background:#7c3aed;bottom:-50px;left:-100px}
+    .hero-blob-3{width:300px;height:300px;background:#10b981;top:40%;left:50%}
+    [data-theme="dark"] .hero-blob{opacity:.08}
+    .hero-grid{position:absolute;inset:0;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.4}
+    [data-theme="dark"] .hero-grid{opacity:.15}
+    .hero-content{position:relative;text-align:center;max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:var(--blue-bg2);border:1px solid var(--blue-bg);font-size:13px;font-weight:600;color:var(--blue);margin-bottom:24px;animation:fadeUp .6s ease}
+    .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero-title{font-size:clamp(36px,6vw,68px);font-weight:900;line-height:1.08;letter-spacing:-.04em;margin-bottom:20px;animation:fadeUp .6s ease .1s both}
+    .hero-title span{background:linear-gradient(135deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-desc{font-size:clamp(16px,2.5vw,20px);color:var(--text3);max-width:600px;margin:0 auto 36px;animation:fadeUp .6s ease .2s both;line-height:1.7}
+    .hero-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s ease .3s both}
+    .btn-hero{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:16px;font-size:16px;font-weight:700;transition:all .25s;border:none}
+    .btn-hero-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;box-shadow:0 8px 24px rgba(37,99,235,.35)}
+    .btn-hero-primary:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(37,99,235,.45)}
+    .btn-hero-secondary{background:var(--bg2);color:var(--text);border:1px solid var(--border);box-shadow:var(--shadow)}
+    .btn-hero-secondary:hover{transform:translateY(-3px);box-shadow:var(--shadow2);border-color:var(--blue)}
+    .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:48px;animation:fadeUp .6s ease .4s both}
+    .hero-stat{text-align:center}
+    .hero-stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-stat-label{font-size:13px;color:var(--text4);margin-top:2px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    /* SECTIONS */
+    .section{padding:80px 20px;max-width:1200px;margin:0 auto}
+    .section-header{text-align:center;margin-bottom:48px}
+    .section-label{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--blue-bg2);color:var(--blue);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+    .section-title{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
+    .section-desc{font-size:16px;color:var(--text3);max-width:560px;margin:0 auto}
+
+    /* FEATURES */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .3s;position:relative;overflow:hidden}
+    .feature:hover{transform:translateY(-6px);box-shadow:var(--shadow3);border-color:var(--blue)}
+    .feature-glow{position:absolute;top:-60px;right:-60px;width:140px;height:140px;border-radius:50%;opacity:.06;transition:opacity .3s}
+    .feature:hover .feature-glow{opacity:.12}
+    .feature-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+    .feature h3{font-size:18px;font-weight:700;margin-bottom:8px}
+    .feature p{font-size:14px;color:var(--text3);line-height:1.7}
+
+    /* STEPS */
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative}
+    .step{text-align:center;padding:24px 16px;position:relative}
+    .step-num{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin:0 auto 16px;box-shadow:0 6px 20px rgba(37,99,235,.3)}
+    .step h3{font-size:16px;font-weight:700;margin-bottom:6px}
+    .step p{font-size:13px;color:var(--text3);line-height:1.7}
+    .step-line{position:absolute;top:40px;left:calc(50% + 30px);width:calc(100% - 60px);height:2px;background:linear-gradient(90deg,var(--blue),var(--purple));opacity:.2}
+    .step:last-child .step-line{display:none}
+
+    /* PREVIEW */
+    .preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow2)}
+    .preview-tabs{display:flex;border-bottom:1px solid var(--border);padding:4px;gap:4px;background:var(--bg3)}
+    .preview-tab{flex:1;padding:12px;text-align:center;border-radius:12px;font-size:13px;font-weight:600;color:var(--text3);transition:all .2s;border:none;background:transparent;cursor:pointer}
+    .preview-tab.active{background:var(--bg2);color:var(--blue);box-shadow:var(--shadow)}
+    .preview-body{padding:24px;min-height:300px}
+    .preview-mockup{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .mock-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius2);padding:16px;text-align:center;transition:all .3s}
+    .mock-card:hover{transform:scale(1.03);box-shadow:var(--shadow2)}
+    .mock-icon{font-size:32px;margin-bottom:8px}
+    .mock-num{font-size:28px;font-weight:800}
+    .mock-label{font-size:11px;color:var(--text4);margin-top:4px;text-transform:uppercase;letter-spacing:.1em}
+    .mock-table{margin-top:20px;width:100%;border-collapse:collapse}
+    .mock-table th{text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text4);border-bottom:2px solid var(--border)}
+    .mock-table td{padding:12px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border2)}
+    .mock-table tr:hover td{background:var(--bg3)}
+    .mock-badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:600}
+    .mb-todo{background:var(--bg3);color:var(--text2)}
+    .mb-doing{background:var(--blue-bg);color:var(--blue)}
+    .mb-done{background:var(--green-bg);color:var(--green)}
+
+    /* TESTIMONIAL */
+    .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .testi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all .3s}
+    .testi:hover{transform:translateY(-4px);box-shadow:var(--shadow2)}
+    .testi-stars{color:#f59e0b;font-size:14px;margin-bottom:12px;letter-spacing:2px}
+    .testi-text{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:16px;font-style:italic}
+    .testi-author{display:flex;align-items:center;gap:10px}
+    .testi-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+    .testi-name{font-size:13px;font-weight:700}
+    .testi-role{font-size:11px;color:var(--text4)}
+
+    /* CTA */
+    .cta{text-align:center;padding:80px 20px;position:relative}
+    .cta-box{max-width:700px;margin:0 auto;padding:48px 40px;background:linear-gradient(135deg,#1e3a5f 0%,#2e1065 100%);border-radius:28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(37,99,235,.25)}
+    [data-theme="dark"] .cta-box{background:linear-gradient(135deg,#1e293b,#1e1b4b);border:1px solid var(--border)}
+    .cta-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:#3b82f6;filter:blur(100px);opacity:.15;top:-100px;right:-50px}
+    .cta-box h2{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:12px;position:relative}
+    .cta-box p{font-size:16px;opacity:.8;margin-bottom:28px;position:relative}
+    .cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+    .btn-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:16px;font-size:15px;font-weight:700;transition:all .25s;border:none}
+    .btn-cta-primary{background:#fff;color:#1e3a5f}
+    .btn-cta-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,255,255,.2)}
+    .btn-cta-secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+    .btn-cta-secondary:hover{background:rgba(255,255,255,.2);transform:translateY(-3px)}
+
+    /* FOOTER */
+    .footer{padding:30px 20px;text-align:center;border-top:1px solid var(--border);margin-top:40px}
+    .footer p{font-size:13px;color:var(--text4)}
+    .footer a{color:var(--blue);font-weight:600}
+
+    /* MOBILE MENU */
+    .mobile-menu{position:fixed;inset:0;background:var(--bg2);z-index:10001;display:none;flex-direction:column;padding:80px 24px 24px;gap:8px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a,.mobile-menu button{display:block;width:100%;padding:16px;text-align:center;border-radius:var(--radius2);font-size:16px;font-weight:600;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:all .2s}
+    .mobile-menu a:hover,.mobile-menu button:hover{background:var(--bg3)}
+    .mobile-menu .primary-m{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none}
+    .mobile-close{position:absolute;top:16px;right:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
+
+    /* RESPONSIVE */
+    @media(max-width:1024px){
+      .features{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:repeat(2,1fr)}
+      .step-line{display:none}
+      .testi-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      .nav-links .nav-link:not(.icon){display:none}
+      .hamburger{display:flex}
+      .features{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr}
+      .testi-grid{grid-template-columns:1fr}
+      .hero-stats{gap:24px}
+      .hero-stat-num{font-size:24px}
+      .preview-mockup{grid-template-columns:repeat(2,1fr)}
+      .cta-box{padding:32px 20px}
+      .section{padding:50px 16px}
+    }
+    @media(max-width:480px){
+      .hero-buttons{flex-direction:column;align-items:center}
+      .btn-hero{width:100%;justify-content:center}
+      .hero-stats{flex-direction:column;gap:16px}
+    }
+
+    .anim{opacity:0;transform:translateY(30px);transition:all .6s ease}
+    .anim.visible{opacity:1;transform:translateY(0)}
+
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
-  <div class="min-h-screen max-w-5xl mx-auto px-4 py-10">
-    <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-      <div class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700 ring-1 ring-blue-100">Simontok Workspace</div>
-      <h1 class="mt-4 text-4xl font-bold">Team Task Management</h1>
-      <p class="mt-3 text-slate-600 max-w-2xl">Pilih masuk ke dashboard monitoring atau ke halaman entri. Data akan dibaca dan ditulis langsung ke Google Spreadsheet lewat Apps Script.</p>
+<body>
 
-      <div class="mt-8 grid gap-4 sm:grid-cols-2 max-w-2xl">
-        <a href="dashboard.html" class="rounded-3xl border border-slate-200 bg-slate-900 px-6 py-5 text-left text-white shadow-sm hover:bg-slate-800 transition">
-          <div class="text-xs uppercase tracking-[0.2em] text-slate-300">Dashboard</div>
-          <div class="mt-2 text-xl font-semibold">Masuk ke Dashboard Monitoring</div>
-          <div class="mt-1 text-sm text-slate-300">Lihat progres, status, dan ringkasan task.</div>
-        </a>
-
-        <a href="entry.html" class="rounded-3xl border border-slate-200 bg-white px-6 py-5 text-left text-slate-900 shadow-sm hover:bg-slate-50 transition">
-          <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Entri</div>
-          <div class="mt-2 text-xl font-semibold">Masuk ke Entri</div>
-          <div class="mt-1 text-sm text-slate-500">Tambah, edit, dan hapus task ke Spreadsheet.</div>
-        </a>
+  <!-- NAVBAR -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">
+        <div class="nav-logo">S</div>
+        <h1>SIMONTOK</h1>
+      </a>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">Fitur</a>
+        <a href="#how" class="nav-link">Cara Kerja</a>
+        <a href="#preview" class="nav-link">Preview</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="entri.html" class="nav-link primary">+ Entri Task</a>
+        <button class="nav-link icon" id="themeToggle" title="Ganti Tema">🌙</button>
+        <button class="hamburger" id="hamburgerBtn">☰</button>
       </div>
     </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <a href="#features" onclick="closeMobile()">✨ Fitur</a>
+    <a href="#how" onclick="closeMobile()">📋 Cara Kerja</a>
+    <a href="#preview" onclick="closeMobile()">👁 Preview</a>
+    <a href="dashboard.html">📊 Dashboard</a>
+    <a href="entri.html" class="primary-m">+ Entri Task</a>
+    <button id="themeToggle2">🌙 Ganti Tema</button>
   </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-blob hero-blob-3"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Sistem Monitoring Organisasi Kerja
+      </div>
+      <h2 class="hero-title">
+        Kelola Task<br>Organisasi dengan <span>SIMONTOK</span>
+      </h2>
+      <p class="hero-desc">
+        Platform monitoring kerja yang simpel, cepat, dan langsung terhubung ke Google Spreadsheet. Pantau progres, deadline, dan prioritas tim Anda secara real-time.
+      </p>
+      <div class="hero-buttons">
+        <a href="entri.html" class="btn-hero btn-hero-primary">🚀 Mulai Entri Task</a>
+        <a href="dashboard.html" class="btn-hero btn-hero-secondary">📊 Lihat Dashboard</a>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="hTotal">—</div>
+          <div class="hero-stat-label">Total Task</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="hDone">—</div>
+          <div class="hero-stat-label">Selesai</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="hDoing">—</div>
+          <div class="hero-stat-label">Sedang Dikerjakan</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="hPercent">—</div>
+          <div class="hero-stat-label">Progress</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="section-header anim">
+      <div class="section-label">✨ Fitur</div>
+      <h2 class="section-title">Semua yang Anda Butuhkan</h2>
+      <p class="section-desc">Fitur lengkap untuk monitoring task organisasi, dari input hingga export laporan.</p>
+    </div>
+    <div class="features">
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#3b82f6"></div>
+        <div class="feature-icon" style="background:var(--blue-bg)">📝</div>
+        <h3>Input Task Cepat</h3>
+        <p>Form input yang simpel dan intuitif. Tambah task dengan judul, status, prioritas, deadline, dan catatan dalam hitungan detik.</p>
+      </div>
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#7c3aed"></div>
+        <div class="feature-icon" style="background:var(--purple-bg)">📊</div>
+        <h3>Dashboard Interaktif</h3>
+        <p>Visualisasi data lengkap dengan chart donut, bar chart, statistik real-time, dan kalender bulanan interaktif.</p>
+      </div>
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#10b981"></div>
+        <div class="feature-icon" style="background:var(--green-bg)">📅</div>
+        <h3>Kalender Visual</h3>
+        <p>Lihat semua task dalam tampilan kalender. Klik tanggal untuk melihat detail task yang jatuh tempo di hari tersebut.</p>
+      </div>
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#f59e0b"></div>
+        <div class="feature-icon" style="background:var(--yellow-bg)">🔍</div>
+        <h3>Filter & Pencarian</h3>
+        <p>Filter berdasarkan bulan, tahun, status, dan prioritas. Cari task secara real-time dengan search bar.</p>
+      </div>
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#ef4444"></div>
+        <div class="feature-icon" style="background:var(--red-bg)">📄</div>
+        <h3>Export PDF & Excel</h3>
+        <p>Download laporan dalam format PDF atau Excel. Pilih rentang waktu atau export per bulan sesuai kebutuhan.</p>
+      </div>
+      <div class="feature anim">
+        <div class="feature-glow" style="background:#06b6d4"></div>
+        <div class="feature-icon" style="background:#cffafe">🌙</div>
+        <h3>Dark & Light Mode</h3>
+        <p>Tampilan nyaman untuk bekerja siang maupun malam. Tema tersimpan otomatis di browser Anda.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="section-header anim">
+      <div class="section-label">📋 Cara Kerja</div>
+      <h2 class="section-title">Mudah & Cepat</h2>
+      <p class="section-desc">Hanya 4 langkah untuk mulai monitoring task organisasi Anda.</p>
+    </div>
+    <div class="steps">
+      <div class="step anim">
+        <div class="step-line"></div>
+        <div class="step-num">1</div>
+        <h3>Input Task</h3>
+        <p>Buka halaman Entri dan isi form task dengan detail lengkap.</p>
+      </div>
+      <div class="step anim">
+        <div class="step-line"></div>
+        <div class="step-num">2</div>
+        <h3>Simpan ke Sheet</h3>
+        <p>Data langsung tersimpan ke Google Spreadsheet secara otomatis.</p>
+      </div>
+      <div class="step anim">
+        <div class="step-line"></div>
+        <div class="step-num">3</div>
+        <h3>Pantau Dashboard</h3>
+        <p>Lihat statistik, chart, kalender, dan progress di dashboard.</p>
+      </div>
+      <div class="step anim">
+        <div class="step-num">4</div>
+        <h3>Export Laporan</h3>
+        <p>Download laporan PDF/Excel kapan saja untuk keperluan dokumentasi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVIEW -->
+  <section class="section" id="preview">
+    <div class="section-header anim">
+      <div class="section-label">👁 Preview</div>
+      <h2 class="section-title">Tampilan Dashboard</h2>
+      <p class="section-desc">Begini tampilan monitoring task Anda di dashboard.</p>
+    </div>
+    <div class="preview anim">
+      <div class="preview-tabs">
+        <button class="preview-tab active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="preview-tab" data-tab="table">📋 Tabel Task</button>
+        <button class="preview-tab" data-tab="calendar">📅 Kalender</button>
+      </div>
+      <div class="preview-body" id="previewBody">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="section" id="testimonial">
+    <div class="section-header anim">
+      <div class="section-label">💬 Keunggulan</div>
+      <h2 class="section-title">Mengapa SIMONTOK?</h2>
+      <p class="section-desc">Alasan kenapa sistem ini cocok untuk organisasi Anda.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi anim">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Tidak perlu install aplikasi apapun. Langsung buka browser, input task, dan pantau progress. Simpel dan efisien!"</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">🌐</div>
+          <div><div class="testi-name">Tanpa Install</div><div class="testi-role">Akses dari browser manapun</div></div>
+        </div>
+      </div>
+      <div class="testi anim">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Data tersimpan di Google Spreadsheet yang bisa diakses kapan saja. Backup otomatis dan bisa dilihat langsung di Google Sheets."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">☁️</div>
+          <div><div class="testi-name">Cloud Storage</div><div class="testi-role">Google Spreadsheet integration</div></div>
+        </div>
+      </div>
+      <div class="testi anim">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Bisa export laporan PDF dan Excel per bulan atau rentang waktu tertentu. Sangat membantu untuk pelaporan berkala."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">📄</div>
+          <div><div class="testi-name">Export Laporan</div><div class="testi-role">PDF & Excel siap cetak</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-box anim">
+      <div class="cta-glow"></div>
+      <h2>Mulai Monitoring Sekarang! 🚀</h2>
+      <p>Tidak perlu registrasi. Langsung input task dan pantau progress organisasi Anda.</p>
+      <div class="cta-buttons">
+        <a href="entri.html" class="btn-cta btn-cta-primary">📝 Input Task Sekarang</a>
+        <a href="dashboard.html" class="btn-cta btn-cta-secondary">📊 Buka Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p><strong>SIMONTOK</strong> — Sistem Monitoring Organisasi Kerja &copy; 2026</p>
+    <p style="margin-top:6px">Dibuat dengan ❤️ menggunakan Google Apps Script + HTML</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // ⚠️ GANTI DENGAN URL DEPLOYMENT ANDA
+    // ============================================================
+    var API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+
+    // ============================================================
+    // THEME
+    // ============================================================
+    var isDark = localStorage.getItem('simontok-dark') === 'true';
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      var icon = isDark ? '☀️' : '🌙';
+      var t1 = document.getElementById('themeToggle');
+      var t2 = document.getElementById('themeToggle2');
+      if (t1) t1.textContent = icon;
+      if (t2) t2.textContent = icon + ' Ganti Tema';
+    }
+    applyTheme();
+
+    function toggleTheme() {
+      isDark = !isDark;
+      localStorage.setItem('simontok-dark', isDark);
+      applyTheme();
+    }
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('themeToggle2').addEventListener('click', function () { toggleTheme(); closeMobile(); });
+
+    // ============================================================
+    // NAVBAR SCROLL
+    // ============================================================
+    window.addEventListener('scroll', function () {
+      var nav = document.getElementById('navbar');
+      if (window.scrollY > 40) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    document.getElementById('hamburgerBtn').addEventListener('click', function () {
+      document.getElementById('mobileMenu').classList.add('open');
+    });
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // ============================================================
+    // SCROLL ANIMATION
+    // ============================================================
+    function animateOnScroll() {
+      var elems = document.querySelectorAll('.anim');
+      for (var i = 0; i < elems.length; i++) {
+        var rect = elems[i].getBoundingClientRect();
+        if (rect.top < window.innerHeight - 60) {
+          elems[i].classList.add('visible');
+        }
+      }
+    }
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('DOMContentLoaded', animateOnScroll);
+
+    // ============================================================
+    // PREVIEW TABS
+    // ============================================================
+    var currentTab = 'dashboard';
+
+    function renderPreview() {
+      var body = document.getElementById('previewBody');
+      if (!body) return;
+
+      if (currentTab === 'dashboard') {
+        body.innerHTML =
+          '<div class="preview-mockup">' +
+          '<div class="mock-card"><div class="mock-icon">📊</div><div class="mock-num" id="pTotal">—</div><div class="mock-label">Total</div></div>' +
+          '<div class="mock-card"><div class="mock-icon">📋</div><div class="mock-num" id="pTodo">—</div><div class="mock-label">To Do</div></div>' +
+          '<div class="mock-card"><div class="mock-icon">⚡</div><div class="mock-num" id="pDoing">—</div><div class="mock-label">Doing</div></div>' +
+          '<div class="mock-card"><div class="mock-icon">✅</div><div class="mock-num" id="pDone">—</div><div class="mock-label">Done</div></div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:30px 0">' +
+          '<p style="color:var(--text3);font-size:14px;margin-bottom:16px">Data real-time dari Google Spreadsheet Anda</p>' +
+          '<a href="dashboard.html" class="btn-hero btn-hero-primary" style="font-size:14px;padding:12px 24px">Buka Dashboard Lengkap →</a>' +
+          '</div>';
+        updatePreviewStats();
+      } else if (currentTab === 'table') {
+        var html = '<table class="mock-table"><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due Date</th></tr></thead><tbody>';
+        if (window._DATA && window._DATA.length) {
+          var show = window._DATA.slice(0, 6);
+          for (var i = 0; i < show.length; i++) {
+            var t = show[i];
+            var bc = t.status === 'Done' ? 'mb-done' : t.status === 'Doing' ? 'mb-doing' : 'mb-todo';
+            html += '<tr><td style="font-weight:600">' + esc(t.title) + '</td><td><span class="mock-badge ' + bc + '">' + esc(t.status) + '</span></td><td>' + esc(t.priority) + '</td><td>' + esc(t.due_date || '-') + '</td></tr>';
+          }
+        } else {
+          html += '<tr><td colspan="4" style="text-align:center;color:var(--text4);padding:40px">Memuat data...</td></tr>';
+        }
+        html += '</tbody></table>';
+        if (window._DATA && window._DATA.length > 6) {
+          html += '<div style="text-align:center;padding:16px"><a href="dashboard.html" style="color:var(--blue);font-weight:600;font-size:13px">Lihat semua ' + window._DATA.length + ' task →</a></div>';
+        }
+        body.innerHTML = html;
+      } else if (currentTab === 'calendar') {
+        var now = new Date();
+        var month = now.getMonth();
+        var year = now.getFullYear();
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var DAYS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+        var tasksByDay = {};
+        if (window._DATA) {
+          for (var i = 0; i < window._DATA.length; i++) {
+            var d = window._DATA[i].due_date ? new Date(window._DATA[i].due_date) : null;
+            if (d && d.getMonth() === month && d.getFullYear() === year) {
+              var day = d.getDate();
+              if (!tasksByDay[day]) tasksByDay[day] = 0;
+              tasksByDay[day]++;
+            }
+          }
+        }
+
+        var html = '<div style="text-align:center;margin-bottom:16px"><h3 style="font-size:18px;font-weight:700">📅 ' + MONTHS[month] + ' ' + year + '</h3></div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+        for (var d = 0; d < 7; d++) {
+          html += '<div style="text-align:center;font-size:11px;font-weight:700;color:var(--text4);padding:8px">' + DAYS[d] + '</div>';
+        }
+        for (var e = 0; e < firstDay; e++) {
+          html += '<div></div>';
+        }
+        for (var day = 1; day <= daysInMonth; day++) {
+          var isToday = day === now.getDate();
+          var count = tasksByDay[day] || 0;
+          var style = 'text-align:center;padding:10px 4px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--border2);transition:all .2s;';
+          if (isToday) style += 'background:var(--blue-bg2);border-color:var(--blue);color:var(--blue);';
+          html += '<div style="' + style + '">';
+          html += day;
+          if (count > 0) html += '<div style="font-size:9px;color:var(--blue);margin-top:2px">' + count + ' task</div>';
+          html += '</div>';
+        }
+        html += '</div>';
+        html += '<div style="text-align:center;padding:20px 0"><a href="dashboard.html" class="btn-hero btn-hero-secondary" style="font-size:13px;padding:10px 20px">Lihat Kalender Lengkap →</a></div>';
+        body.innerHTML = html;
+      }
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    var tabs = document.querySelectorAll('.preview-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].addEventListener('click', (function (btn) {
+        return function () {
+          for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+          btn.classList.add('active');
+          currentTab = btn.getAttribute('data-tab');
+          renderPreview();
+        };
+      })(tabs[i]));
+    }
+
+    // ============================================================
+    // LOAD LIVE DATA
+    // ============================================================
+    window._DATA = [];
+
+    function updatePreviewStats() {
+      var d = window._DATA;
+      var todo = 0, doing = 0, done = 0;
+      for (var i = 0; i < d.length; i++) {
+        if (d[i].status === 'To Do') todo++;
+        else if (d[i].status === 'Doing') doing++;
+        else if (d[i].status === 'Done') done++;
+      }
+      var pct = d.length ? Math.round(done / d.length * 100) : 0;
+
+      // Hero stats
+      var hT = document.getElementById('hTotal');
+      var hD = document.getElementById('hDone');
+      var hDo = document.getElementById('hDoing');
+      var hP = document.getElementById('hPercent');
+      if (hT) hT.textContent = d.length;
+      if (hD) hD.textContent = done;
+      if (hDo) hDo.textContent = doing;
+      if (hP) hP.textContent = pct + '%';
+
+      // Preview stats
+      var pT = document.getElementById('pTotal');
+      var pTd = document.getElementById('pTodo');
+      var pDo2 = document.getElementById('pDoing');
+      var pDn = document.getElementById('pDone');
+      if (pT) pT.textContent = d.length;
+      if (pTd) pTd.textContent = todo;
+      if (pDo2) pDo2.textContent = doing;
+      if (pDn) pDn.textContent = done;
+    }
+
+    function loadLiveData() {
+      fetch(API_URL + '?action=list')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j.ok) {
+            window._DATA = j.data || [];
+            updatePreviewStats();
+            renderPreview();
+          }
+        })
+        .catch(function () {
+          // Silently fail — stats show dashes
+        });
+    }
+
+    // ============================================================
+    // SMOOTH SCROLL
+    // ============================================================
+    var anchors = document.querySelectorAll('a[href^="#"]');
+    for (var i = 0; i < anchors.length; i++) {
+      anchors[i].addEventListener('click', function (e) {
+        var href = this.getAttribute('href');
+        if (href === '#') return;
+        var target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    window.addEventListener('DOMContentLoaded', function () {
+      renderPreview();
+      loadLiveData();
+    });
+  </script>
 </body>
 </html>
