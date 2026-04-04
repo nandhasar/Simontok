@@ -219,219 +219,291 @@
   </div>
 
   <script>
-    // ⚠️ GANTI DENGAN URL DEPLOYMENT ANDA
-    const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+  // ⚠️ GANTI DENGAN URL DEPLOYMENT TERBARU ANDA
+const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
 
-    const state = { data: [], editingId: null, loading: false };
-    const el = id => document.getElementById(id);
-    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    const todayISO = () => new Date().toISOString().slice(0,10);
-    const badgeCls = s => ({
-      'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked'
-    }[s]||'badge-todo');
+const state = { data: [], editingId: null, loading: false };
+const el = id => document.getElementById(id);
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const todayISO = () => new Date().toISOString().slice(0,10);
+const badgeCls = s => ({'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked'}[s]||'badge-todo');
 
-    // Modal
-    const modal = el('popupModal');
-    function openPopup(h){ el('modalBody').innerHTML = h; modal.classList.add('active'); }
-    function closePopup(){ modal.classList.remove('active'); }
-    el('closeModal').addEventListener('click', closePopup);
-    modal.addEventListener('click', e => { if(e.target===modal) closePopup(); });
+// =============================================
+// MODAL
+// =============================================
+const modal = el('popupModal');
+function openPopup(h){ el('modalBody').innerHTML=h; modal.classList.add('active'); }
+function closePopup(){ modal.classList.remove('active'); }
+el('closeModal').addEventListener('click', closePopup);
+modal.addEventListener('click', e=>{ if(e.target===modal) closePopup(); });
 
-    function showTaskDetail(id){
-      const t = state.data.find(x => String(x.id)===String(id));
-      if(!t) return;
-      openPopup(`
-        <h3>📋 Detail Task</h3>
-        <p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">${esc(t.title)}</p>
-        <div class="modal-detail">
-          <div class="modal-detail-item"><strong>Status</strong><span class="badge ${badgeCls(t.status)}" style="font-size:13px;padding:4px 12px">${esc(t.status)}</span></div>
-          <div class="modal-detail-item"><strong>Priority</strong><span>${esc(t.priority||'-')}</span></div>
-          <div class="modal-detail-item"><strong>Due Date</strong><span>${esc(t.due_date||'Tidak ada')}</span></div>
-          <div class="modal-detail-item"><strong>Updated</strong><span>${esc(t.updated_at||'-')}</span></div>
-          <div class="modal-detail-item"><strong>Created</strong><span>${esc(t.created_at||'-')}</span></div>
-          <div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">${esc(t.id)}</span></div>
-        </div>
-        ${t.note?'<div class="modal-note"><strong>📝 Catatan:</strong><br>'+esc(t.note)+'</div>':'<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>'}
-        <div class="modal-footer">
-          <button class="btn-modal-edit" onclick="editFromPopup('${esc(t.id)}')">✏️ Edit</button>
-          <button class="btn-modal-close" onclick="closePopup()">Tutup</button>
-        </div>
-      `);
-    }
-    function editFromPopup(id){ closePopup(); loadTaskForEdit(id); }
+function showTaskDetail(id){
+  const t = state.data.find(x => String(x.id)===String(id));
+  if(!t) return;
+  openPopup(`
+    <h3>📋 Detail Task</h3>
+    <p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">${esc(t.title)}</p>
+    <div class="modal-detail">
+      <div class="modal-detail-item"><strong>Status</strong><span class="badge ${badgeCls(t.status)}" style="font-size:13px;padding:4px 12px">${esc(t.status)}</span></div>
+      <div class="modal-detail-item"><strong>Priority</strong><span>${esc(t.priority||'-')}</span></div>
+      <div class="modal-detail-item"><strong>Due Date</strong><span>${esc(t.due_date||'Tidak ada')}</span></div>
+      <div class="modal-detail-item"><strong>Updated</strong><span>${esc(t.updated_at||'-')}</span></div>
+      <div class="modal-detail-item"><strong>Created</strong><span>${esc(t.created_at||'-')}</span></div>
+      <div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">${esc(t.id)}</span></div>
+    </div>
+    ${t.note?'<div class="modal-note"><strong>📝 Catatan:</strong><br>'+esc(t.note)+'</div>':'<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>'}
+    <div class="modal-footer">
+      <button class="btn-modal-edit" onclick="editFromPopup('${esc(t.id)}')">✏️ Edit</button>
+      <button class="btn-modal-close" onclick="closePopup()">Tutup</button>
+    </div>
+  `);
+}
+function editFromPopup(id){ closePopup(); loadTaskForEdit(id); }
 
-    // Loading UI
-    function setLoading(v){
-      state.loading=v;
-      el('submitBtn').disabled=v;
-      el('submitBtn').innerHTML=v?'<span class="spinner"></span> Menyimpan...':'Simpan';
-      el('refreshBtn').disabled=v;
-      el('refreshBtn').textContent=v?'Memuat...':'Refresh';
-    }
+// =============================================
+// LOADING & MESSAGE
+// =============================================
+function setLoading(v){
+  state.loading=v;
+  el('submitBtn').disabled=v;
+  el('submitBtn').innerHTML=v?'<span class="spinner"></span> Menyimpan...':'Simpan';
+  el('refreshBtn').disabled=v;
+  el('refreshBtn').textContent=v?'Memuat...':'Refresh';
+}
 
-    function updateFormMode(){
-      if(state.editingId){
-        el('formMode').textContent='✏️ Mode: Edit Task';
-        el('formMode').className='form-mode editing';
-        el('deleteBtn').classList.add('show');
-      } else {
-        el('formMode').textContent='➕ Mode: Tambah Baru';
-        el('formMode').className='form-mode';
-        el('deleteBtn').classList.remove('show');
-      }
-    }
+let msgTO;
+function showMessage(t,ok=true){
+  const b=el('message');
+  b.className='message show '+(ok?'success':'error');
+  b.textContent=t;
+  clearTimeout(msgTO);
+  msgTO=setTimeout(()=>b.classList.remove('show'),4000);
+}
 
-    let msgTO;
-    function showMessage(t,ok=true){
-      const b=el('message');
-      b.className='message show '+(ok?'success':'error');
-      b.textContent=t;
-      clearTimeout(msgTO);
-      msgTO=setTimeout(()=>b.classList.remove('show'),4000);
-    }
+function updateFormMode(){
+  if(state.editingId){
+    el('formMode').textContent='✏️ Mode: Edit Task';
+    el('formMode').className='form-mode editing';
+    el('deleteBtn').classList.add('show');
+  } else {
+    el('formMode').textContent='➕ Mode: Tambah Baru';
+    el('formMode').className='form-mode';
+    el('deleteBtn').classList.remove('show');
+  }
+}
 
-    // LOAD DATA
-    async function loadData(){
-      const list=el('taskList'), ld=el('taskListLoading');
-      try{
-        ld.classList.add('show'); list.innerHTML='';
-        const r=await fetch(API_URL+'?action=list');
-        const j=await r.json();
-        if(!j.ok) throw new Error(j.message||'Gagal');
-        state.data=j.data||[];
-        renderList(); renderStats();
-      } catch(err){
-        list.innerHTML='<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ '+esc(err.message)+'<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
-      } finally { ld.classList.remove('show'); }
-    }
+// =============================================
+// KIRIM POST — PERBAIKAN UTAMA
+// =============================================
+async function sendPost(payload) {
+  console.log('📤 Sending POST:', JSON.stringify(payload));
 
-    // RENDER LIST
-    function renderList(){
-      const list=el('taskList');
-      if(!state.data.length){ list.innerHTML='<div class="task-empty">Belum ada data.</div>'; return; }
-      list.innerHTML=state.data.slice().reverse().map(t=>{
-        const active=state.editingId&&String(state.editingId)===String(t.id);
-        return `<div class="task-item${active?' active':''}">
-          <div class="task-item-title">${esc(t.title||'-')}</div>
-          <div class="task-item-meta">
-            <span class="badge ${badgeCls(t.status)}">${esc(t.status||'-')}</span>
-            <span class="badge badge-priority">${esc(t.priority||'-')}</span>
-            <span style="color:#94a3b8">${esc(t.due_date||'No date')}</span>
-          </div>
-          <div class="task-item-actions">
-            <button class="task-btn task-btn-view" data-view="${esc(t.id)}">👁 Lihat</button>
-            <button class="task-btn task-btn-edit" data-edit="${esc(t.id)}">✏️ Edit</button>
-          </div>
-        </div>`;
-      }).join('');
-      list.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',e=>{
-        e.stopPropagation(); showTaskDetail(b.dataset.view);
-      }));
-      list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>{
-        e.stopPropagation(); loadTaskForEdit(b.dataset.edit);
-      }));
-    }
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
 
-    // RENDER STATS
-    function renderStats(){
-      if(!state.data.length){ el('statsCard').style.display='none'; return; }
-      el('statsCard').style.display='';
-      const c={'To Do':0,'Doing':0,'Done':0,'Blocked':0};
-      state.data.forEach(t=>{ if(c.hasOwnProperty(t.status)) c[t.status]++; });
-      el('statsContent').innerHTML=[
-        {l:'To Do',n:c['To Do'],c:'stat-todo'},
-        {l:'Doing',n:c['Doing'],c:'stat-doing'},
-        {l:'Done',n:c['Done'],c:'stat-done'},
-        {l:'Blocked',n:c['Blocked'],c:'stat-blocked'}
-      ].map(i=>`<div class="stat-box ${i.c}"><div class="stat-number">${i.n}</div><div class="stat-label">${i.l}</div></div>`).join('');
-    }
+  const text = await res.text();
+  console.log('📥 Response raw:', text);
 
-    // FORM
-    function clearForm(){
-      state.editingId=null;
-      el('taskId').value='';
-      el('title').value='';
-      el('status').value='To Do';
-      el('priority').value='Medium';
-      el('due_date').value='';
-      el('updated_at').value=todayISO();
-      el('note').value='';
-      updateFormMode(); renderList();
-    }
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch(e) {
+    throw new Error('Response bukan JSON: ' + text.substring(0, 200));
+  }
 
-    function loadTaskForEdit(id){
-      const t=state.data.find(x=>String(x.id)===String(id));
-      if(!t) return;
-      state.editingId=t.id;
-      el('taskId').value=t.id||'';
-      el('title').value=t.title||'';
-      el('status').value=t.status||'To Do';
-      el('priority').value=t.priority||'Medium';
-      el('due_date').value=t.due_date||'';
-      el('updated_at').value=t.updated_at||todayISO();
-      el('note').value=t.note||'';
-      updateFormMode(); renderList();
-      showMessage('📝 Task dimuat untuk diedit');
-      el('taskForm').scrollIntoView({behavior:'smooth',block:'start'});
-    }
+  if (!json.ok) {
+    throw new Error(json.message || 'Gagal');
+  }
 
-    // SAVE
-    el('taskForm').addEventListener('submit', async e=>{
-      e.preventDefault();
-      if(state.loading) return;
-      const payload={
-        title:el('title').value.trim(),
-        status:el('status').value,
-        priority:el('priority').value,
-        due_date:el('due_date').value,
-        note:el('note').value.trim(),
-        updated_at:el('updated_at').value||todayISO()
-      };
-      if(!payload.title){ showMessage('⚠️ Task tidak boleh kosong',false); el('title').focus(); return; }
+  return json;
+}
 
-      try{
-        setLoading(true);
-        const isEdit=!!state.editingId;
-        let body;
-        if(isEdit){
-          const existing=state.data.find(t=>String(t.id)===String(state.editingId));
-          body={action:'update',task:{...payload,id:state.editingId,created_at:existing?existing.created_at:todayISO()}};
-        } else {
-          body={action:'add',task:{...payload,id:String(Date.now()),created_at:todayISO()}};
+// =============================================
+// LOAD DATA
+// =============================================
+async function loadData(){
+  const list=el('taskList'), ld=el('taskListLoading');
+  try{
+    ld.classList.add('show'); list.innerHTML='';
+    const r=await fetch(API_URL+'?action=list');
+    const j=await r.json();
+    if(!j.ok) throw new Error(j.message||'Gagal');
+    state.data=j.data||[];
+    renderList(); renderStats();
+  } catch(err){
+    console.error('loadData error:', err);
+    list.innerHTML='<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ '+esc(err.message)+'<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
+  } finally { ld.classList.remove('show'); }
+}
+
+// =============================================
+// RENDER LIST
+// =============================================
+function renderList(){
+  const list=el('taskList');
+  if(!state.data.length){ list.innerHTML='<div class="task-empty">Belum ada data.</div>'; return; }
+  list.innerHTML=state.data.slice().reverse().map(t=>{
+    const active=state.editingId&&String(state.editingId)===String(t.id);
+    return `<div class="task-item${active?' active':''}">
+      <div class="task-item-title">${esc(t.title||'-')}</div>
+      <div class="task-item-meta">
+        <span class="badge ${badgeCls(t.status)}">${esc(t.status||'-')}</span>
+        <span class="badge badge-priority">${esc(t.priority||'-')}</span>
+        <span style="color:#94a3b8">${esc(t.due_date||'No date')}</span>
+      </div>
+      <div class="task-item-actions">
+        <button class="task-btn task-btn-view" data-view="${esc(t.id)}">👁 Lihat</button>
+        <button class="task-btn task-btn-edit" data-edit="${esc(t.id)}">✏️ Edit</button>
+      </div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); showTaskDetail(b.dataset.view);
+  }));
+  list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); loadTaskForEdit(b.dataset.edit);
+  }));
+}
+
+// =============================================
+// RENDER STATS
+// =============================================
+function renderStats(){
+  if(!state.data.length){ el('statsCard').style.display='none'; return; }
+  el('statsCard').style.display='';
+  const c={'To Do':0,'Doing':0,'Done':0,'Blocked':0};
+  state.data.forEach(t=>{ if(c.hasOwnProperty(t.status)) c[t.status]++; });
+  el('statsContent').innerHTML=[
+    {l:'To Do',n:c['To Do'],c:'stat-todo'},
+    {l:'Doing',n:c['Doing'],c:'stat-doing'},
+    {l:'Done',n:c['Done'],c:'stat-done'},
+    {l:'Blocked',n:c['Blocked'],c:'stat-blocked'}
+  ].map(i=>`<div class="stat-box ${i.c}"><div class="stat-number">${i.n}</div><div class="stat-label">${i.l}</div></div>`).join('');
+}
+
+// =============================================
+// FORM
+// =============================================
+function clearForm(){
+  state.editingId=null;
+  el('taskId').value='';
+  el('title').value='';
+  el('status').value='To Do';
+  el('priority').value='Medium';
+  el('due_date').value='';
+  el('updated_at').value=todayISO();
+  el('note').value='';
+  updateFormMode(); renderList();
+}
+
+function loadTaskForEdit(id){
+  const t=state.data.find(x=>String(x.id)===String(id));
+  if(!t) return;
+  state.editingId=t.id;
+  el('taskId').value=t.id||'';
+  el('title').value=t.title||'';
+  el('status').value=t.status||'To Do';
+  el('priority').value=t.priority||'Medium';
+  el('due_date').value=t.due_date||'';
+  el('updated_at').value=t.updated_at||todayISO();
+  el('note').value=t.note||'';
+  updateFormMode(); renderList();
+  showMessage('📝 Task dimuat untuk diedit');
+  el('taskForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// =============================================
+// SAVE (ADD / UPDATE)
+// =============================================
+el('taskForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  if(state.loading) return;
+
+  const title = el('title').value.trim();
+  if(!title){ showMessage('⚠️ Task tidak boleh kosong',false); el('title').focus(); return; }
+
+  const taskData = {
+    title: title,
+    status: el('status').value,
+    priority: el('priority').value,
+    due_date: el('due_date').value,
+    note: el('note').value.trim(),
+    updated_at: el('updated_at').value || todayISO()
+  };
+
+  try{
+    setLoading(true);
+    const isEdit = !!state.editingId;
+
+    if (isEdit) {
+      // UPDATE
+      const existing = state.data.find(t=>String(t.id)===String(state.editingId));
+      await sendPost({
+        action: 'update',
+        task: {
+          ...taskData,
+          id: state.editingId,
+          created_at: existing ? existing.created_at : todayISO()
         }
-        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
-        const j=await r.json();
-        if(!j.ok) throw new Error(j.message||'Gagal');
-        showMessage(isEdit?'✅ Task berhasil diupdate':'✅ Task berhasil disimpan');
-        clearForm();
-        await loadData();
-      } catch(err){
-        showMessage('❌ '+err.message,false);
-      } finally { setLoading(false); }
+      });
+      showMessage('✅ Task berhasil diupdate');
+    } else {
+      // ADD
+      await sendPost({
+        action: 'add',
+        task: {
+          ...taskData,
+          id: String(Date.now()),
+          created_at: todayISO()
+        }
+      });
+      showMessage('✅ Task berhasil disimpan');
+    }
+
+    clearForm();
+    await loadData();
+  } catch(err){
+    console.error('Save error:', err);
+    showMessage('❌ ' + err.message, false);
+  } finally { setLoading(false); }
+});
+
+// =============================================
+// DELETE
+// =============================================
+el('deleteBtn').addEventListener('click', async ()=>{
+  if(!state.editingId) return;
+  const t=state.data.find(x=>String(x.id)===String(state.editingId));
+  if(!confirm('Yakin hapus task:\n"'+(t?t.title:state.editingId)+'"?')) return;
+
+  try{
+    setLoading(true);
+    await sendPost({
+      action: 'delete',
+      id: String(state.editingId)
     });
+    showMessage('🗑 Task berhasil dihapus');
+    clearForm();
+    await loadData();
+  } catch(err){
+    showMessage('❌ ' + err.message, false);
+  } finally { setLoading(false); }
+});
 
-    // DELETE
-    el('deleteBtn').addEventListener('click', async ()=>{
-      if(!state.editingId) return;
-      const t=state.data.find(x=>String(x.id)===String(state.editingId));
-      if(!confirm('Yakin hapus task:\n"'+(t?t.title:state.editingId)+'"?')) return;
-      try{
-        setLoading(true);
-        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'delete',id:state.editingId})});
-        const j=await r.json();
-        if(!j.ok) throw new Error(j.message||'Gagal');
-        showMessage('🗑 Task berhasil dihapus');
-        clearForm();
-        await loadData();
-      } catch(err){ showMessage('❌ '+err.message,false); }
-      finally { setLoading(false); }
-    });
+// =============================================
+// BUTTONS
+// =============================================
+el('newBtn').addEventListener('click',()=>{ clearForm(); el('title').focus(); showMessage('➕ Mode input baru aktif'); });
+el('cancelBtn').addEventListener('click',()=>{ clearForm(); showMessage('🔄 Form dibersihkan'); });
+el('refreshBtn').addEventListener('click',()=>{ if(!state.loading) loadData(); });
 
-    el('newBtn').addEventListener('click',()=>{ clearForm(); el('title').focus(); showMessage('➕ Mode input baru aktif'); });
-    el('cancelBtn').addEventListener('click',()=>{ clearForm(); showMessage('🔄 Form dibersihkan'); });
-    el('refreshBtn').addEventListener('click',()=>{ if(!state.loading) loadData(); });
-
-    window.addEventListener('DOMContentLoaded',()=>{ clearForm(); loadData(); });
+// =============================================
+// INIT
+// =============================================
+window.addEventListener('DOMContentLoaded',()=>{ clearForm(); loadData(); });
   </script>
 </body>
 </html>
