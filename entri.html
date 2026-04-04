@@ -205,76 +205,70 @@
 
   <script>
     // ============================================================
-// AUTH GUARD — Paste di paling atas <script>
-// ============================================================
-var API_URL = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
-var SESSION = null;
-
-function getSession() {
-  try {
-    var s = localStorage.getItem('simontok-session');
-    if (s) SESSION = JSON.parse(s);
-  } catch(e) { SESSION = null; }
-  if (!SESSION || !SESSION.token) {
-    alert('Silakan login terlebih dahulu.');
-    window.location.href = 'index.html';
-    return false;
-  }
-  return true;
-}
-
-// Panggil di awal
-if (!getSession()) throw new Error('Not logged in');
-
-// Helper: tambah auth ke URL
-function authURL(action) {
-  return API_URL + '?action=' + action 
-    + '&user=' + encodeURIComponent(SESSION.username) 
-    + '&token=' + encodeURIComponent(SESSION.token);
-}
-
-// Helper: tambah auth ke POST body
-function authBody(obj) {
-  obj.user = SESSION.username;
-  obj.token = SESSION.token;
-  return obj;
-}
-
-// Contoh GET:
-// fetch(authURL('list')).then(...)
-
-// Contoh POST:
-// fetch(authURL('add'), {
-//   method: 'POST',
-//   headers: {'Content-Type':'text/plain'},
-//   body: JSON.stringify(authBody({ action:'add', task:{...} }))
-// })
-
-// Logout function
-function logout() {
-  localStorage.removeItem('simontok-session');
-  window.location.href = 'index.html';
-}
-    // ============================================================
-    // ⚠️ GANTI DENGAN URL DEPLOYMENT TERBARU
-    // Setelah deploy ulang Code.gs, URL berubah!
+    // CONFIG — satu tempat saja
     // ============================================================
     var API_URL = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
 
+    // ============================================================
+    // AUTH GUARD
+    // ============================================================
+    var SESSION = null;
+
+    function getSession() {
+      try {
+        var s = localStorage.getItem('simontok-session');
+        if (s) SESSION = JSON.parse(s);
+      } catch(e) { SESSION = null; }
+      if (!SESSION || !SESSION.token) {
+        alert('Silakan login terlebih dahulu.');
+        window.location.href = 'index.html';
+        return false;
+      }
+      return true;
+    }
+
+    if (!getSession()) throw new Error('Not logged in');
+
+    // Helper: buat URL dengan auth query param
+    function authURL(action) {
+      return API_URL
+        + '?action=' + encodeURIComponent(action)
+        + '&user='   + encodeURIComponent(SESSION.username)
+        + '&token='  + encodeURIComponent(SESSION.token);
+    }
+
+    // Helper: tambahkan auth ke object body POST
+    function authBody(obj) {
+      obj.user  = SESSION.username;
+      obj.token = SESSION.token;
+      return obj;
+    }
+
+    function logout() {
+      localStorage.removeItem('simontok-session');
+      window.location.href = 'index.html';
+    }
+
+    // ============================================================
+    // STATE
+    // ============================================================
     var state = { data: [], editingId: null, loading: false };
 
+    // ============================================================
+    // UTILS
+    // ============================================================
     function $(id) { return document.getElementById(id); }
 
     function esc(s) {
-      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      return String(s || '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function todayISO() {
-      return new Date().toISOString().slice(0, 10);
-    }
+    function todayISO() { return new Date().toISOString().slice(0, 10); }
 
     function badgeCls(s) {
-      var map = { 'To Do': 'badge-todo', 'Doing': 'badge-doing', 'Done': 'badge-done', 'Blocked': 'badge-blocked' };
+      var map = { 'To Do':'badge-todo', 'Doing':'badge-doing', 'Done':'badge-done', 'Blocked':'badge-blocked' };
       return map[s] || 'badge-todo';
     }
 
@@ -293,7 +287,7 @@ function logout() {
     function closePopup() { modalEl.classList.remove('active'); }
 
     $('closeModal').addEventListener('click', closePopup);
-    modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closePopup(); });
+    modalEl.addEventListener('click', function(e) { if (e.target === modalEl) closePopup(); });
 
     function showTaskDetail(id) {
       var t = null;
@@ -312,7 +306,9 @@ function logout() {
         '<div class="modal-detail-item"><strong>Created</strong><span>' + esc(t.created_at || '-') + '</span></div>' +
         '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">' + esc(t.id) + '</span></div>' +
         '</div>' +
-        (t.note ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>' : '<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>') +
+        (t.note
+          ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
+          : '<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>') +
         '<div class="modal-footer">' +
         '<button class="btn-modal-edit" onclick="editFromPopup(\'' + esc(t.id) + '\')">✏️ Edit</button>' +
         '<button class="btn-modal-close" onclick="closePopup()">Tutup</button>' +
@@ -340,7 +336,7 @@ function logout() {
       b.className = 'message show ' + (ok ? 'success' : 'error');
       b.textContent = t;
       clearTimeout(msgTO);
-      msgTO = setTimeout(function () { b.classList.remove('show'); }, 4000);
+      msgTO = setTimeout(function() { b.classList.remove('show'); }, 4000);
     }
 
     function updateFormMode() {
@@ -356,67 +352,81 @@ function logout() {
     }
 
     // ============================================================
-    // SEND POST — action via URL parameter + body JSON
+    // ✅ PERBAIKAN UTAMA: sendPost — sekarang sertakan auth di URL
     // ============================================================
     function sendPost(action, bodyData) {
-      var url = API_URL + '?action=' + encodeURIComponent(action);
+      // Token & user dikirim via URL query param (lebih aman untuk GAS)
+      var url = authURL(action);
+      // Pastikan body juga mengandung auth sebagai fallback
+      var payload = authBody(Object.assign({}, bodyData));
 
-      console.log('📤 POST to: ' + url);
-      console.log('📤 Body: ' + JSON.stringify(bodyData));
+      console.log('📤 POST to:', url);
+      console.log('📤 Body:', JSON.stringify(payload));
 
       return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(bodyData),
+        body: JSON.stringify(payload),
         redirect: 'follow'
       })
-        .then(function (res) { return res.text(); })
-        .then(function (text) {
-          console.log('📥 Response: ' + text);
-
-          var json;
-          try {
-            json = JSON.parse(text);
-          } catch (e) {
-            showDebug('Response bukan JSON:\n' + text.substring(0, 500));
-            throw new Error('Response bukan JSON');
-          }
-
-          if (!json.ok) {
-            // Tampilkan debug info kalau ada
-            var debugInfo = 'Error: ' + (json.message || 'Unknown');
-            if (json.debug_param) debugInfo += '\nURL params: ' + json.debug_param;
-            if (json.debug_body_keys) debugInfo += '\nBody keys: ' + json.debug_body_keys;
-            if (json.raw) debugInfo += '\nRaw: ' + json.raw;
-            showDebug(debugInfo);
-            throw new Error(json.message || 'Gagal');
-          }
-
-          // Sukses — sembunyikan debug
-          $('debugBox').classList.remove('show');
-          return json;
-        });
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
+        console.log('📥 Response:', text);
+        var json;
+        try { json = JSON.parse(text); }
+        catch(e) {
+          showDebug('Response bukan JSON:\n' + text.substring(0, 500));
+          throw new Error('Response bukan JSON');
+        }
+        if (!json.ok) {
+          var dbg = 'Error: ' + (json.message || 'Unknown');
+          if (json.debug_param)     dbg += '\nURL params: '  + json.debug_param;
+          if (json.debug_body_keys) dbg += '\nBody keys: '   + json.debug_body_keys;
+          if (json.raw)             dbg += '\nRaw: '         + json.raw;
+          showDebug(dbg);
+          throw new Error(json.message || 'Gagal');
+        }
+        $('debugBox').classList.remove('show');
+        return json;
+      });
     }
 
     // ============================================================
-    // LOAD DATA
+    // ✅ PERBAIKAN UTAMA: loadData — fetch 'list' yang benar
     // ============================================================
     function loadData() {
       var list = $('taskList');
-      var ld = $('taskListLoading');
+      var ld   = $('taskListLoading');
       ld.classList.add('show');
       list.innerHTML = '';
 
-fetch(authURL('add'), {
-  method: 'POST',
-  headers: {'Content-Type':'text/plain'},
-  body: JSON.stringify(authBody({ action:'add', task: taskData }))
-})
-        .catch(function (err) {
-          console.error('loadData error:', err);
-          list.innerHTML = '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ ' + esc(err.message) + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
+      // GET ke action=list dengan auth di URL
+      fetch(authURL('list'), { redirect: 'follow' })
+        .then(function(res) { return res.text(); })
+        .then(function(text) {
+          console.log('📥 loadData response:', text);
+          var json;
+          try { json = JSON.parse(text); }
+          catch(e) {
+            showDebug('loadData — bukan JSON:\n' + text.substring(0, 500));
+            throw new Error('Response bukan JSON');
+          }
+          if (!json.ok) throw new Error(json.message || 'Gagal memuat data');
+
+          // Simpan ke state dan render
+          state.data = Array.isArray(json.data) ? json.data : [];
+          renderList();
+          renderStats();
         })
-        .then(function () { ld.classList.remove('show'); });
+        .catch(function(err) {
+          console.error('loadData error:', err);
+          list.innerHTML =
+            '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">' +
+            '⚠️ ' + esc(err.message) +
+            '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button>' +
+            '</div>';
+        })
+        .then(function() { ld.classList.remove('show'); });
     }
 
     // ============================================================
@@ -430,7 +440,8 @@ fetch(authURL('add'), {
       for (var i = state.data.length - 1; i >= 0; i--) {
         var t = state.data[i];
         var active = state.editingId && String(state.editingId) === String(t.id);
-        html += '<div class="task-item' + (active ? ' active' : '') + '">' +
+        html +=
+          '<div class="task-item' + (active ? ' active' : '') + '">' +
           '<div class="task-item-title">' + esc(t.title || '-') + '</div>' +
           '<div class="task-item-meta">' +
           '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status || '-') + '</span>' +
@@ -444,38 +455,38 @@ fetch(authURL('add'), {
       }
       list.innerHTML = html;
 
-      var viewBtns = list.querySelectorAll('[data-view]');
-      for (var j = 0; j < viewBtns.length; j++) {
-        viewBtns[j].addEventListener('click', (function (btn) {
-          return function (e) { e.stopPropagation(); showTaskDetail(btn.getAttribute('data-view')); };
-        })(viewBtns[j]));
-      }
-
-      var editBtns = list.querySelectorAll('[data-edit]');
-      for (var k = 0; k < editBtns.length; k++) {
-        editBtns[k].addEventListener('click', (function (btn) {
-          return function (e) { e.stopPropagation(); loadTaskForEdit(btn.getAttribute('data-edit')); };
-        })(editBtns[k]));
-      }
+      list.querySelectorAll('[data-view]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          showTaskDetail(btn.getAttribute('data-view'));
+        });
+      });
+      list.querySelectorAll('[data-edit]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          loadTaskForEdit(btn.getAttribute('data-edit'));
+        });
+      });
     }
 
     function renderStats() {
       if (!state.data.length) { $('statsCard').style.display = 'none'; return; }
       $('statsCard').style.display = '';
-      var c = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
+      var c = { 'To Do':0, 'Doing':0, 'Done':0, 'Blocked':0 };
       for (var i = 0; i < state.data.length; i++) {
         var s = state.data[i].status;
         if (c.hasOwnProperty(s)) c[s]++;
       }
       var items = [
-        { l: 'To Do', n: c['To Do'], c: 'stat-todo' },
-        { l: 'Doing', n: c['Doing'], c: 'stat-doing' },
-        { l: 'Done', n: c['Done'], c: 'stat-done' },
-        { l: 'Blocked', n: c['Blocked'], c: 'stat-blocked' }
+        { l:'To Do',   n:c['To Do'],   c:'stat-todo'    },
+        { l:'Doing',   n:c['Doing'],   c:'stat-doing'   },
+        { l:'Done',    n:c['Done'],    c:'stat-done'    },
+        { l:'Blocked', n:c['Blocked'], c:'stat-blocked' }
       ];
       var html = '';
       for (var j = 0; j < items.length; j++) {
-        html += '<div class="stat-box ' + items[j].c + '"><div class="stat-number">' + items[j].n + '</div><div class="stat-label">' + items[j].l + '</div></div>';
+        html += '<div class="stat-box ' + items[j].c + '"><div class="stat-number">' + items[j].n +
+                '</div><div class="stat-label">' + items[j].l + '</div></div>';
       }
       $('statsContent').innerHTML = html;
     }
@@ -485,13 +496,13 @@ fetch(authURL('add'), {
     // ============================================================
     function clearForm() {
       state.editingId = null;
-      $('taskId').value = '';
-      $('title').value = '';
-      $('status').value = 'To Do';
-      $('priority').value = 'Medium';
-      $('due_date').value = '';
+      $('taskId').value    = '';
+      $('title').value     = '';
+      $('status').value    = 'To Do';
+      $('priority').value  = 'Medium';
+      $('due_date').value  = '';
       $('updated_at').value = todayISO();
-      $('note').value = '';
+      $('note').value      = '';
       $('debugBox').classList.remove('show');
       updateFormMode();
       renderList();
@@ -503,24 +514,24 @@ fetch(authURL('add'), {
         if (String(state.data[i].id) === String(id)) { t = state.data[i]; break; }
       }
       if (!t) return;
-      state.editingId = t.id;
-      $('taskId').value = t.id || '';
-      $('title').value = t.title || '';
-      $('status').value = t.status || 'To Do';
-      $('priority').value = t.priority || 'Medium';
-      $('due_date').value = t.due_date || '';
+      state.editingId       = t.id;
+      $('taskId').value     = t.id || '';
+      $('title').value      = t.title || '';
+      $('status').value     = t.status || 'To Do';
+      $('priority').value   = t.priority || 'Medium';
+      $('due_date').value   = t.due_date || '';
       $('updated_at').value = t.updated_at || todayISO();
-      $('note').value = t.note || '';
+      $('note').value       = t.note || '';
       updateFormMode();
       renderList();
       showMessage('📝 Task dimuat untuk diedit');
-      $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('taskForm').scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
     // ============================================================
     // SAVE
     // ============================================================
-    $('taskForm').addEventListener('submit', function (e) {
+    $('taskForm').addEventListener('submit', function(e) {
       e.preventDefault();
       if (state.loading) return;
 
@@ -528,17 +539,16 @@ fetch(authURL('add'), {
       if (!title) { showMessage('⚠️ Task tidak boleh kosong', false); $('title').focus(); return; }
 
       var taskData = {
-        title: title,
-        status: $('status').value,
-        priority: $('priority').value,
-        due_date: $('due_date').value,
-        note: $('note').value.trim(),
+        title:      title,
+        status:     $('status').value,
+        priority:   $('priority').value,
+        due_date:   $('due_date').value,
+        note:       $('note').value.trim(),
         updated_at: $('updated_at').value || todayISO()
       };
 
       setLoading(true);
       var isEdit = !!state.editingId;
-
       var action, body;
 
       if (isEdit) {
@@ -547,33 +557,33 @@ fetch(authURL('add'), {
         for (var i = 0; i < state.data.length; i++) {
           if (String(state.data[i].id) === String(state.editingId)) { existing = state.data[i]; break; }
         }
-        taskData.id = state.editingId;
+        taskData.id         = state.editingId;
         taskData.created_at = existing ? existing.created_at : todayISO();
         body = { task: taskData };
       } else {
         action = 'add';
-        taskData.id = String(Date.now());
+        taskData.id         = String(Date.now());
         taskData.created_at = todayISO();
         body = { task: taskData };
       }
 
       sendPost(action, body)
-        .then(function () {
+        .then(function() {
           showMessage(isEdit ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan');
           clearForm();
           return loadData();
         })
-        .catch(function (err) {
+        .catch(function(err) {
           console.error('Save error:', err);
           showMessage('❌ ' + err.message, false);
         })
-        .then(function () { setLoading(false); });
+        .then(function() { setLoading(false); });
     });
 
     // ============================================================
-    // DELETE
+    // DELETE — ✅ sekarang pakai authBody via sendPost
     // ============================================================
-    $('deleteBtn').addEventListener('click', function () {
+    $('deleteBtn').addEventListener('click', function() {
       if (!state.editingId) return;
       var t = null;
       for (var i = 0; i < state.data.length; i++) {
@@ -583,28 +593,23 @@ fetch(authURL('add'), {
 
       setLoading(true);
       sendPost('delete', { id: String(state.editingId) })
-        .then(function () {
+        .then(function() {
           showMessage('🗑 Task berhasil dihapus');
           clearForm();
           return loadData();
         })
-        .catch(function (err) {
-          showMessage('❌ ' + err.message, false);
-        })
-        .then(function () { setLoading(false); });
+        .catch(function(err) { showMessage('❌ ' + err.message, false); })
+        .then(function() { setLoading(false); });
     });
 
     // ============================================================
-    // BUTTONS
+    // BUTTONS & INIT
     // ============================================================
-    $('newBtn').addEventListener('click', function () { clearForm(); $('title').focus(); showMessage('➕ Mode input baru aktif'); });
-    $('cancelBtn').addEventListener('click', function () { clearForm(); showMessage('🔄 Form dibersihkan'); });
-    $('refreshBtn').addEventListener('click', function () { if (!state.loading) loadData(); });
+    $('newBtn').addEventListener('click', function() { clearForm(); $('title').focus(); showMessage('➕ Mode input baru aktif'); });
+    $('cancelBtn').addEventListener('click', function() { clearForm(); showMessage('🔄 Form dibersihkan'); });
+    $('refreshBtn').addEventListener('click', function() { if (!state.loading) loadData(); });
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    window.addEventListener('DOMContentLoaded', function () { clearForm(); loadData(); });
+    window.addEventListener('DOMContentLoaded', function() { clearForm(); loadData(); });
   </script>
 </body>
 </html>
