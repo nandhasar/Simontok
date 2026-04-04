@@ -407,14 +407,11 @@ function logout() {
       ld.classList.add('show');
       list.innerHTML = '';
 
-      return fetch(API_URL + '?action=list')
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          if (!j.ok) throw new Error(j.message || 'Gagal');
-          state.data = j.data || [];
-          renderList();
-          renderStats();
-        })
+fetch(authURL('add'), {
+  method: 'POST',
+  headers: {'Content-Type':'text/plain'},
+  body: JSON.stringify(authBody({ action:'add', task: taskData }))
+})
         .catch(function (err) {
           console.error('loadData error:', err);
           list.innerHTML = '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ ' + esc(err.message) + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
