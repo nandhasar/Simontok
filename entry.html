@@ -102,6 +102,8 @@
     .btn-modal-close:hover{background:#e2e8f0}
     @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
     @media(max-width:600px){.modal-detail{grid-template-columns:1fr}}
+    .debug-box{margin-top:16px;padding:12px;border-radius:12px;background:#fefce8;border:1px solid #fde68a;font-size:12px;font-family:monospace;white-space:pre-wrap;display:none;max-height:200px;overflow:auto}
+    .debug-box.show{display:block}
   </style>
 </head>
 <body>
@@ -165,6 +167,7 @@
           </div>
         </form>
         <div id="message" class="message"></div>
+        <div id="debugBox" class="debug-box"></div>
       </section>
 
       <aside class="sidebar">
@@ -202,292 +205,358 @@
 
   <script>
     // ============================================================
-    // ⚠️ GANTI URL INI DENGAN URL DEPLOYMENT TERBARU ANDA
+    // ⚠️ GANTI DENGAN URL DEPLOYMENT TERBARU
+    // Setelah deploy ulang Code.gs, URL berubah!
     // ============================================================
-    const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+    var API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
 
-    // ============================================================
-    // STATE & HELPERS
-    // ============================================================
-    const state = { data: [], editingId: null, loading: false };
-    const el = id => document.getElementById(id);
-    const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    const todayISO = () => new Date().toISOString().slice(0, 10);
-    const badgeCls = s => ({ 'To Do': 'badge-todo', 'Doing': 'badge-doing', 'Done': 'badge-done', 'Blocked': 'badge-blocked' }[s] || 'badge-todo');
+    var state = { data: [], editingId: null, loading: false };
+
+    function $(id) { return document.getElementById(id); }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function todayISO() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function badgeCls(s) {
+      var map = { 'To Do': 'badge-todo', 'Doing': 'badge-doing', 'Done': 'badge-done', 'Blocked': 'badge-blocked' };
+      return map[s] || 'badge-todo';
+    }
+
+    function showDebug(text) {
+      var box = $('debugBox');
+      box.textContent = text;
+      box.classList.add('show');
+    }
 
     // ============================================================
     // MODAL
     // ============================================================
-    const modal = el('popupModal');
-    function openPopup(h) { el('modalBody').innerHTML = h; modal.classList.add('active'); }
-    function closePopup() { modal.classList.remove('active'); }
-    el('closeModal').addEventListener('click', closePopup);
-    modal.addEventListener('click', e => { if (e.target === modal) closePopup(); });
+    var modalEl = $('popupModal');
+
+    function openPopup(h) { $('modalBody').innerHTML = h; modalEl.classList.add('active'); }
+    function closePopup() { modalEl.classList.remove('active'); }
+
+    $('closeModal').addEventListener('click', closePopup);
+    modalEl.addEventListener('click', function (e) { if (e.target === modalEl) closePopup(); });
 
     function showTaskDetail(id) {
-      const t = state.data.find(x => String(x.id) === String(id));
+      var t = null;
+      for (var i = 0; i < state.data.length; i++) {
+        if (String(state.data[i].id) === String(id)) { t = state.data[i]; break; }
+      }
       if (!t) return;
-      openPopup(`
-        <h3>📋 Detail Task</h3>
-        <p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">${esc(t.title)}</p>
-        <div class="modal-detail">
-          <div class="modal-detail-item"><strong>Status</strong><span class="badge ${badgeCls(t.status)}" style="font-size:13px;padding:4px 12px">${esc(t.status)}</span></div>
-          <div class="modal-detail-item"><strong>Priority</strong><span>${esc(t.priority || '-')}</span></div>
-          <div class="modal-detail-item"><strong>Due Date</strong><span>${esc(t.due_date || 'Tidak ada')}</span></div>
-          <div class="modal-detail-item"><strong>Updated</strong><span>${esc(t.updated_at || '-')}</span></div>
-          <div class="modal-detail-item"><strong>Created</strong><span>${esc(t.created_at || '-')}</span></div>
-          <div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">${esc(t.id)}</span></div>
-        </div>
-        ${t.note ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>' : '<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>'}
-        <div class="modal-footer">
-          <button class="btn-modal-edit" onclick="editFromPopup('${esc(t.id)}')">✏️ Edit</button>
-          <button class="btn-modal-close" onclick="closePopup()">Tutup</button>
-        </div>
-      `);
+      openPopup(
+        '<h3>📋 Detail Task</h3>' +
+        '<p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">' + esc(t.title) + '</p>' +
+        '<div class="modal-detail">' +
+        '<div class="modal-detail-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:13px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Priority</strong><span>' + esc(t.priority || '-') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Due Date</strong><span>' + esc(t.due_date || 'Tidak ada') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Updated</strong><span>' + esc(t.updated_at || '-') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Created</strong><span>' + esc(t.created_at || '-') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">' + esc(t.id) + '</span></div>' +
+        '</div>' +
+        (t.note ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>' : '<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>') +
+        '<div class="modal-footer">' +
+        '<button class="btn-modal-edit" onclick="editFromPopup(\'' + esc(t.id) + '\')">✏️ Edit</button>' +
+        '<button class="btn-modal-close" onclick="closePopup()">Tutup</button>' +
+        '</div>'
+      );
     }
+
     function editFromPopup(id) { closePopup(); loadTaskForEdit(id); }
 
     // ============================================================
-    // LOADING & MESSAGE
+    // UI HELPERS
     // ============================================================
     function setLoading(v) {
       state.loading = v;
-      el('submitBtn').disabled = v;
-      el('submitBtn').innerHTML = v ? '<span class="spinner"></span> Menyimpan...' : 'Simpan';
-      el('refreshBtn').disabled = v;
-      el('refreshBtn').textContent = v ? 'Memuat...' : 'Refresh';
+      $('submitBtn').disabled = v;
+      $('submitBtn').innerHTML = v ? '<span class="spinner"></span> Menyimpan...' : 'Simpan';
+      $('refreshBtn').disabled = v;
+      $('refreshBtn').textContent = v ? 'Memuat...' : 'Refresh';
     }
 
-    let msgTO;
-    function showMessage(t, ok = true) {
-      const b = el('message');
+    var msgTO;
+    function showMessage(t, ok) {
+      if (ok === undefined) ok = true;
+      var b = $('message');
       b.className = 'message show ' + (ok ? 'success' : 'error');
       b.textContent = t;
       clearTimeout(msgTO);
-      msgTO = setTimeout(() => b.classList.remove('show'), 4000);
+      msgTO = setTimeout(function () { b.classList.remove('show'); }, 4000);
     }
 
     function updateFormMode() {
       if (state.editingId) {
-        el('formMode').textContent = '✏️ Mode: Edit Task';
-        el('formMode').className = 'form-mode editing';
-        el('deleteBtn').classList.add('show');
+        $('formMode').textContent = '✏️ Mode: Edit Task';
+        $('formMode').className = 'form-mode editing';
+        $('deleteBtn').classList.add('show');
       } else {
-        el('formMode').textContent = '➕ Mode: Tambah Baru';
-        el('formMode').className = 'form-mode';
-        el('deleteBtn').classList.remove('show');
+        $('formMode').textContent = '➕ Mode: Tambah Baru';
+        $('formMode').className = 'form-mode';
+        $('deleteBtn').classList.remove('show');
       }
     }
 
     // ============================================================
-    // SEND POST — action dikirim lewat URL parameter
+    // SEND POST — action via URL parameter + body JSON
     // ============================================================
-    async function sendPost(action, bodyData) {
-      const url = API_URL + '?action=' + encodeURIComponent(action);
-      console.log('📤 POST →', url);
-      console.log('📤 Body →', JSON.stringify(bodyData));
+    function sendPost(action, bodyData) {
+      var url = API_URL + '?action=' + encodeURIComponent(action);
 
-      const res = await fetch(url, {
+      console.log('📤 POST to: ' + url);
+      console.log('📤 Body: ' + JSON.stringify(bodyData));
+
+      return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(bodyData)
-      });
+        body: JSON.stringify(bodyData),
+        redirect: 'follow'
+      })
+        .then(function (res) { return res.text(); })
+        .then(function (text) {
+          console.log('📥 Response: ' + text);
 
-      const text = await res.text();
-      console.log('📥 Response →', text);
+          var json;
+          try {
+            json = JSON.parse(text);
+          } catch (e) {
+            showDebug('Response bukan JSON:\n' + text.substring(0, 500));
+            throw new Error('Response bukan JSON');
+          }
 
-      let json;
-      try { json = JSON.parse(text); }
-      catch (e) { throw new Error('Bukan JSON: ' + text.substring(0, 300)); }
+          if (!json.ok) {
+            // Tampilkan debug info kalau ada
+            var debugInfo = 'Error: ' + (json.message || 'Unknown');
+            if (json.debug_param) debugInfo += '\nURL params: ' + json.debug_param;
+            if (json.debug_body_keys) debugInfo += '\nBody keys: ' + json.debug_body_keys;
+            if (json.raw) debugInfo += '\nRaw: ' + json.raw;
+            showDebug(debugInfo);
+            throw new Error(json.message || 'Gagal');
+          }
 
-      if (!json.ok) throw new Error(json.message || 'Gagal');
-      return json;
+          // Sukses — sembunyikan debug
+          $('debugBox').classList.remove('show');
+          return json;
+        });
     }
 
     // ============================================================
     // LOAD DATA
     // ============================================================
-    async function loadData() {
-      const list = el('taskList'), ld = el('taskListLoading');
-      try {
-        ld.classList.add('show');
-        list.innerHTML = '';
-        const r = await fetch(API_URL + '?action=list');
-        const j = await r.json();
-        if (!j.ok) throw new Error(j.message || 'Gagal');
-        state.data = j.data || [];
-        renderList();
-        renderStats();
-      } catch (err) {
-        console.error('loadData error:', err);
-        list.innerHTML = '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ ' + esc(err.message) + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
-      } finally { ld.classList.remove('show'); }
+    function loadData() {
+      var list = $('taskList');
+      var ld = $('taskListLoading');
+      ld.classList.add('show');
+      list.innerHTML = '';
+
+      return fetch(API_URL + '?action=list')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j.ok) throw new Error(j.message || 'Gagal');
+          state.data = j.data || [];
+          renderList();
+          renderStats();
+        })
+        .catch(function (err) {
+          console.error('loadData error:', err);
+          list.innerHTML = '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ ' + esc(err.message) + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
+        })
+        .then(function () { ld.classList.remove('show'); });
     }
 
     // ============================================================
-    // RENDER LIST
+    // RENDER
     // ============================================================
     function renderList() {
-      const list = el('taskList');
+      var list = $('taskList');
       if (!state.data.length) { list.innerHTML = '<div class="task-empty">Belum ada data.</div>'; return; }
-      list.innerHTML = state.data.slice().reverse().map(t => {
-        const active = state.editingId && String(state.editingId) === String(t.id);
-        return `<div class="task-item${active ? ' active' : ''}">
-          <div class="task-item-title">${esc(t.title || '-')}</div>
-          <div class="task-item-meta">
-            <span class="badge ${badgeCls(t.status)}">${esc(t.status || '-')}</span>
-            <span class="badge badge-priority">${esc(t.priority || '-')}</span>
-            <span style="color:#94a3b8">${esc(t.due_date || 'No date')}</span>
-          </div>
-          <div class="task-item-actions">
-            <button class="task-btn task-btn-view" data-view="${esc(t.id)}">👁 Lihat</button>
-            <button class="task-btn task-btn-edit" data-edit="${esc(t.id)}">✏️ Edit</button>
-          </div>
-        </div>`;
-      }).join('');
-      list.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', e => {
-        e.stopPropagation(); showTaskDetail(b.dataset.view);
-      }));
-      list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', e => {
-        e.stopPropagation(); loadTaskForEdit(b.dataset.edit);
-      }));
+
+      var html = '';
+      for (var i = state.data.length - 1; i >= 0; i--) {
+        var t = state.data[i];
+        var active = state.editingId && String(state.editingId) === String(t.id);
+        html += '<div class="task-item' + (active ? ' active' : '') + '">' +
+          '<div class="task-item-title">' + esc(t.title || '-') + '</div>' +
+          '<div class="task-item-meta">' +
+          '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status || '-') + '</span>' +
+          '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>' +
+          '<span style="color:#94a3b8">' + esc(t.due_date || 'No date') + '</span>' +
+          '</div>' +
+          '<div class="task-item-actions">' +
+          '<button class="task-btn task-btn-view" data-view="' + esc(t.id) + '">👁 Lihat</button>' +
+          '<button class="task-btn task-btn-edit" data-edit="' + esc(t.id) + '">✏️ Edit</button>' +
+          '</div></div>';
+      }
+      list.innerHTML = html;
+
+      var viewBtns = list.querySelectorAll('[data-view]');
+      for (var j = 0; j < viewBtns.length; j++) {
+        viewBtns[j].addEventListener('click', (function (btn) {
+          return function (e) { e.stopPropagation(); showTaskDetail(btn.getAttribute('data-view')); };
+        })(viewBtns[j]));
+      }
+
+      var editBtns = list.querySelectorAll('[data-edit]');
+      for (var k = 0; k < editBtns.length; k++) {
+        editBtns[k].addEventListener('click', (function (btn) {
+          return function (e) { e.stopPropagation(); loadTaskForEdit(btn.getAttribute('data-edit')); };
+        })(editBtns[k]));
+      }
     }
 
-    // ============================================================
-    // RENDER STATS
-    // ============================================================
     function renderStats() {
-      if (!state.data.length) { el('statsCard').style.display = 'none'; return; }
-      el('statsCard').style.display = '';
-      const c = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
-      state.data.forEach(t => { if (c.hasOwnProperty(t.status)) c[t.status]++; });
-      el('statsContent').innerHTML = [
+      if (!state.data.length) { $('statsCard').style.display = 'none'; return; }
+      $('statsCard').style.display = '';
+      var c = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
+      for (var i = 0; i < state.data.length; i++) {
+        var s = state.data[i].status;
+        if (c.hasOwnProperty(s)) c[s]++;
+      }
+      var items = [
         { l: 'To Do', n: c['To Do'], c: 'stat-todo' },
         { l: 'Doing', n: c['Doing'], c: 'stat-doing' },
         { l: 'Done', n: c['Done'], c: 'stat-done' },
         { l: 'Blocked', n: c['Blocked'], c: 'stat-blocked' }
-      ].map(i => `<div class="stat-box ${i.c}"><div class="stat-number">${i.n}</div><div class="stat-label">${i.l}</div></div>`).join('');
+      ];
+      var html = '';
+      for (var j = 0; j < items.length; j++) {
+        html += '<div class="stat-box ' + items[j].c + '"><div class="stat-number">' + items[j].n + '</div><div class="stat-label">' + items[j].l + '</div></div>';
+      }
+      $('statsContent').innerHTML = html;
     }
 
     // ============================================================
-    // FORM CLEAR & LOAD FOR EDIT
+    // FORM
     // ============================================================
     function clearForm() {
       state.editingId = null;
-      el('taskId').value = '';
-      el('title').value = '';
-      el('status').value = 'To Do';
-      el('priority').value = 'Medium';
-      el('due_date').value = '';
-      el('updated_at').value = todayISO();
-      el('note').value = '';
+      $('taskId').value = '';
+      $('title').value = '';
+      $('status').value = 'To Do';
+      $('priority').value = 'Medium';
+      $('due_date').value = '';
+      $('updated_at').value = todayISO();
+      $('note').value = '';
+      $('debugBox').classList.remove('show');
       updateFormMode();
       renderList();
     }
 
     function loadTaskForEdit(id) {
-      const t = state.data.find(x => String(x.id) === String(id));
+      var t = null;
+      for (var i = 0; i < state.data.length; i++) {
+        if (String(state.data[i].id) === String(id)) { t = state.data[i]; break; }
+      }
       if (!t) return;
       state.editingId = t.id;
-      el('taskId').value = t.id || '';
-      el('title').value = t.title || '';
-      el('status').value = t.status || 'To Do';
-      el('priority').value = t.priority || 'Medium';
-      el('due_date').value = t.due_date || '';
-      el('updated_at').value = t.updated_at || todayISO();
-      el('note').value = t.note || '';
+      $('taskId').value = t.id || '';
+      $('title').value = t.title || '';
+      $('status').value = t.status || 'To Do';
+      $('priority').value = t.priority || 'Medium';
+      $('due_date').value = t.due_date || '';
+      $('updated_at').value = t.updated_at || todayISO();
+      $('note').value = t.note || '';
       updateFormMode();
       renderList();
       showMessage('📝 Task dimuat untuk diedit');
-      el('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // ============================================================
-    // SAVE — ADD atau UPDATE
-    // sendPost(action, bodyData) → action masuk URL, bodyData masuk body
+    // SAVE
     // ============================================================
-    el('taskForm').addEventListener('submit', async e => {
+    $('taskForm').addEventListener('submit', function (e) {
       e.preventDefault();
       if (state.loading) return;
 
-      const title = el('title').value.trim();
-      if (!title) { showMessage('⚠️ Task tidak boleh kosong', false); el('title').focus(); return; }
+      var title = $('title').value.trim();
+      if (!title) { showMessage('⚠️ Task tidak boleh kosong', false); $('title').focus(); return; }
 
-      const taskData = {
+      var taskData = {
         title: title,
-        status: el('status').value,
-        priority: el('priority').value,
-        due_date: el('due_date').value,
-        note: el('note').value.trim(),
-        updated_at: el('updated_at').value || todayISO()
+        status: $('status').value,
+        priority: $('priority').value,
+        due_date: $('due_date').value,
+        note: $('note').value.trim(),
+        updated_at: $('updated_at').value || todayISO()
       };
 
-      try {
-        setLoading(true);
-        const isEdit = !!state.editingId;
+      setLoading(true);
+      var isEdit = !!state.editingId;
 
-        if (isEdit) {
-          const existing = state.data.find(t => String(t.id) === String(state.editingId));
-          // sendPost('update', { task: {...} })
-          await sendPost('update', {
-            task: {
-              ...taskData,
-              id: state.editingId,
-              created_at: existing ? existing.created_at : todayISO()
-            }
-          });
-          showMessage('✅ Task berhasil diupdate');
-        } else {
-          // sendPost('add', { task: {...} })
-          await sendPost('add', {
-            task: {
-              ...taskData,
-              id: String(Date.now()),
-              created_at: todayISO()
-            }
-          });
-          showMessage('✅ Task berhasil disimpan');
+      var action, body;
+
+      if (isEdit) {
+        action = 'update';
+        var existing = null;
+        for (var i = 0; i < state.data.length; i++) {
+          if (String(state.data[i].id) === String(state.editingId)) { existing = state.data[i]; break; }
         }
+        taskData.id = state.editingId;
+        taskData.created_at = existing ? existing.created_at : todayISO();
+        body = { task: taskData };
+      } else {
+        action = 'add';
+        taskData.id = String(Date.now());
+        taskData.created_at = todayISO();
+        body = { task: taskData };
+      }
 
-        clearForm();
-        await loadData();
-      } catch (err) {
-        console.error('Save error:', err);
-        showMessage('❌ ' + err.message, false);
-      } finally { setLoading(false); }
+      sendPost(action, body)
+        .then(function () {
+          showMessage(isEdit ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan');
+          clearForm();
+          return loadData();
+        })
+        .catch(function (err) {
+          console.error('Save error:', err);
+          showMessage('❌ ' + err.message, false);
+        })
+        .then(function () { setLoading(false); });
     });
 
     // ============================================================
     // DELETE
-    // sendPost('delete', { id: '...' })
     // ============================================================
-    el('deleteBtn').addEventListener('click', async () => {
+    $('deleteBtn').addEventListener('click', function () {
       if (!state.editingId) return;
-      const t = state.data.find(x => String(x.id) === String(state.editingId));
+      var t = null;
+      for (var i = 0; i < state.data.length; i++) {
+        if (String(state.data[i].id) === String(state.editingId)) { t = state.data[i]; break; }
+      }
       if (!confirm('Yakin hapus task:\n"' + (t ? t.title : state.editingId) + '"?')) return;
 
-      try {
-        setLoading(true);
-        await sendPost('delete', { id: String(state.editingId) });
-        showMessage('🗑 Task berhasil dihapus');
-        clearForm();
-        await loadData();
-      } catch (err) {
-        showMessage('❌ ' + err.message, false);
-      } finally { setLoading(false); }
+      setLoading(true);
+      sendPost('delete', { id: String(state.editingId) })
+        .then(function () {
+          showMessage('🗑 Task berhasil dihapus');
+          clearForm();
+          return loadData();
+        })
+        .catch(function (err) {
+          showMessage('❌ ' + err.message, false);
+        })
+        .then(function () { setLoading(false); });
     });
 
     // ============================================================
     // BUTTONS
     // ============================================================
-    el('newBtn').addEventListener('click', () => { clearForm(); el('title').focus(); showMessage('➕ Mode input baru aktif'); });
-    el('cancelBtn').addEventListener('click', () => { clearForm(); showMessage('🔄 Form dibersihkan'); });
-    el('refreshBtn').addEventListener('click', () => { if (!state.loading) loadData(); });
+    $('newBtn').addEventListener('click', function () { clearForm(); $('title').focus(); showMessage('➕ Mode input baru aktif'); });
+    $('cancelBtn').addEventListener('click', function () { clearForm(); showMessage('🔄 Form dibersihkan'); });
+    $('refreshBtn').addEventListener('click', function () { if (!state.loading) loadData(); });
 
     // ============================================================
     // INIT
     // ============================================================
-    window.addEventListener('DOMContentLoaded', () => { clearForm(); loadData(); });
+    window.addEventListener('DOMContentLoaded', function () { clearForm(); loadData(); });
   </script>
 </body>
 </html>
