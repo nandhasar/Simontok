@@ -1,13 +1,38 @@
 <!doctype html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simontok - Entri</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animasi loading spinner */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .spinner-dark {
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-top-color: #3b82f6;
+    }
+  </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
   <div class="min-h-screen max-w-7xl mx-auto px-4 py-6">
+
+    <!-- HEADER -->
     <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
       <div>
         <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Entri</div>
@@ -15,32 +40,46 @@
         <p class="text-slate-500 mt-1">Simpan data langsung ke Google Spreadsheet.</p>
       </div>
       <div class="flex gap-2">
-        <a href="index.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">← Kembali</a>
-        <a href="dashboard.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">Dashboard</a>
+        <a href="index.html"
+          class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm hover:bg-slate-50 transition">←
+          Kembali</a>
+        <a href="dashboard.html"
+          class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm hover:bg-slate-50 transition">Dashboard</a>
       </div>
     </div>
 
+    <!-- MAIN GRID -->
     <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
+
+      <!-- FORM SECTION -->
       <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <div class="flex items-center justify-between gap-3 flex-wrap">
           <div>
             <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Form</div>
             <h2 class="text-2xl font-bold text-slate-900">Tambah / Edit Task</h2>
+            <p id="formMode" class="text-xs text-blue-600 mt-1 font-medium">Mode: Tambah Baru</p>
           </div>
-          <button id="newBtn" class="rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500">+ New Task</button>
+          <button id="newBtn"
+            class="rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500 transition">
+            + New Task
+          </button>
         </div>
 
         <form id="taskForm" class="mt-6 grid gap-4 md:grid-cols-2">
           <input type="hidden" id="taskId" name="id" value="" />
 
           <div class="md:col-span-2">
-            <label class="text-sm text-slate-700">Task</label>
-            <input id="title" name="title" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: Kirim surat pemeriksaan" required />
+            <label for="title" class="text-sm font-medium text-slate-700">Task <span
+                class="text-rose-500">*</span></label>
+            <input id="title" name="title"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="Contoh: Kirim surat pemeriksaan" required />
           </div>
 
           <div>
-            <label class="text-sm text-slate-700">Status</label>
-            <select id="status" name="status" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+            <label for="status" class="text-sm font-medium text-slate-700">Status</label>
+            <select id="status" name="status"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition">
               <option>To Do</option>
               <option>Doing</option>
               <option>Done</option>
@@ -49,8 +88,9 @@
           </div>
 
           <div>
-            <label class="text-sm text-slate-700">Priority</label>
-            <select id="priority" name="priority" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+            <label for="priority" class="text-sm font-medium text-slate-700">Priority</label>
+            <select id="priority" name="priority"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition">
               <option>High</option>
               <option selected>Medium</option>
               <option>Low</option>
@@ -58,103 +98,256 @@
           </div>
 
           <div>
-            <label class="text-sm text-slate-700">Due date</label>
-            <input id="due_date" name="due_date" type="date" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+            <label for="due_date" class="text-sm font-medium text-slate-700">Due date</label>
+            <input id="due_date" name="due_date" type="date"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition" />
           </div>
 
           <div>
-            <label class="text-sm text-slate-700">Updated</label>
-            <input id="updated_at" name="updated_at" type="date" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+            <label for="updated_at" class="text-sm font-medium text-slate-700">Updated</label>
+            <input id="updated_at" name="updated_at" type="date"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition" />
           </div>
 
           <div class="md:col-span-2">
-            <label class="text-sm text-slate-700">Note</label>
-            <textarea id="note" name="note" rows="5" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Catatan singkat..."></textarea>
+            <label for="note" class="text-sm font-medium text-slate-700">Note</label>
+            <textarea id="note" name="note" rows="5"
+              class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="Catatan singkat..."></textarea>
           </div>
 
           <div class="md:col-span-2 flex items-center justify-end gap-3 pt-2">
-<button type="button" id="cancelBtn" class="rounded-2xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-100">Batal</button>
-            <button class="rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500">Simpan</button>
+            <button type="button" id="deleteBtn"
+              class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 hover:bg-rose-100 transition">
+              🗑 Hapus
+            </button>
+            <button type="button" id="cancelBtn"
+              class="rounded-2xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-100 transition">
+              Batal
+            </button>
+            <button type="submit" id="submitBtn"
+              class="rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500 transition">
+              Simpan
+            </button>
           </div>
         </form>
 
-        <div id="message" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm"></div>
+        <div id="message" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm transition-all"></div>
       </section>
 
+      <!-- SIDEBAR -->
       <aside class="space-y-4">
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 class="text-lg font-semibold text-slate-900">Panduan singkat</h3>
           <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc pl-5">
-            <li>Isi task lalu klik Simpan.</li>
+            <li>Isi task lalu klik <strong>Simpan</strong>.</li>
             <li>Task baru akan masuk ke Spreadsheet.</li>
-            <li>Pilih task lama untuk edit lewat daftar di bawah.</li>
+            <li>Klik task di daftar bawah untuk <strong>edit</strong>.</li>
+            <li>Klik <strong>🗑 Hapus</strong> untuk menghapus task (muncul saat mode edit).</li>
           </ul>
         </div>
 
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-slate-900">Data terakhir</h3>
-            <button id="refreshBtn" class="text-sm text-blue-600 hover:underline">Refresh</button>
+            <button id="refreshBtn" class="text-sm text-blue-600 hover:underline transition">Refresh</button>
+          </div>
+          <div id="taskListLoading" class="mt-4 hidden text-center text-sm text-slate-400">
+            <span class="spinner spinner-dark"></span> Memuat data...
           </div>
           <div id="taskList" class="mt-4 space-y-3 text-sm text-slate-600"></div>
+        </div>
+
+        <!-- Stats ringkas -->
+        <div id="statsCard" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm hidden">
+          <h3 class="text-lg font-semibold text-slate-900">Statistik</h3>
+          <div id="statsContent" class="mt-3 grid grid-cols-2 gap-3 text-sm"></div>
         </div>
       </aside>
     </div>
   </div>
 
   <script>
+    // =============================================
+    // KONFIGURASI - Ganti dengan URL Apps Script Anda
+    // =============================================
     const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
 
+    // =============================================
+    // STATE
+    // =============================================
     const state = {
       data: [],
-      editingId: null
+      editingId: null,
+      loading: false
     };
 
+    // =============================================
+    // HELPER
+    // =============================================
     const el = (id) => document.getElementById(id);
+
     const esc = (s) => String(s || '')
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;');
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
 
     function todayISO() {
       return new Date().toISOString().slice(0, 10);
     }
 
+    function setLoading(isLoading) {
+      state.loading = isLoading;
+      const btn = el('submitBtn');
+      const refreshBtn = el('refreshBtn');
+
+      if (isLoading) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = 'Memuat...';
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = 'Simpan';
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = 'Refresh';
+      }
+    }
+
+    function updateFormMode() {
+      const modeEl = el('formMode');
+      const deleteBtn = el('deleteBtn');
+      if (state.editingId) {
+        modeEl.textContent = '✏️ Mode: Edit Task';
+        modeEl.className = 'text-xs text-amber-600 mt-1 font-medium';
+        deleteBtn.classList.remove('hidden');
+      } else {
+        modeEl.textContent = '➕ Mode: Tambah Baru';
+        modeEl.className = 'text-xs text-blue-600 mt-1 font-medium';
+        deleteBtn.classList.add('hidden');
+      }
+    }
+
+    let messageTimeout;
     function showMessage(text, ok = true) {
       const box = el('message');
-      box.className = 'mt-5 rounded-2xl px-4 py-3 text-sm ' + (ok ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200');
+      box.className = 'mt-5 rounded-2xl px-4 py-3 text-sm '
+        + (ok
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+          : 'bg-rose-50 text-rose-700 border border-rose-200');
       box.textContent = text;
       box.classList.remove('hidden');
-      setTimeout(() => box.classList.add('hidden'), 2500);
+      clearTimeout(messageTimeout);
+      messageTimeout = setTimeout(() => box.classList.add('hidden'), 3000);
     }
 
+    // =============================================
+    // DATA: LOAD
+    // =============================================
     async function loadData() {
-      const res = await fetch(API_URL + '?action=list');
-      const json = await res.json();
-      state.data = json.data || [];
-      renderList();
+      const listEl = el('taskList');
+      const loadingEl = el('taskListLoading');
+
+      try {
+        loadingEl.classList.remove('hidden');
+        listEl.innerHTML = '';
+
+        const res = await fetch(API_URL + '?action=list');
+
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+
+        const json = await res.json();
+        state.data = json.data || [];
+        renderList();
+        renderStats();
+      } catch (err) {
+        console.error('loadData error:', err);
+        listEl.innerHTML = `
+          <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-rose-600">
+            ⚠️ Gagal memuat data: ${esc(err.message)}
+            <button onclick="loadData()" class="block mt-2 text-sm text-blue-600 underline">Coba lagi</button>
+          </div>`;
+      } finally {
+        loadingEl.classList.add('hidden');
+      }
     }
 
+    // =============================================
+    // RENDER: LIST
+    // =============================================
     function renderList() {
       const list = el('taskList');
+
       if (!state.data.length) {
-        list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-4 text-slate-500">Belum ada data.</div>';
+        list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-4 text-slate-500 text-center">Belum ada data.</div>';
         return;
       }
 
-      list.innerHTML = state.data.slice().reverse().map((t) => `
-        <button data-edit="${esc(t.id)}" class="w-full text-left rounded-2xl border border-slate-200 p-4 hover:bg-slate-50">
-          <div class="font-medium text-slate-900">${esc(t.title || '-')}</div>
-          <div class="mt-1 text-xs text-slate-500">${esc(t.status || '-') } • ${esc(t.priority || '-')} • ${esc(t.due_date || '-')}</div>
-        </button>
-      `).join('');
+      const statusColor = {
+        'To Do': 'bg-slate-100 text-slate-700',
+        'Doing': 'bg-blue-100 text-blue-700',
+        'Done': 'bg-emerald-100 text-emerald-700',
+        'Blocked': 'bg-rose-100 text-rose-700'
+      };
+
+      list.innerHTML = state.data.slice().reverse().map((t) => {
+        const colorClass = statusColor[t.status] || 'bg-slate-100 text-slate-700';
+        const isEditing = state.editingId && String(state.editingId) === String(t.id);
+        return `
+          <button data-edit="${esc(t.id)}"
+            class="w-full text-left rounded-2xl border p-4 hover:bg-slate-50 transition
+                   ${isEditing ? 'border-blue-400 bg-blue-50 ring-2 ring-blue-200' : 'border-slate-200'}">
+            <div class="font-medium text-slate-900">${esc(t.title || '-')}</div>
+            <div class="mt-2 flex flex-wrap gap-2 text-xs">
+              <span class="rounded-full px-2 py-0.5 ${colorClass}">${esc(t.status || '-')}</span>
+              <span class="rounded-full px-2 py-0.5 bg-slate-100 text-slate-600">${esc(t.priority || '-')}</span>
+              <span class="text-slate-400">${esc(t.due_date || 'No date')}</span>
+            </div>
+          </button>`;
+      }).join('');
 
       list.querySelectorAll('[data-edit]').forEach((btn) => {
         btn.addEventListener('click', () => loadTaskForEdit(btn.getAttribute('data-edit')));
       });
     }
 
+    // =============================================
+    // RENDER: STATS
+    // =============================================
+    function renderStats() {
+      const card = el('statsCard');
+      const content = el('statsContent');
+
+      if (!state.data.length) {
+        card.classList.add('hidden');
+        return;
+      }
+
+      card.classList.remove('hidden');
+      const counts = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
+      state.data.forEach((t) => {
+        if (counts.hasOwnProperty(t.status)) counts[t.status]++;
+      });
+
+      const items = [
+        { label: 'To Do', count: counts['To Do'], color: 'text-slate-700 bg-slate-100' },
+        { label: 'Doing', count: counts['Doing'], color: 'text-blue-700 bg-blue-100' },
+        { label: 'Done', count: counts['Done'], color: 'text-emerald-700 bg-emerald-100' },
+        { label: 'Blocked', count: counts['Blocked'], color: 'text-rose-700 bg-rose-100' }
+      ];
+
+      content.innerHTML = items.map((i) => `
+        <div class="rounded-2xl ${i.color} p-3 text-center">
+          <div class="text-2xl font-bold">${i.count}</div>
+          <div class="text-xs mt-1">${i.label}</div>
+        </div>
+      `).join('');
+    }
+
+    // =============================================
+    // FORM: CLEAR
+    // =============================================
     function clearForm() {
       state.editingId = null;
       el('taskId').value = '';
@@ -164,8 +357,13 @@
       el('due_date').value = '';
       el('updated_at').value = todayISO();
       el('note').value = '';
+      updateFormMode();
+      renderList(); // update highlight
     }
 
+    // =============================================
+    // FORM: LOAD TASK FOR EDIT
+    // =============================================
     function loadTaskForEdit(id) {
       const task = state.data.find((x) => String(x.id) === String(id));
       if (!task) return;
@@ -175,14 +373,24 @@
       el('title').value = task.title || '';
       el('status').value = task.status || 'To Do';
       el('priority').value = task.priority || 'Medium';
-el('due_date').value = task.due_date || '';
+      el('due_date').value = task.due_date || '';
       el('updated_at').value = task.updated_at || todayISO();
       el('note').value = task.note || '';
-      showMessage('Task dimuat untuk diedit', true);
+
+      updateFormMode();
+      renderList(); // update highlight
+      showMessage('📝 Task dimuat untuk diedit', true);
+
+      // Scroll ke form di mobile
+      el('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // =============================================
+    // SAVE TASK
+    // =============================================
     async function saveTask(payload) {
       const tasks = [...state.data];
+
       if (state.editingId) {
         const idx = tasks.findIndex((t) => String(t.id) === String(state.editingId));
         if (idx >= 0) {
@@ -201,9 +409,11 @@ el('due_date').value = task.due_date || '';
         });
       }
 
+      // ✅ FIX CORS: Google Apps Script tidak menerima application/json via CORS
+      // Gunakan Content-Type: text/plain agar tidak trigger preflight OPTIONS request
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           action: 'save',
           tasks
@@ -212,12 +422,61 @@ el('due_date').value = task.due_date || '';
 
       const json = await res.json();
       if (!json.ok) throw new Error(json.message || 'Gagal menyimpan');
+
       state.data = tasks;
       renderList();
+      renderStats();
     }
 
+    // =============================================
+    // DELETE TASK
+    // =============================================
+    async function deleteTask() {
+      if (!state.editingId) return;
+
+      const task = state.data.find((t) => String(t.id) === String(state.editingId));
+      const confirmText = task ? task.title : state.editingId;
+
+      if (!confirm(`Yakin ingin menghapus task:\n"${confirmText}"?`)) return;
+
+      const tasks = state.data.filter((t) => String(t.id) !== String(state.editingId));
+
+      try {
+        setLoading(true);
+
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'save',
+            tasks
+          })
+        });
+
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.message || 'Gagal menghapus');
+
+        state.data = tasks;
+        clearForm();
+        renderList();
+        renderStats();
+        showMessage('🗑 Task berhasil dihapus', true);
+      } catch (err) {
+        showMessage('Gagal menghapus: ' + err.message, false);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // =============================================
+    // EVENT LISTENERS
+    // =============================================
+
+    // Submit form
     el('taskForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      if (state.loading) return; // prevent double submit
 
       const payload = {
         title: el('title').value.trim(),
@@ -228,32 +487,58 @@ el('due_date').value = task.due_date || '';
         note: el('note').value.trim()
       };
 
+      if (!payload.title) {
+        showMessage('⚠️ Task tidak boleh kosong', false);
+        el('title').focus();
+        return;
+      }
+
       try {
+        setLoading(true);
         await saveTask(payload);
-        showMessage(state.editingId ? 'Task berhasil diupdate' : 'Task berhasil disimpan', true);
+        showMessage(
+          state.editingId ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan',
+          true
+        );
         clearForm();
         await loadData();
       } catch (err) {
-        showMessage(err.message || 'Gagal menyimpan data', false);
+        console.error('saveTask error:', err);
+        showMessage('❌ ' + (err.message || 'Gagal menyimpan data'), false);
+      } finally {
+        setLoading(false);
       }
     });
 
+    // New task button
     el('newBtn').addEventListener('click', () => {
       clearForm();
-      showMessage('Mode input baru aktif', true);
+      el('title').focus();
+      showMessage('➕ Mode input baru aktif', true);
     });
 
+    // Cancel button
     el('cancelBtn').addEventListener('click', () => {
       clearForm();
-      showMessage('Form dibersihkan', true);
+      showMessage('🔄 Form dibersihkan', true);
     });
 
-    el('refreshBtn').addEventListener('click', loadData);
+    // Delete button
+    el('deleteBtn').addEventListener('click', deleteTask);
 
+    // Refresh button
+    el('refreshBtn').addEventListener('click', () => {
+      if (!state.loading) loadData();
+    });
+
+    // =============================================
+    // INIT
+    // =============================================
     window.addEventListener('DOMContentLoaded', async () => {
       clearForm();
       await loadData();
     });
   </script>
 </body>
+
 </html>
