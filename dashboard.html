@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simontok - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="min-h-screen max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+      <div>
+        <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Dashboard</div>
+        <h1 class="text-3xl font-bold">Monitoring Kinerja</h1>
+      </div>
+      <a href="index.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">← Kembali</a>
+    </div>
+    <div id="app" class="space-y-6"></div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+    const state = { data: [], search: '', filter: 'All', selectedId: null };
+
+    const statusClass = {
+      'To Do': 'bg-slate-100 text-slate-700 ring-1 ring-slate-200',
+      'Doing': 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+      'Done': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+      'Blocked': 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+    };
+
+    const priorityClass = {
+      High: 'text-rose-600',
+      Medium: 'text-amber-600',
+      Low: 'text-emerald-600'
+    };
+
+    const esc = s => String(s || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+
+    async function loadData() {
+      const r = await fetch(API_URL + '?action=list');
+      const j = await r.json();
+      state.data = j.data || [];
+      if (!state.selectedId && state.data.length) state.selectedId = state.data[0].id;
+      render();
+    }
+
+    function filtered() {
+      return state.data
+        .filter(t => state.filter === 'All' || t.status === state.filter)
+.filter(t => `${t.title} ${t.note} ${t.priority}`.toLowerCase().includes(state.search.toLowerCase()));
+    }
+
+    function detail(task) {
+      if (!task) return '<div class="rounded-3xl border border-slate-200 bg-white p-6 text-slate-500">Pilih task.</div>';
+      return `
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Task detail</div>
+              <h2 class="mt-1 text-2xl font-bold text-slate-900">${esc(task.title)}</h2>
+            </div>
+            <span class="rounded-full px-3 py-1.5 text-xs ${statusClass[task.status] || statusClass['To Do']}">${esc(task.status)}</span>
+          </div>
+          <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Priority</div><div class="mt-1 font-medium ${priorityClass[task.priority] || 'text-slate-700'}">${esc(task.priority)}</div></div>
+            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Due date</div><div class="mt-1 font-medium text-slate-700">${esc(task.due_date || '-')}</div></div>
+            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Updated</div><div class="mt-1 font-medium text-slate-700">${esc(task.updated_at || '-')}</div></div>
+            <div class="rounded-2xl bg-slate-50 p-3"><div class="text-slate-500 text-xs">Created</div><div class="mt-1 font-medium text-slate-700">${esc(task.created_at || '-')}</div></div>
+          </div>
+          <div class="mt-5">
+            <div class="text-sm font-semibold mb-2 text-slate-800">Note</div>
+            <div class="rounded-2xl bg-slate-50 p-4 text-sm text-slate-700 whitespace-pre-wrap">${esc(task.note || 'Tidak ada catatan')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      const tasks = filtered();
+      const selected = tasks.find(t => String(t.id) === String(state.selectedId)) || tasks[0] || null;
+      const total = state.data.length;
+      const todo = tasks.filter(t => t.status === 'To Do').length;
+      const doing = tasks.filter(t => t.status === 'Doing').length;
+      const done = tasks.filter(t => t.status === 'Done').length;
+
+      app.innerHTML = `
+        <div class="grid gap-6 xl:grid-cols-[280px_1fr_360px]">
+          <aside class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="space-y-3 text-sm">
+              <button data-filter="All" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'All' ? 'bg-slate-100' : 'hover:bg-slate-50'}">All <span class="float-right text-slate-500">${total}</span></button>
+              <button data-filter="To Do" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'To Do' ? 'bg-slate-100' : 'hover:bg-slate-50'}">To Do <span class="float-right text-slate-500">${todo}</span></button>
+              <button data-filter="Doing" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'Doing' ? 'bg-slate-100' : 'hover:bg-slate-50'}">Doing <span class="float-right text-slate-500">${doing}</span></button>
+              <button data-filter="Done" class="w-full rounded-2xl px-4 py-3 text-left ${state.filter === 'Done' ? 'bg-slate-100' : 'hover:bg-slate-50'}">Done <span class="float-right text-slate-500">${done}</span></button>
+            </div>
+          </aside>
+
+          <main class="space-y-6">
+            <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                <div>
+                  <div class="text-xs uppercase tracking-[0.25em] text-slate-500">Overview</div>
+                  <h2 class="mt-1 text-2xl font-bold text-slate-900">Dashboard Monitoring</h2>
+</div>
+                <input id="search" value="${esc(state.search)}" placeholder="Cari task..." class="w-full xl:w-80 rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Total</div><div class="mt-2 text-3xl font-bold text-slate-900">${total}</div></div>
+                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">To Do</div><div class="mt-2 text-3xl font-bold text-slate-900">${todo}</div></div>
+                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Doing</div><div class="mt-2 text-3xl font-bold text-slate-900">${doing}</div></div>
+                <div class="rounded-3xl bg-slate-50 p-4 border border-slate-200"><div class="text-slate-500 text-sm">Done</div><div class="mt-2 text-3xl font-bold text-slate-900">${done}</div></div>
+              </div>
+            </section>
+
+            <section class="rounded-3xl border border-slate-200 bg-white p-4 overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                  <thead class="text-slate-500 border-b border-slate-200">
+                    <tr><th class="py-3 px-3">Task</th><th class="py-3 px-3">Status</th><th class="py-3 px-3">Priority</th><th class="py-3 px-3">Due</th><th class="py-3 px-3">Updated</th></tr>
+                  </thead>
+                  <tbody>
+                    ${tasks.map(t => `
+                      <tr data-open="${t.id}" class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer">
+                        <td class="py-4 px-3 font-medium text-slate-900">${esc(t.title)}</td>
+                        <td class="py-4 px-3"><span class="rounded-full px-2.5 py-1 text-xs ${statusClass[t.status] || statusClass['To Do']}">${esc(t.status)}</span></td>
+                        <td class="py-4 px-3 ${priorityClass[t.priority] || 'text-slate-600'}">${esc(t.priority)}</td>
+                        <td class="py-4 px-3 text-slate-700">${esc(t.due_date || '-')}</td>
+                        <td class="py-4 px-3 text-slate-700">${esc(t.updated_at || '-')}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </main>
+
+          <aside class="space-y-4">
+            ${detail(selected)}
+          </aside>
+        </div>
+      `;
+
+      document.getElementById('search').addEventListener('input', e => { state.search = e.target.value; render(); });
+      document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => { state.filter = b.getAttribute('data-filter'); render(); }));
+      document.querySelectorAll('[data-open]').forEach(el => el.addEventListener('click', () => { state.selectedId = el.getAttribute('data-open'); render(); }));
+    }
+
+    window.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

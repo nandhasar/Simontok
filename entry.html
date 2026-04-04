@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simontok - Entri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="min-h-screen max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+      <div>
+        <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Entri</div>
+        <h1 class="text-3xl font-bold">Input / Edit Task</h1>
+        <p class="text-slate-500 mt-1">Simpan data langsung ke Google Spreadsheet.</p>
+      </div>
+      <div class="flex gap-2">
+        <a href="index.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">← Kembali</a>
+        <a href="dashboard.html" class="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm">Dashboard</a>
+      </div>
+    </div>
+
+    <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
+      <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Form</div>
+            <h2 class="text-2xl font-bold text-slate-900">Tambah / Edit Task</h2>
+          </div>
+          <button id="newBtn" class="rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-500">+ New Task</button>
+        </div>
+
+        <form id="taskForm" class="mt-6 grid gap-4 md:grid-cols-2">
+          <input type="hidden" id="taskId" name="id" value="" />
+
+          <div class="md:col-span-2">
+            <label class="text-sm text-slate-700">Task</label>
+            <input id="title" name="title" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh: Kirim surat pemeriksaan" required />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-700">Status</label>
+            <select id="status" name="status" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+              <option>To Do</option>
+              <option>Doing</option>
+              <option>Done</option>
+              <option>Blocked</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-700">Priority</label>
+            <select id="priority" name="priority" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+              <option>High</option>
+              <option selected>Medium</option>
+              <option>Low</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-700">Due date</label>
+            <input id="due_date" name="due_date" type="date" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-700">Updated</label>
+            <input id="updated_at" name="updated_at" type="date" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-sm text-slate-700">Note</label>
+            <textarea id="note" name="note" rows="5" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Catatan singkat..."></textarea>
+          </div>
+
+          <div class="md:col-span-2 flex items-center justify-end gap-3 pt-2">
+<button type="button" id="cancelBtn" class="rounded-2xl border border-slate-200 px-4 py-3 text-slate-700 hover:bg-slate-100">Batal</button>
+            <button class="rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-500">Simpan</button>
+          </div>
+        </form>
+
+        <div id="message" class="mt-5 hidden rounded-2xl px-4 py-3 text-sm"></div>
+      </section>
+
+      <aside class="space-y-4">
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-lg font-semibold text-slate-900">Panduan singkat</h3>
+          <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc pl-5">
+            <li>Isi task lalu klik Simpan.</li>
+            <li>Task baru akan masuk ke Spreadsheet.</li>
+            <li>Pilih task lama untuk edit lewat daftar di bawah.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-slate-900">Data terakhir</h3>
+            <button id="refreshBtn" class="text-sm text-blue-600 hover:underline">Refresh</button>
+          </div>
+          <div id="taskList" class="mt-4 space-y-3 text-sm text-slate-600"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+
+    const state = {
+      data: [],
+      editingId: null
+    };
+
+    const el = (id) => document.getElementById(id);
+    const esc = (s) => String(s || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+
+    function todayISO() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function showMessage(text, ok = true) {
+      const box = el('message');
+      box.className = 'mt-5 rounded-2xl px-4 py-3 text-sm ' + (ok ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200');
+      box.textContent = text;
+      box.classList.remove('hidden');
+      setTimeout(() => box.classList.add('hidden'), 2500);
+    }
+
+    async function loadData() {
+      const res = await fetch(API_URL + '?action=list');
+      const json = await res.json();
+      state.data = json.data || [];
+      renderList();
+    }
+
+    function renderList() {
+      const list = el('taskList');
+      if (!state.data.length) {
+        list.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-200 p-4 text-slate-500">Belum ada data.</div>';
+        return;
+      }
+
+      list.innerHTML = state.data.slice().reverse().map((t) => `
+        <button data-edit="${esc(t.id)}" class="w-full text-left rounded-2xl border border-slate-200 p-4 hover:bg-slate-50">
+          <div class="font-medium text-slate-900">${esc(t.title || '-')}</div>
+          <div class="mt-1 text-xs text-slate-500">${esc(t.status || '-') } • ${esc(t.priority || '-')} • ${esc(t.due_date || '-')}</div>
+        </button>
+      `).join('');
+
+      list.querySelectorAll('[data-edit]').forEach((btn) => {
+        btn.addEventListener('click', () => loadTaskForEdit(btn.getAttribute('data-edit')));
+      });
+    }
+
+    function clearForm() {
+      state.editingId = null;
+      el('taskId').value = '';
+      el('title').value = '';
+      el('status').value = 'To Do';
+      el('priority').value = 'Medium';
+      el('due_date').value = '';
+      el('updated_at').value = todayISO();
+      el('note').value = '';
+    }
+
+    function loadTaskForEdit(id) {
+      const task = state.data.find((x) => String(x.id) === String(id));
+      if (!task) return;
+
+      state.editingId = task.id;
+      el('taskId').value = task.id || '';
+      el('title').value = task.title || '';
+      el('status').value = task.status || 'To Do';
+      el('priority').value = task.priority || 'Medium';
+el('due_date').value = task.due_date || '';
+      el('updated_at').value = task.updated_at || todayISO();
+      el('note').value = task.note || '';
+      showMessage('Task dimuat untuk diedit', true);
+    }
+
+    async function saveTask(payload) {
+      const tasks = [...state.data];
+      if (state.editingId) {
+        const idx = tasks.findIndex((t) => String(t.id) === String(state.editingId));
+        if (idx >= 0) {
+          tasks[idx] = {
+            ...tasks[idx],
+            ...payload,
+            id: state.editingId,
+            created_at: tasks[idx].created_at || payload.updated_at
+          };
+        }
+      } else {
+        tasks.push({
+          ...payload,
+          id: String(Date.now()),
+          created_at: payload.updated_at
+        });
+      }
+
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save',
+          tasks
+        })
+      });
+
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.message || 'Gagal menyimpan');
+      state.data = tasks;
+      renderList();
+    }
+
+    el('taskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        title: el('title').value.trim(),
+        status: el('status').value,
+        priority: el('priority').value,
+        due_date: el('due_date').value,
+        updated_at: el('updated_at').value || todayISO(),
+        note: el('note').value.trim()
+      };
+
+      try {
+        await saveTask(payload);
+        showMessage(state.editingId ? 'Task berhasil diupdate' : 'Task berhasil disimpan', true);
+        clearForm();
+        await loadData();
+      } catch (err) {
+        showMessage(err.message || 'Gagal menyimpan data', false);
+      }
+    });
+
+    el('newBtn').addEventListener('click', () => {
+      clearForm();
+      showMessage('Mode input baru aktif', true);
+    });
+
+    el('cancelBtn').addEventListener('click', () => {
+      clearForm();
+      showMessage('Form dibersihkan', true);
+    });
+
+    el('refreshBtn').addEventListener('click', loadData);
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      clearForm();
+      await loadData();
+    });
+  </script>
+</body>
+</html>
