@@ -1,501 +1,128 @@
 <!doctype html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simontok - Entri</title>
   <style>
-    /* =============================================
-       RESET & BASE
-       ============================================= */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      line-height: 1.6;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      font-family: inherit;
-      font-size: inherit;
-    }
-
-    input,
-    select,
-    textarea {
-      font-family: inherit;
-      font-size: inherit;
-    }
-
-    /* =============================================
-       LAYOUT
-       ============================================= */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 16px;
-      min-height: 100vh;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .header-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: #64748b;
-    }
-
-    .header h1 {
-      font-size: 28px;
-      font-weight: 700;
-    }
-
-    .header p {
-      color: #64748b;
-      margin-top: 4px;
-      font-size: 14px;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-outline {
-      display: inline-block;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      padding: 8px 16px;
-      border-radius: 16px;
-      font-size: 14px;
-      color: #334155;
-      transition: background 0.2s;
-    }
-
-    .btn-outline:hover {
-      background: #f1f5f9;
-    }
-
-    .main-grid {
-      display: grid;
-      gap: 24px;
-    }
-
-    @media (min-width: 1024px) {
-      .main-grid {
-        grid-template-columns: 1fr 360px;
-      }
-    }
-
-    /* =============================================
-       CARD
-       ============================================= */
-    .card {
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .card-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: #64748b;
-    }
-
-    .card h2 {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .card h3 {
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    /* =============================================
-       BUTTONS
-       ============================================= */
-    .btn-primary {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 16px;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: #3b82f6;
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-cancel {
-      background: #fff;
-      color: #334155;
-      border: 1px solid #e2e8f0;
-      padding: 12px 16px;
-      border-radius: 16px;
-      transition: background 0.2s;
-    }
-
-    .btn-cancel:hover {
-      background: #f1f5f9;
-    }
-
-    .btn-delete {
-      background: #fff1f2;
-      color: #be123c;
-      border: 1px solid #fecdd3;
-      padding: 12px 16px;
-      border-radius: 16px;
-      display: none;
-      transition: background 0.2s;
-    }
-
-    .btn-delete:hover {
-      background: #ffe4e6;
-    }
-
-    .btn-delete.show {
-      display: inline-block;
-    }
-
-    .btn-link {
-      background: none;
-      border: none;
-      color: #2563eb;
-      font-size: 14px;
-      padding: 0;
-    }
-
-    .btn-link:hover {
-      text-decoration: underline;
-    }
-
-    /* =============================================
-       FORM
-       ============================================= */
-    .form-grid {
-      display: grid;
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    @media (min-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .col-span-2 {
-        grid-column: span 2;
-      }
-    }
-
-    .form-grid label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: #334155;
-      margin-bottom: 4px;
-    }
-
-    .form-grid label .required {
-      color: #e11d48;
-    }
-
-    .form-input {
-      width: 100%;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      padding: 12px 16px;
-      border-radius: 16px;
-      outline: none;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .form-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
-
-    textarea.form-input {
-      resize: vertical;
-    }
-
-    .form-actions {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-      padding-top: 8px;
-    }
-
-    .form-mode {
-      font-size: 12px;
-      font-weight: 500;
-      margin-top: 4px;
-      color: #2563eb;
-    }
-
-    .form-mode.editing {
-      color: #d97706;
-    }
-
-    /* =============================================
-       MESSAGE
-       ============================================= */
-    .message {
-      margin-top: 16px;
-      padding: 12px 16px;
-      border-radius: 16px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.success {
-      background: #ecfdf5;
-      color: #047857;
-      border: 1px solid #a7f3d0;
-    }
-
-    .message.error {
-      background: #fff1f2;
-      color: #be123c;
-      border: 1px solid #fecdd3;
-    }
-
-    /* =============================================
-       SIDEBAR
-       ============================================= */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .guide-list {
-      margin-top: 12px;
-      padding-left: 20px;
-      font-size: 14px;
-      color: #475569;
-    }
-
-    .guide-list li {
-      margin-bottom: 8px;
-    }
-
-    .task-list {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .task-item {
-      width: 100%;
-      text-align: left;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 14px;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-    }
-
-    .task-item:hover {
-      background: #f8fafc;
-    }
-
-    .task-item.active {
-      border-color: #3b82f6;
-      background: #eff6ff;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-    }
-
-    .task-item-title {
-      font-weight: 600;
-      color: #0f172a;
-      font-size: 14px;
-    }
-
-    .task-item-meta {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 12px;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .badge-todo {
-      background: #f1f5f9;
-      color: #334155;
-    }
-
-    .badge-doing {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .badge-done {
-      background: #d1fae5;
-      color: #047857;
-    }
-
-    .badge-blocked {
-      background: #ffe4e6;
-      color: #be123c;
-    }
-
-    .badge-priority {
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    .task-empty {
-      border: 2px dashed #e2e8f0;
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-    }
-
-    .loading-text {
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-      display: none;
-      margin-top: 16px;
-    }
-
-    .loading-text.show {
-      display: block;
-    }
-
-    /* =============================================
-       STATS
-       ============================================= */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .stat-box {
-      border-radius: 16px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .stat-box .stat-number {
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    .stat-box .stat-label {
-      font-size: 11px;
-      margin-top: 4px;
-    }
-
-    .stat-todo {
-      background: #f1f5f9;
-      color: #334155;
-    }
-
-    .stat-doing {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    .stat-done {
-      background: #d1fae5;
-      color: #047857;
-    }
-
-    .stat-blocked {
-      background: #ffe4e6;
-      color: #be123c;
-    }
-
-    /* =============================================
-       SPINNER
-       ============================================= */
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.6}
+    a{text-decoration:none;color:inherit}
+    button{cursor:pointer;font-family:inherit;font-size:inherit}
+    input,select,textarea{font-family:inherit;font-size:inherit}
+
+    .container{max-width:1100px;margin:0 auto;padding:24px 16px;min-height:100vh}
+
+    .header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px}
+    .header-label{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#64748b}
+    .header h1{font-size:28px;font-weight:700}
+    .header p{color:#64748b;margin-top:4px;font-size:14px}
+    .header-actions{display:flex;gap:8px}
+
+    .btn-outline{display:inline-block;border:1px solid #e2e8f0;background:#fff;padding:8px 16px;border-radius:16px;font-size:14px;color:#334155;transition:background .2s}
+    .btn-outline:hover{background:#f1f5f9}
+
+    .main-grid{display:grid;gap:24px}
+    @media(min-width:1024px){.main-grid{grid-template-columns:1fr 360px}}
+
+    .card{border:1px solid #e2e8f0;background:#fff;border-radius:24px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    .card-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .card-label{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#64748b}
+    .card h2{font-size:22px;font-weight:700}
+    .card h3{font-size:17px;font-weight:600}
+
+    .btn-primary{background:#2563eb;color:#fff;border:none;padding:12px 20px;border-radius:16px;font-weight:600;transition:background .2s}
+    .btn-primary:hover{background:#3b82f6}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+
+    .btn-cancel{background:#fff;color:#334155;border:1px solid #e2e8f0;padding:12px 16px;border-radius:16px;transition:background .2s}
+    .btn-cancel:hover{background:#f1f5f9}
+
+    .btn-delete{background:#fff1f2;color:#be123c;border:1px solid #fecdd3;padding:12px 16px;border-radius:16px;display:none;transition:background .2s}
+    .btn-delete:hover{background:#ffe4e6}
+    .btn-delete.show{display:inline-block}
+
+    .btn-link{background:none;border:none;color:#2563eb;font-size:14px;padding:0}
+    .btn-link:hover{text-decoration:underline}
+
+    .form-grid{display:grid;gap:16px;margin-top:20px}
+    @media(min-width:768px){.form-grid{grid-template-columns:1fr 1fr}.col-span-2{grid-column:span 2}}
+    .form-grid label{display:block;font-size:13px;font-weight:500;color:#334155;margin-bottom:4px}
+    .form-grid label .required{color:#e11d48}
+    .form-input{width:100%;border:1px solid #e2e8f0;background:#fff;padding:12px 16px;border-radius:16px;outline:none;transition:box-shadow .2s,border-color .2s}
+    .form-input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+    textarea.form-input{resize:vertical}
+    .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-top:8px}
+    .form-mode{font-size:12px;font-weight:500;margin-top:4px;color:#2563eb}
+    .form-mode.editing{color:#d97706}
+
+    .message{margin-top:16px;padding:12px 16px;border-radius:16px;font-size:14px;display:none}
+    .message.show{display:block}
+    .message.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+    .message.error{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+    .guide-list{margin-top:12px;padding-left:20px;font-size:14px;color:#475569}
+    .guide-list li{margin-bottom:8px}
+    .task-list{margin-top:16px;display:flex;flex-direction:column;gap:12px}
+    .task-item{width:100%;text-align:left;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:14px;transition:background .2s,border-color .2s}
+    .task-item:hover{background:#f8fafc}
+    .task-item.active{border-color:#3b82f6;background:#eff6ff;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+    .task-item-title{font-weight:600;color:#0f172a;font-size:14px}
+    .task-item-meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+    .task-item-actions{margin-top:8px;display:flex;gap:6px}
+    .task-btn{border:none;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:600;transition:background .2s}
+    .task-btn-view{background:#eff6ff;color:#2563eb}
+    .task-btn-view:hover{background:#dbeafe}
+    .task-btn-edit{background:#f1f5f9;color:#334155}
+    .task-btn-edit:hover{background:#e2e8f0}
+
+    .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:500}
+    .badge-todo{background:#f1f5f9;color:#334155}
+    .badge-doing{background:#dbeafe;color:#1d4ed8}
+    .badge-done{background:#d1fae5;color:#047857}
+    .badge-blocked{background:#ffe4e6;color:#be123c}
+    .badge-priority{background:#f1f5f9;color:#475569}
+
+    .task-empty{border:2px dashed #e2e8f0;border-radius:16px;padding:16px;text-align:center;color:#94a3b8;font-size:14px}
+    .loading-text{text-align:center;color:#94a3b8;font-size:14px;display:none;margin-top:16px}
+    .loading-text.show{display:block}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .stat-box{border-radius:16px;padding:12px;text-align:center}
+    .stat-box .stat-number{font-size:24px;font-weight:700}
+    .stat-box .stat-label{font-size:11px;margin-top:4px}
+    .stat-todo{background:#f1f5f9;color:#334155}
+    .stat-doing{background:#dbeafe;color:#1d4ed8}
+    .stat-done{background:#d1fae5;color:#047857}
+    .stat-blocked{background:#ffe4e6;color:#be123c}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .modal-overlay.active{display:flex}
+    .modal-box{width:min(560px,100%);background:#fff;color:#0f172a;border-radius:22px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.22);position:relative;animation:popIn .25s ease;max-height:88vh;overflow-y:auto}
+    .modal-box h3{margin-bottom:14px;font-size:22px}
+    .modal-box p{line-height:1.7;color:#334155;margin-bottom:8px}
+    .modal-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:34px;cursor:pointer;color:#64748b;line-height:1}
+    .modal-close:hover{color:#0f172a}
+    .modal-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .modal-detail-item{padding:14px;border-radius:16px;background:#f8fafc;border:1px solid rgba(15,23,42,.06)}
+    .modal-detail-item strong{display:block;font-size:12px;color:#64748b;margin-bottom:4px}
+    .modal-detail-item span{font-size:16px;font-weight:700;color:#0f172a}
+    .modal-note{margin-top:14px;padding:14px;border-radius:16px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:14px;line-height:1.7;white-space:pre-wrap}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+    .btn-modal-edit{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:600}
+    .btn-modal-edit:hover{background:#3b82f6}
+    .btn-modal-close{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;padding:10px 16px;border-radius:12px;font-weight:600}
+    .btn-modal-close:hover{background:#e2e8f0}
+    @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+    @media(max-width:600px){.modal-detail{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
   <div class="container">
-
-    <!-- HEADER -->
     <div class="header">
       <div>
         <div class="header-label">Entri</div>
@@ -508,10 +135,7 @@
       </div>
     </div>
 
-    <!-- MAIN GRID -->
     <div class="main-grid">
-
-      <!-- FORM SECTION -->
       <section class="card">
         <div class="card-header">
           <div>
@@ -523,72 +147,54 @@
         </div>
 
         <form id="taskForm" class="form-grid">
-          <input type="hidden" id="taskId" name="id" value="" />
-
+          <input type="hidden" id="taskId" value="" />
           <div class="col-span-2">
             <label for="title">Task <span class="required">*</span></label>
-            <input id="title" name="title" class="form-input" placeholder="Contoh: Kirim surat pemeriksaan"
-              required />
+            <input id="title" class="form-input" placeholder="Contoh: Kirim surat pemeriksaan" required />
           </div>
-
           <div>
             <label for="status">Status</label>
-            <select id="status" name="status" class="form-input">
-              <option>To Do</option>
-              <option>Doing</option>
-              <option>Done</option>
-              <option>Blocked</option>
+            <select id="status" class="form-input">
+              <option>To Do</option><option>Doing</option><option>Done</option><option>Blocked</option>
             </select>
           </div>
-
           <div>
             <label for="priority">Priority</label>
-            <select id="priority" name="priority" class="form-input">
-              <option>High</option>
-              <option selected>Medium</option>
-              <option>Low</option>
+            <select id="priority" class="form-input">
+              <option>High</option><option selected>Medium</option><option>Low</option>
             </select>
           </div>
-
           <div>
             <label for="due_date">Due date</label>
-            <input id="due_date" name="due_date" type="date" class="form-input" />
+            <input id="due_date" type="date" class="form-input" />
           </div>
-
           <div>
             <label for="updated_at">Updated</label>
-            <input id="updated_at" name="updated_at" type="date" class="form-input" />
+            <input id="updated_at" type="date" class="form-input" />
           </div>
-
           <div class="col-span-2">
             <label for="note">Note</label>
-            <textarea id="note" name="note" rows="5" class="form-input"
-              placeholder="Catatan singkat..."></textarea>
+            <textarea id="note" rows="5" class="form-input" placeholder="Catatan singkat..."></textarea>
           </div>
-
           <div class="col-span-2 form-actions">
             <button type="button" id="deleteBtn" class="btn-delete">🗑 Hapus</button>
             <button type="button" id="cancelBtn" class="btn-cancel">Batal</button>
             <button type="submit" id="submitBtn" class="btn-primary">Simpan</button>
           </div>
         </form>
-
         <div id="message" class="message"></div>
       </section>
 
-      <!-- SIDEBAR -->
       <aside class="sidebar">
-
         <div class="card">
           <h3>Panduan singkat</h3>
           <ul class="guide-list">
             <li>Isi task lalu klik <strong>Simpan</strong>.</li>
-            <li>Task baru akan masuk ke Spreadsheet.</li>
-            <li>Klik task di daftar bawah untuk <strong>edit</strong>.</li>
-            <li>Klik <strong>🗑 Hapus</strong> untuk menghapus task (muncul saat mode edit).</li>
+            <li>Task baru langsung masuk ke Spreadsheet.</li>
+            <li>Klik <strong>👁</strong> untuk popup detail, <strong>✏️</strong> untuk edit.</li>
+            <li>Klik <strong>🗑 Hapus</strong> untuk menghapus (muncul saat edit).</li>
           </ul>
         </div>
-
         <div class="card">
           <div class="card-header">
             <h3>Data terakhir</h3>
@@ -597,373 +203,235 @@
           <div id="taskListLoading" class="loading-text">⏳ Memuat data...</div>
           <div id="taskList" class="task-list"></div>
         </div>
-
-        <div id="statsCard" class="card" style="display:none;">
+        <div id="statsCard" class="card" style="display:none">
           <h3>Statistik</h3>
           <div id="statsContent" class="stats-grid"></div>
         </div>
-
       </aside>
     </div>
   </div>
 
+  <div id="popupModal" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
   <script>
-    // =============================================
-    // KONFIGURASI — GANTI DENGAN URL DEPLOYMENT BARU ANDA
-    // =============================================
+    // ⚠️ GANTI DENGAN URL DEPLOYMENT ANDA
     const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
 
-    // Header sesuai urutan kolom di spreadsheet
-    const HEADERS = ['id', 'title', 'status', 'priority', 'due_date', 'note', 'updated_at', 'created_at'];
+    const state = { data: [], editingId: null, loading: false };
+    const el = id => document.getElementById(id);
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const todayISO = () => new Date().toISOString().slice(0,10);
+    const badgeCls = s => ({
+      'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked'
+    }[s]||'badge-todo');
 
-    // =============================================
-    // STATE
-    // =============================================
-    const state = {
-      data: [],
-      editingId: null,
-      loading: false
-    };
+    // Modal
+    const modal = el('popupModal');
+    function openPopup(h){ el('modalBody').innerHTML = h; modal.classList.add('active'); }
+    function closePopup(){ modal.classList.remove('active'); }
+    el('closeModal').addEventListener('click', closePopup);
+    modal.addEventListener('click', e => { if(e.target===modal) closePopup(); });
 
-    // =============================================
-    // HELPER
-    // =============================================
-    const el = (id) => document.getElementById(id);
+    function showTaskDetail(id){
+      const t = state.data.find(x => String(x.id)===String(id));
+      if(!t) return;
+      openPopup(`
+        <h3>📋 Detail Task</h3>
+        <p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">${esc(t.title)}</p>
+        <div class="modal-detail">
+          <div class="modal-detail-item"><strong>Status</strong><span class="badge ${badgeCls(t.status)}" style="font-size:13px;padding:4px 12px">${esc(t.status)}</span></div>
+          <div class="modal-detail-item"><strong>Priority</strong><span>${esc(t.priority||'-')}</span></div>
+          <div class="modal-detail-item"><strong>Due Date</strong><span>${esc(t.due_date||'Tidak ada')}</span></div>
+          <div class="modal-detail-item"><strong>Updated</strong><span>${esc(t.updated_at||'-')}</span></div>
+          <div class="modal-detail-item"><strong>Created</strong><span>${esc(t.created_at||'-')}</span></div>
+          <div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">${esc(t.id)}</span></div>
+        </div>
+        ${t.note?'<div class="modal-note"><strong>📝 Catatan:</strong><br>'+esc(t.note)+'</div>':'<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>'}
+        <div class="modal-footer">
+          <button class="btn-modal-edit" onclick="editFromPopup('${esc(t.id)}')">✏️ Edit</button>
+          <button class="btn-modal-close" onclick="closePopup()">Tutup</button>
+        </div>
+      `);
+    }
+    function editFromPopup(id){ closePopup(); loadTaskForEdit(id); }
 
-    const esc = (s) => String(s || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-
-    function todayISO() {
-      return new Date().toISOString().slice(0, 10);
+    // Loading UI
+    function setLoading(v){
+      state.loading=v;
+      el('submitBtn').disabled=v;
+      el('submitBtn').innerHTML=v?'<span class="spinner"></span> Menyimpan...':'Simpan';
+      el('refreshBtn').disabled=v;
+      el('refreshBtn').textContent=v?'Memuat...':'Refresh';
     }
 
-    function setLoading(isLoading) {
-      state.loading = isLoading;
-      const btn = el('submitBtn');
-      const refreshBtn = el('refreshBtn');
-
-      if (isLoading) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
-        refreshBtn.disabled = true;
-        refreshBtn.textContent = 'Memuat...';
+    function updateFormMode(){
+      if(state.editingId){
+        el('formMode').textContent='✏️ Mode: Edit Task';
+        el('formMode').className='form-mode editing';
+        el('deleteBtn').classList.add('show');
       } else {
-        btn.disabled = false;
-        btn.innerHTML = 'Simpan';
-        refreshBtn.disabled = false;
-        refreshBtn.textContent = 'Refresh';
+        el('formMode').textContent='➕ Mode: Tambah Baru';
+        el('formMode').className='form-mode';
+        el('deleteBtn').classList.remove('show');
       }
     }
 
-    function updateFormMode() {
-      const modeEl = el('formMode');
-      const deleteBtn = el('deleteBtn');
-
-      if (state.editingId) {
-        modeEl.textContent = '✏️ Mode: Edit Task';
-        modeEl.className = 'form-mode editing';
-        deleteBtn.classList.add('show');
-      } else {
-        modeEl.textContent = '➕ Mode: Tambah Baru';
-        modeEl.className = 'form-mode';
-        deleteBtn.classList.remove('show');
-      }
+    let msgTO;
+    function showMessage(t,ok=true){
+      const b=el('message');
+      b.className='message show '+(ok?'success':'error');
+      b.textContent=t;
+      clearTimeout(msgTO);
+      msgTO=setTimeout(()=>b.classList.remove('show'),4000);
     }
 
-    let messageTimeout;
-    function showMessage(text, ok = true) {
-      const box = el('message');
-      box.className = 'message show ' + (ok ? 'success' : 'error');
-      box.textContent = text;
-      clearTimeout(messageTimeout);
-      messageTimeout = setTimeout(() => box.classList.remove('show'), 3000);
+    // LOAD DATA
+    async function loadData(){
+      const list=el('taskList'), ld=el('taskListLoading');
+      try{
+        ld.classList.add('show'); list.innerHTML='';
+        const r=await fetch(API_URL+'?action=list');
+        const j=await r.json();
+        if(!j.ok) throw new Error(j.message||'Gagal');
+        state.data=j.data||[];
+        renderList(); renderStats();
+      } catch(err){
+        list.innerHTML='<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">⚠️ '+esc(err.message)+'<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button></div>';
+      } finally { ld.classList.remove('show'); }
     }
 
-    // =============================================
-    // DATA: LOAD
-    // =============================================
-    async function loadData() {
-      const listEl = el('taskList');
-      const loadingEl = el('taskListLoading');
-
-      try {
-        loadingEl.classList.add('show');
-        listEl.innerHTML = '';
-
-        const res = await fetch(API_URL + '?action=list');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const json = await res.json();
-        state.data = json.data || [];
-        renderList();
-        renderStats();
-      } catch (err) {
-        console.error('loadData error:', err);
-        listEl.innerHTML =
-          '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2;">'
-          + '⚠️ Gagal memuat: ' + esc(err.message)
-          + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px;">Coba lagi</button>'
-          + '</div>';
-      } finally {
-        loadingEl.classList.remove('show');
-      }
-    }
-
-    // =============================================
-    // RENDER: LIST
-    // =============================================
-    function statusBadgeClass(status) {
-      var map = {
-        'To Do': 'badge-todo',
-        'Doing': 'badge-doing',
-        'Done': 'badge-done',
-        'Blocked': 'badge-blocked'
-      };
-      return map[status] || 'badge-todo';
-    }
-
-    function renderList() {
-      const list = el('taskList');
-
-      if (!state.data.length) {
-        list.innerHTML = '<div class="task-empty">Belum ada data.</div>';
-        return;
-      }
-
-      list.innerHTML = state.data.slice().reverse().map((t) => {
-        const isEditing = state.editingId && String(state.editingId) === String(t.id);
-        return '<button data-edit="' + esc(t.id) + '" class="task-item' + (isEditing ? ' active' : '') + '">'
-          + '<div class="task-item-title">' + esc(t.title || '-') + '</div>'
-          + '<div class="task-item-meta">'
-          + '<span class="badge ' + statusBadgeClass(t.status) + '">' + esc(t.status || '-') + '</span>'
-          + '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>'
-          + '<span style="color:#94a3b8;">' + esc(t.due_date || 'No date') + '</span>'
-          + '</div></button>';
+    // RENDER LIST
+    function renderList(){
+      const list=el('taskList');
+      if(!state.data.length){ list.innerHTML='<div class="task-empty">Belum ada data.</div>'; return; }
+      list.innerHTML=state.data.slice().reverse().map(t=>{
+        const active=state.editingId&&String(state.editingId)===String(t.id);
+        return `<div class="task-item${active?' active':''}">
+          <div class="task-item-title">${esc(t.title||'-')}</div>
+          <div class="task-item-meta">
+            <span class="badge ${badgeCls(t.status)}">${esc(t.status||'-')}</span>
+            <span class="badge badge-priority">${esc(t.priority||'-')}</span>
+            <span style="color:#94a3b8">${esc(t.due_date||'No date')}</span>
+          </div>
+          <div class="task-item-actions">
+            <button class="task-btn task-btn-view" data-view="${esc(t.id)}">👁 Lihat</button>
+            <button class="task-btn task-btn-edit" data-edit="${esc(t.id)}">✏️ Edit</button>
+          </div>
+        </div>`;
       }).join('');
-
-      list.querySelectorAll('[data-edit]').forEach((btn) => {
-        btn.addEventListener('click', () => loadTaskForEdit(btn.getAttribute('data-edit')));
-      });
+      list.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',e=>{
+        e.stopPropagation(); showTaskDetail(b.dataset.view);
+      }));
+      list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>{
+        e.stopPropagation(); loadTaskForEdit(b.dataset.edit);
+      }));
     }
 
-    // =============================================
-    // RENDER: STATS
-    // =============================================
-    function renderStats() {
-      const card = el('statsCard');
-      const content = el('statsContent');
-
-      if (!state.data.length) {
-        card.style.display = 'none';
-        return;
-      }
-
-      card.style.display = '';
-      const counts = { 'To Do': 0, 'Doing': 0, 'Done': 0, 'Blocked': 0 };
-      state.data.forEach((t) => {
-        if (counts.hasOwnProperty(t.status)) counts[t.status]++;
-      });
-
-      const items = [
-        { label: 'To Do', count: counts['To Do'], cls: 'stat-todo' },
-        { label: 'Doing', count: counts['Doing'], cls: 'stat-doing' },
-        { label: 'Done', count: counts['Done'], cls: 'stat-done' },
-        { label: 'Blocked', count: counts['Blocked'], cls: 'stat-blocked' }
-      ];
-
-      content.innerHTML = items.map((i) =>
-        '<div class="stat-box ' + i.cls + '">'
-        + '<div class="stat-number">' + i.count + '</div>'
-        + '<div class="stat-label">' + i.label + '</div>'
-        + '</div>'
-      ).join('');
+    // RENDER STATS
+    function renderStats(){
+      if(!state.data.length){ el('statsCard').style.display='none'; return; }
+      el('statsCard').style.display='';
+      const c={'To Do':0,'Doing':0,'Done':0,'Blocked':0};
+      state.data.forEach(t=>{ if(c.hasOwnProperty(t.status)) c[t.status]++; });
+      el('statsContent').innerHTML=[
+        {l:'To Do',n:c['To Do'],c:'stat-todo'},
+        {l:'Doing',n:c['Doing'],c:'stat-doing'},
+        {l:'Done',n:c['Done'],c:'stat-done'},
+        {l:'Blocked',n:c['Blocked'],c:'stat-blocked'}
+      ].map(i=>`<div class="stat-box ${i.c}"><div class="stat-number">${i.n}</div><div class="stat-label">${i.l}</div></div>`).join('');
     }
 
-    // =============================================
-    // FORM: CLEAR
-    // =============================================
-    function clearForm() {
-      state.editingId = null;
-      el('taskId').value = '';
-      el('title').value = '';
-      el('status').value = 'To Do';
-      el('priority').value = 'Medium';
-      el('due_date').value = '';
-      el('updated_at').value = todayISO();
-      el('note').value = '';
-      updateFormMode();
-      renderList();
+    // FORM
+    function clearForm(){
+      state.editingId=null;
+      el('taskId').value='';
+      el('title').value='';
+      el('status').value='To Do';
+      el('priority').value='Medium';
+      el('due_date').value='';
+      el('updated_at').value=todayISO();
+      el('note').value='';
+      updateFormMode(); renderList();
     }
 
-    // =============================================
-    // FORM: LOAD TASK FOR EDIT
-    // =============================================
-    function loadTaskForEdit(id) {
-      const task = state.data.find((x) => String(x.id) === String(id));
-      if (!task) return;
-
-      state.editingId = task.id;
-      el('taskId').value = task.id || '';
-      el('title').value = task.title || '';
-      el('status').value = task.status || 'To Do';
-      el('priority').value = task.priority || 'Medium';
-      el('due_date').value = task.due_date || '';
-      el('updated_at').value = task.updated_at || todayISO();
-      el('note').value = task.note || '';
-
-      updateFormMode();
-      renderList();
-      showMessage('📝 Task dimuat untuk diedit', true);
-      el('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    function loadTaskForEdit(id){
+      const t=state.data.find(x=>String(x.id)===String(id));
+      if(!t) return;
+      state.editingId=t.id;
+      el('taskId').value=t.id||'';
+      el('title').value=t.title||'';
+      el('status').value=t.status||'To Do';
+      el('priority').value=t.priority||'Medium';
+      el('due_date').value=t.due_date||'';
+      el('updated_at').value=t.updated_at||todayISO();
+      el('note').value=t.note||'';
+      updateFormMode(); renderList();
+      showMessage('📝 Task dimuat untuk diedit');
+      el('taskForm').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
-    // =============================================
-    // SAVE TASK
-    // =============================================
-    async function saveTask(payload) {
-      const tasks = [...state.data];
-
-      if (state.editingId) {
-        const idx = tasks.findIndex((t) => String(t.id) === String(state.editingId));
-        if (idx >= 0) {
-          tasks[idx] = {
-            ...tasks[idx],
-            ...payload,
-            id: state.editingId,
-            created_at: tasks[idx].created_at || payload.updated_at
-          };
-        }
-      } else {
-        tasks.push({
-          ...payload,
-          id: String(Date.now()),
-          created_at: payload.updated_at
-        });
-      }
-
-      // ✅ Content-Type: text/plain agar tidak trigger preflight CORS
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'save',
-          tasks: tasks
-        })
-      });
-
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.message || 'Gagal menyimpan');
-
-      state.data = tasks;
-      renderList();
-      renderStats();
-    }
-
-    // =============================================
-    // DELETE TASK
-    // =============================================
-    async function deleteTask() {
-      if (!state.editingId) return;
-
-      const task = state.data.find((t) => String(t.id) === String(state.editingId));
-      const confirmText = task ? task.title : state.editingId;
-
-      if (!confirm('Yakin ingin menghapus task:\n"' + confirmText + '"?')) return;
-
-      const tasks = state.data.filter((t) => String(t.id) !== String(state.editingId));
-
-      try {
-        setLoading(true);
-
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'save',
-            tasks: tasks
-          })
-        });
-
-        const json = await res.json();
-        if (!json.ok) throw new Error(json.message || 'Gagal menghapus');
-
-        state.data = tasks;
-        clearForm();
-        renderList();
-        renderStats();
-        showMessage('🗑 Task berhasil dihapus', true);
-      } catch (err) {
-        showMessage('Gagal menghapus: ' + err.message, false);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // =============================================
-    // EVENT LISTENERS
-    // =============================================
-    el('taskForm').addEventListener('submit', async (e) => {
+    // SAVE
+    el('taskForm').addEventListener('submit', async e=>{
       e.preventDefault();
-      if (state.loading) return;
-
-      const payload = {
-        title: el('title').value.trim(),
-        status: el('status').value,
-        priority: el('priority').value,
-        due_date: el('due_date').value,
-        note: el('note').value.trim(),
-        updated_at: el('updated_at').value || todayISO()
+      if(state.loading) return;
+      const payload={
+        title:el('title').value.trim(),
+        status:el('status').value,
+        priority:el('priority').value,
+        due_date:el('due_date').value,
+        note:el('note').value.trim(),
+        updated_at:el('updated_at').value||todayISO()
       };
+      if(!payload.title){ showMessage('⚠️ Task tidak boleh kosong',false); el('title').focus(); return; }
 
-      if (!payload.title) {
-        showMessage('⚠️ Task tidak boleh kosong', false);
-        el('title').focus();
-        return;
-      }
-
-      try {
+      try{
         setLoading(true);
-        const isEdit = !!state.editingId;
-        await saveTask(payload);
-        showMessage(isEdit ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan', true);
+        const isEdit=!!state.editingId;
+        let body;
+        if(isEdit){
+          const existing=state.data.find(t=>String(t.id)===String(state.editingId));
+          body={action:'update',task:{...payload,id:state.editingId,created_at:existing?existing.created_at:todayISO()}};
+        } else {
+          body={action:'add',task:{...payload,id:String(Date.now()),created_at:todayISO()}};
+        }
+        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+        const j=await r.json();
+        if(!j.ok) throw new Error(j.message||'Gagal');
+        showMessage(isEdit?'✅ Task berhasil diupdate':'✅ Task berhasil disimpan');
         clearForm();
         await loadData();
-      } catch (err) {
-        console.error('saveTask error:', err);
-        showMessage('❌ ' + (err.message || 'Gagal menyimpan data'), false);
-      } finally {
-        setLoading(false);
-      }
+      } catch(err){
+        showMessage('❌ '+err.message,false);
+      } finally { setLoading(false); }
     });
 
-    el('newBtn').addEventListener('click', () => {
-      clearForm();
-      el('title').focus();
-      showMessage('➕ Mode input baru aktif', true);
+    // DELETE
+    el('deleteBtn').addEventListener('click', async ()=>{
+      if(!state.editingId) return;
+      const t=state.data.find(x=>String(x.id)===String(state.editingId));
+      if(!confirm('Yakin hapus task:\n"'+(t?t.title:state.editingId)+'"?')) return;
+      try{
+        setLoading(true);
+        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'delete',id:state.editingId})});
+        const j=await r.json();
+        if(!j.ok) throw new Error(j.message||'Gagal');
+        showMessage('🗑 Task berhasil dihapus');
+        clearForm();
+        await loadData();
+      } catch(err){ showMessage('❌ '+err.message,false); }
+      finally { setLoading(false); }
     });
 
-    el('cancelBtn').addEventListener('click', () => {
-      clearForm();
-      showMessage('🔄 Form dibersihkan', true);
-    });
+    el('newBtn').addEventListener('click',()=>{ clearForm(); el('title').focus(); showMessage('➕ Mode input baru aktif'); });
+    el('cancelBtn').addEventListener('click',()=>{ clearForm(); showMessage('🔄 Form dibersihkan'); });
+    el('refreshBtn').addEventListener('click',()=>{ if(!state.loading) loadData(); });
 
-    el('deleteBtn').addEventListener('click', deleteTask);
-
-    el('refreshBtn').addEventListener('click', () => {
-      if (!state.loading) loadData();
-    });
-
-    // =============================================
-    // INIT
-    // =============================================
-    window.addEventListener('DOMContentLoaded', async () => {
-      clearForm();
-      await loadData();
-    });
+    window.addEventListener('DOMContentLoaded',()=>{ clearForm(); loadData(); });
   </script>
 </body>
-
 </html>
