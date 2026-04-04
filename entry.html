@@ -609,9 +609,12 @@
 
   <script>
     // =============================================
-    // KONFIGURASI
+    // KONFIGURASI — GANTI DENGAN URL DEPLOYMENT BARU ANDA
     // =============================================
-    const API_URL = 'https://script.google.com/macros/s/AKfycbySsGUiLRBVPt3VaHq3eA7t_dOvz9BvbqbqTQfxL7GO1AdJDqI6FI7xcyu84yGBgV7K/exec';
+    const API_URL = 'https://script.google.com/macros/s/XXXXXXXXX/exec';
+
+    // Header sesuai urutan kolom di spreadsheet
+    const HEADERS = ['id', 'title', 'status', 'priority', 'due_date', 'note', 'updated_at', 'created_at'];
 
     // =============================================
     // STATE
@@ -676,9 +679,7 @@
       box.className = 'message show ' + (ok ? 'success' : 'error');
       box.textContent = text;
       clearTimeout(messageTimeout);
-      messageTimeout = setTimeout(() => {
-        box.classList.remove('show');
-      }, 3000);
+      messageTimeout = setTimeout(() => box.classList.remove('show'), 3000);
     }
 
     // =============================================
@@ -703,7 +704,7 @@
         console.error('loadData error:', err);
         listEl.innerHTML =
           '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2;">'
-          + '⚠️ Gagal memuat data: ' + esc(err.message)
+          + '⚠️ Gagal memuat: ' + esc(err.message)
           + '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px;">Coba lagi</button>'
           + '</div>';
       } finally {
@@ -715,7 +716,7 @@
     // RENDER: LIST
     // =============================================
     function statusBadgeClass(status) {
-      const map = {
+      var map = {
         'To Do': 'badge-todo',
         'Doing': 'badge-doing',
         'Done': 'badge-done',
@@ -734,15 +735,13 @@
 
       list.innerHTML = state.data.slice().reverse().map((t) => {
         const isEditing = state.editingId && String(state.editingId) === String(t.id);
-        return `
-          <button data-edit="${esc(t.id)}" class="task-item${isEditing ? ' active' : ''}">
-            <div class="task-item-title">${esc(t.title || '-')}</div>
-            <div class="task-item-meta">
-              <span class="badge ${statusBadgeClass(t.status)}">${esc(t.status || '-')}</span>
-              <span class="badge badge-priority">${esc(t.priority || '-')}</span>
-              <span style="color:#94a3b8;">${esc(t.due_date || 'No date')}</span>
-            </div>
-          </button>`;
+        return '<button data-edit="' + esc(t.id) + '" class="task-item' + (isEditing ? ' active' : '') + '">'
+          + '<div class="task-item-title">' + esc(t.title || '-') + '</div>'
+          + '<div class="task-item-meta">'
+          + '<span class="badge ' + statusBadgeClass(t.status) + '">' + esc(t.status || '-') + '</span>'
+          + '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>'
+          + '<span style="color:#94a3b8;">' + esc(t.due_date || 'No date') + '</span>'
+          + '</div></button>';
       }).join('');
 
       list.querySelectorAll('[data-edit]').forEach((btn) => {
@@ -775,12 +774,12 @@
         { label: 'Blocked', count: counts['Blocked'], cls: 'stat-blocked' }
       ];
 
-      content.innerHTML = items.map((i) => `
-        <div class="stat-box ${i.cls}">
-          <div class="stat-number">${i.count}</div>
-          <div class="stat-label">${i.label}</div>
-        </div>
-      `).join('');
+      content.innerHTML = items.map((i) =>
+        '<div class="stat-box ' + i.cls + '">'
+        + '<div class="stat-number">' + i.count + '</div>'
+        + '<div class="stat-label">' + i.label + '</div>'
+        + '</div>'
+      ).join('');
     }
 
     // =============================================
@@ -845,12 +844,13 @@
         });
       }
 
+      // ✅ Content-Type: text/plain agar tidak trigger preflight CORS
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           action: 'save',
-          tasks
+          tasks: tasks
         })
       });
 
@@ -883,7 +883,7 @@
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: 'save',
-            tasks
+            tasks: tasks
           })
         });
 
@@ -905,8 +905,6 @@
     // =============================================
     // EVENT LISTENERS
     // =============================================
-
-    // Submit form
     el('taskForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       if (state.loading) return;
@@ -916,8 +914,8 @@
         status: el('status').value,
         priority: el('priority').value,
         due_date: el('due_date').value,
-        updated_at: el('updated_at').value || todayISO(),
-        note: el('note').value.trim()
+        note: el('note').value.trim(),
+        updated_at: el('updated_at').value || todayISO()
       };
 
       if (!payload.title) {
@@ -928,11 +926,9 @@
 
       try {
         setLoading(true);
+        const isEdit = !!state.editingId;
         await saveTask(payload);
-        showMessage(
-          state.editingId ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan',
-          true
-        );
+        showMessage(isEdit ? '✅ Task berhasil diupdate' : '✅ Task berhasil disimpan', true);
         clearForm();
         await loadData();
       } catch (err) {
@@ -943,23 +939,19 @@
       }
     });
 
-    // New task
     el('newBtn').addEventListener('click', () => {
       clearForm();
       el('title').focus();
       showMessage('➕ Mode input baru aktif', true);
     });
 
-    // Cancel
     el('cancelBtn').addEventListener('click', () => {
       clearForm();
       showMessage('🔄 Form dibersihkan', true);
     });
 
-    // Delete
     el('deleteBtn').addEventListener('click', deleteTask);
 
-    // Refresh
     el('refreshBtn').addEventListener('click', () => {
       if (!state.loading) loadData();
     });
