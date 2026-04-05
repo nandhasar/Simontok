@@ -97,6 +97,8 @@
     .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
     .login-err{background:var(--red-bg);color:var(--red);padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;display:none;text-align:center}
     .login-err.show{display:block}
+    .login-info{background:var(--blue-bg2);color:var(--blue);padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;text-align:center;display:none}
+    .login-info.show{display:block}
 
     /* CTA */
     .cta-box{max-width:700px;margin:0 auto;padding:48px 40px;background:linear-gradient(135deg,#1e3a5f,#2e1065);border-radius:28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(37,99,235,.25);text-align:center}
@@ -104,11 +106,9 @@
     .cta-box h2{font-size:clamp(24px,4vw,34px);font-weight:800;margin-bottom:12px;position:relative}
     .cta-box p{font-size:16px;opacity:.8;margin-bottom:28px;position:relative}
     .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
-    .btn-c{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:16px;font-size:15px;font-weight:700;transition:all .25s;border:none}
+    .btn-c{display:inline-flex;align-items:center;gap:8px;padding:16px 28px;border-radius:16px;font-size:15px;font-weight:700;transition:all .25s;border:none;cursor:pointer}
     .btn-cw{background:#fff;color:#1e3a5f}
     .btn-cw:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,255,255,.2)}
-    .btn-ct{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
-    .btn-ct:hover{background:rgba(255,255,255,.2);transform:translateY(-3px)}
     .footer{padding:30px 20px;text-align:center;border-top:1px solid var(--border);margin-top:40px}
     .footer p{font-size:13px;color:var(--text4)}
 
@@ -129,13 +129,16 @@
   <!-- NAV -->
   <nav class="nav" id="navbar">
     <div class="nav-inner">
-      <a href="#" class="nav-brand"><div class="nav-logo">S</div><h1>SIMONTOK</h1></a>
+      <a href="#" class="nav-brand">
+        <div class="nav-logo">S</div>
+        <h1>SIMONTOK</h1>
+      </a>
       <div class="nav-links">
         <a href="#features" class="nav-link">Fitur</a>
         <a href="#how" class="nav-link">Cara Kerja</a>
         <button class="nav-link primary" id="navLogin">🔐 Login</button>
         <a href="dashboard.html" class="nav-link" id="navDash" style="display:none">📊 Dashboard</a>
-        <a href="entri.html" class="nav-link primary" id="navEntri" style="display:none">+ Entri</a>
+        <a href="notulen.html" class="nav-link" id="navNotulen" style="display:none">📝 Notulen</a>
         <div class="user-bar" id="userBar">
           <div class="user-avatar" id="userAvatar">?</div>
           <span class="user-name" id="userName"></span>
@@ -154,7 +157,7 @@
     <a href="#how" onclick="closeMob()">📋 Cara Kerja</a>
     <button id="mobLogin" class="mp">🔐 Login</button>
     <a href="dashboard.html" id="mobDash2" style="display:none">📊 Dashboard</a>
-    <a href="entri.html" id="mobEntri2" class="mp" style="display:none">+ Entri Task</a>
+    <a href="notulen.html" id="mobNotulen2" style="display:none">📝 Notulen</a>
     <button id="mobLogout" style="display:none;color:var(--red)">Logout</button>
     <button id="themeBtn2">🌙 Ganti Tema</button>
   </div>
@@ -165,28 +168,40 @@
       <button class="modal-x" id="loginClose">&times;</button>
       <div class="login-logo">S</div>
       <div class="login-title">Login SIMONTOK</div>
-      <div class="login-sub">Masukkan username & password Anda</div>
-      <div class="login-err" id="loginErr"></div>
+      <div class="login-sub">Masukkan username &amp; password Anda</div>
+
+      <!-- Info box (opsional) -->
+      <div class="login-info" id="loginInfo"></div>
+      <!-- Error box -->
+      <div class="login-err"  id="loginErr"></div>
+
       <form id="loginForm">
         <div class="fg">
           <label>👤 Username</label>
-          <input type="text" id="inUser" placeholder="Masukkan username" required autocomplete="username" />
+          <input type="text" id="inUser" placeholder="Masukkan username"
+                 required autocomplete="username" />
         </div>
         <div class="fg">
           <label>🔑 Password</label>
-          <input type="password" id="inPass" placeholder="Masukkan password" required autocomplete="current-password" />
+          <input type="password" id="inPass" placeholder="Masukkan password"
+                 required autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn-login" id="btnLoginSubmit">🚀 Masuk</button>
+        <button type="submit" class="btn-login" id="btnLoginSubmit">
+          🚀 Masuk
+        </button>
       </form>
+
+      <!-- Indikator API Key setelah login -->
+      <div id="loginApiStatus" style="margin-top:12px;font-size:11px;
+           color:var(--text4);text-align:center;display:none">
+      </div>
     </div>
   </div>
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg">
-      <div class="blob b1"></div>
-      <div class="blob b2"></div>
-      <div class="blob b3"></div>
+      <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
       <div class="hero-grid"></div>
     </div>
     <div class="hero-c">
@@ -208,36 +223,12 @@
       <p class="sd">Fitur lengkap untuk monitoring task organisasi.</p>
     </div>
     <div class="features">
-      <div class="feat">
-        <div class="feat-i" style="background:var(--blue-bg2)">📋</div>
-        <h3>Manajemen Task</h3>
-        <p>Tambah, edit, dan hapus task dengan mudah. Kelola status, prioritas, dan deadline dalam satu tempat.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-i" style="background:var(--green-bg)">📊</div>
-        <h3>Dashboard Real-time</h3>
-        <p>Pantau progres tim secara langsung. Visualisasi data yang jelas dan mudah dipahami.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-i" style="background:rgba(139,92,246,.15)">📝</div>
-        <h3>Tools Notulen</h3>
-        <p>Buat notulen rapat dengan poin-poin diskusi. Tersedia AI summary untuk ringkasan otomatis.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-i" style="background:var(--red-bg)">📱</div>
-        <h3>Responsif</h3>
-        <p>Akses dari desktop, tablet, maupun smartphone. Desain modern yang nyaman di mata.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-i" style="background:rgba(234,179,8,.15)">🔐</div>
-        <h3>Multi User</h3>
-        <p>Sistem multi-user dengan role admin dan user. Data terpisah per-user dengan keamanan tinggi.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-i" style="background:rgba(20,184,166,.15)">🌙</div>
-        <h3>Dark Mode</h3>
-        <p>Mode gelap untuk kenyamanan mata saat bekerja di malam hari.</p>
-      </div>
+      <div class="feat"><div class="feat-i" style="background:var(--blue-bg2)">📋</div><h3>Manajemen Task</h3><p>Tambah, edit, dan hapus task dengan mudah. Kelola status, prioritas, dan deadline dalam satu tempat.</p></div>
+      <div class="feat"><div class="feat-i" style="background:var(--green-bg)">📊</div><h3>Dashboard Real-time</h3><p>Pantau progres tim secara langsung. Visualisasi data yang jelas dan mudah dipahami.</p></div>
+      <div class="feat"><div class="feat-i" style="background:rgba(139,92,246,.15)">📝</div><h3>Tools Notulen + AI</h3><p>Buat notulen rapat dengan poin-poin diskusi. AI menyusun notulen formal secara otomatis.</p></div>
+      <div class="feat"><div class="feat-i" style="background:var(--red-bg)">📱</div><h3>Responsif</h3><p>Akses dari desktop, tablet, maupun smartphone. Desain modern yang nyaman di mata.</p></div>
+      <div class="feat"><div class="feat-i" style="background:rgba(234,179,8,.15)">🔐</div><h3>Multi User</h3><p>Sistem multi-user dengan role admin dan user. Data terpisah per-user dengan keamanan tinggi.</p></div>
+      <div class="feat"><div class="feat-i" style="background:rgba(20,184,166,.15)">🌙</div><h3>Dark Mode</h3><p>Mode gelap untuk kenyamanan mata saat bekerja di malam hari.</p></div>
     </div>
   </section>
 
@@ -249,29 +240,10 @@
       <p class="sd">Proses yang simpel dan langsung bisa digunakan.</p>
     </div>
     <div class="steps">
-      <div class="step">
-        <div class="step-n">1</div>
-        <h3>Login</h3>
-        <p>Masukkan username dan password yang sudah diberikan admin.</p>
-        <div class="step-l"></div>
-      </div>
-      <div class="step">
-        <div class="step-n">2</div>
-        <h3>Entri Task</h3>
-        <p>Tambahkan task baru dengan title, status, prioritas, dan deadline.</p>
-        <div class="step-l"></div>
-      </div>
-      <div class="step">
-        <div class="step-n">3</div>
-        <h3>Monitor</h3>
-        <p>Pantau progres dan update status task dari dashboard.</p>
-        <div class="step-l"></div>
-      </div>
-      <div class="step">
-        <div class="step-n">4</div>
-        <h3>Selesai</h3>
-        <p>Tandai task sebagai selesai dan download rekapan kapan saja.</p>
-      </div>
+      <div class="step"><div class="step-n">1</div><h3>Login</h3><p>Masukkan username dan password yang sudah diberikan admin.</p><div class="step-l"></div></div>
+      <div class="step"><div class="step-n">2</div><h3>Entri Task</h3><p>Tambahkan task baru dengan title, status, prioritas, dan deadline.</p><div class="step-l"></div></div>
+      <div class="step"><div class="step-n">3</div><h3>Monitor</h3><p>Pantau progres dan update status task dari dashboard.</p><div class="step-l"></div></div>
+      <div class="step"><div class="step-n">4</div><h3>Selesai</h3><p>Tandai task sebagai selesai dan download rekapan kapan saja.</p></div>
     </div>
   </section>
 
@@ -292,224 +264,260 @@
     <p>© 2024 SIMONTOK — Sistem Monitoring Organisasi Kerja</p>
   </footer>
 
-  <script>
-    // ============================================================
-    // CONFIG
-    // ============================================================
-    var API = 'https://script.google.com/macros/s/AKfycbw1TLkJ-FIYL0hS8WA53h38eLEXw2ZRQnjSJ0aRVhF-cWHNjTQQDhnnIy7cWv25tT0p/exec';
+<script>
+  // ============================================================
+  // CONFIG — ganti dengan URL deployment Apps Script Anda
+  // ============================================================
+  var API_URL = 'https://script.google.com/macros/s/AKfycbw1TLkJ-FIYL0hS8WA53h38eLEXw2ZRQnjSJ0aRVhF-cWHNjTQQDhnnIy7cWv25tT0p/exec';
 
-    // ============================================================
-    // SESSION
-    // ============================================================
-    var session = null;
+  // Kunci penyimpanan session — gunakan sessionStorage agar
+  // otomatis terhapus saat browser/tab ditutup
+  var SESSION_KEY = 'simontok-session';
 
-    function loadSession() {
-      try {
-        var s = localStorage.getItem('simontok-session');
-        if (s) session = JSON.parse(s);
-      } catch (e) {
-        session = null;
-      }
+  // ============================================================
+  // SESSION HELPERS
+  // ============================================================
+
+  /**
+   * Simpan session ke sessionStorage.
+   * Data mencakup: username, name, role, sheet_name, token, apiKey
+   * apiKey berasal dari kolom API di sheet _users via Apps Script.
+   * TIDAK pernah hardcode di sini.
+   */
+  function saveSession(userData) {
+    try {
+      // Pastikan apiKey ikut tersimpan (dari response login Apps Script)
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        username:   userData.username   || '',
+        name:       userData.name       || '',
+        role:       userData.role       || 'user',
+        sheet_name: userData.sheet_name || '',
+        token:      userData.token      || '',
+        apiKey:     userData.apiKey     || ''   // ← dari kolom API sheet _users
+      }));
+    } catch(e) {
+      console.error('saveSession error:', e);
+    }
+  }
+
+  function loadSession() {
+    try {
+      var raw = sessionStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+
+  function clearSession() {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  // ============================================================
+  // THEME
+  // ============================================================
+  function initTheme() {
+    var t = localStorage.getItem('simontok-theme');
+    if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    updateThemeBtn();
+  }
+
+  function toggleTheme() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('simontok-theme','light');
+    } else {
+      document.documentElement.setAttribute('data-theme','dark');
+      localStorage.setItem('simontok-theme','dark');
+    }
+    updateThemeBtn();
+  }
+
+  function updateThemeBtn() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.getElementById('themeBtn').textContent    = isDark ? '☀️' : '🌙';
+    var btn2 = document.getElementById('themeBtn2');
+    if (btn2) btn2.textContent = isDark ? '☀️ Mode Terang' : '🌙 Mode Gelap';
+  }
+
+  // ============================================================
+  // UI UPDATE — tampilkan nav sesuai status login
+  // ============================================================
+  function updateUI() {
+    var s          = loadSession();
+    var isLoggedIn = !!(s && s.token);
+
+    // Nav desktop
+    document.getElementById('navLogin').style.display   = isLoggedIn ? 'none' : '';
+    document.getElementById('navDash').style.display    = isLoggedIn ? ''     : 'none';
+    document.getElementById('navNotulen').style.display = isLoggedIn ? ''     : 'none';
+
+    // User bar
+    var userBar = document.getElementById('userBar');
+    if (isLoggedIn) {
+      userBar.classList.add('on');
+      document.getElementById('userAvatar').textContent =
+        (s.name || s.username || '?').charAt(0).toUpperCase();
+      document.getElementById('userName').textContent = s.name || s.username;
+    } else {
+      userBar.classList.remove('on');
     }
 
-    function saveSession(u) {
-      session = u;
-      localStorage.setItem('simontok-session', JSON.stringify(u));
+    // Nav mobile
+    document.getElementById('mobLogin').style.display    = isLoggedIn ? 'none' : '';
+    document.getElementById('mobDash2').style.display    = isLoggedIn ? ''     : 'none';
+    document.getElementById('mobNotulen2').style.display = isLoggedIn ? ''     : 'none';
+    document.getElementById('mobLogout').style.display   = isLoggedIn ? ''     : 'none';
+
+    // Hero button
+    var heroBtn = document.getElementById('heroLogin');
+    if (isLoggedIn) {
+      heroBtn.textContent = '📊 Buka Dashboard';
+      heroBtn.onclick     = function(){ location.href = 'dashboard.html'; };
+    } else {
+      heroBtn.textContent = '🔐 Login untuk Mulai';
+      heroBtn.onclick     = openLogin;
     }
+  }
 
-    function clearSession() {
-      session = null;
-      localStorage.removeItem('simontok-session');
-    }
+  // ============================================================
+  // LOGIN MODAL
+  // ============================================================
+  function openLogin() {
+    document.getElementById('loginModal').classList.add('on');
+    document.getElementById('loginInfo').classList.remove('show');
+    hideErr();
+    setTimeout(function(){ document.getElementById('inUser').focus(); }, 100);
+  }
 
-    loadSession();
+  function closeLogin() {
+    document.getElementById('loginModal').classList.remove('on');
+    document.getElementById('loginApiStatus').style.display = 'none';
+    hideErr();
+    document.getElementById('inUser').value = '';
+    document.getElementById('inPass').value = '';
+  }
 
-    // ============================================================
-    // THEME
-    // ============================================================
-    function initTheme() {
-      var t = localStorage.getItem('simontok-theme');
-      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-      updateThemeBtn();
-    }
+  function showErr(msg) {
+    var box = document.getElementById('loginErr');
+    box.textContent = '❌ ' + msg;
+    box.classList.add('show');
+  }
 
-    function toggleTheme() {
-      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('simontok-theme', 'light');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('simontok-theme', 'dark');
-      }
-      updateThemeBtn();
-    }
+  function hideErr() {
+    document.getElementById('loginErr').classList.remove('show');
+    document.getElementById('loginErr').textContent = '';
+  }
 
-    function updateThemeBtn() {
-      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      var moon = '🌙';
-      var sun = '☀️';
-      document.getElementById('themeBtn').textContent = isDark ? sun : moon;
-      var btn2 = document.getElementById('themeBtn2');
-      if (btn2) btn2.textContent = isDark ? sun + ' Mode Terang' : moon + ' Mode Gelap';
-    }
+  // ============================================================
+  // FORM SUBMIT — LOGIN
+  // ============================================================
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    // ============================================================
-    // UI UPDATE
-    // ============================================================
-    function updateUI() {
-      var isLoggedIn = session && session.token;
+    var usr = document.getElementById('inUser').value.trim();
+    var pwd = document.getElementById('inPass').value;
+    var btn = document.getElementById('btnLoginSubmit');
 
-      // Nav links
-      document.getElementById('navLogin').style.display = isLoggedIn ? 'none' : '';
-      document.getElementById('navDash').style.display = isLoggedIn ? '' : 'none';
-      document.getElementById('navEntri').style.display = isLoggedIn ? '' : 'none';
+    if (!usr || !pwd) { showErr('Username dan password wajib diisi'); return; }
 
-      // User bar
-      var userBar = document.getElementById('userBar');
-      if (isLoggedIn) {
-        userBar.classList.add('on');
-        document.getElementById('userAvatar').textContent = (session.name || session.username || '?').charAt(0).toUpperCase();
-        document.getElementById('userName').textContent = session.name || session.username;
-      } else {
-        userBar.classList.remove('on');
-      }
+    btn.disabled    = true;
+    btn.textContent = '⏳ Memproses...';
+    hideErr();
 
-      // Mobile
-      document.getElementById('mobLogin').style.display = isLoggedIn ? 'none' : '';
-      document.getElementById('mobDash2').style.display = isLoggedIn ? '' : 'none';
-      document.getElementById('mobEntri2').style.display = isLoggedIn ? '' : 'none';
-      document.getElementById('mobLogout').style.display = isLoggedIn ? '' : 'none';
-      document.getElementById('mobLogout').style.display = isLoggedIn ? '' : 'none';
+    fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify({ action: 'login', username: usr, password: pwd })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(j) {
+      btn.disabled    = false;
+      btn.textContent = '🚀 Masuk';
 
-      // Hero btn
-      document.getElementById('heroLogin').textContent = isLoggedIn ? '📊 Buka Dashboard' : '🔐 Login untuk Mulai';
-      document.getElementById('heroLogin').onclick = isLoggedIn ? function() { location.href = 'dashboard.html'; } : openLogin;
-    }
+      if (j.ok && j.user) {
 
-    // ============================================================
-    // LOGIN
-    // ============================================================
-    function openLogin() {
-      document.getElementById('loginModal').classList.add('on');
-      document.getElementById('inUser').focus();
-    }
+        // ── Simpan seluruh data user ke sessionStorage ──────────
+        // j.user berisi: username, name, role, sheet_name, token, apiKey
+        // apiKey berasal dari kolom API di sheet _users
+        saveSession(j.user);
 
-    function closeLogin() {
-      document.getElementById('loginModal').classList.remove('on');
-      document.getElementById('loginErr').classList.remove('show');
-      document.getElementById('inUser').value = '';
-      document.getElementById('inPass').value = '';
-    }
+        // ── Tampilkan status API Key (debug ringan, bukan nilai key) ─
+        var apiStatus = document.getElementById('loginApiStatus');
+        if (j.user.apiKey) {
+          apiStatus.textContent = '🔑 API Key aktif untuk fitur AI Notulen';
+          apiStatus.style.color = 'var(--green)';
+        } else {
+          apiStatus.textContent = '⚠️ API Key tidak tersedia — fitur AI Notulen tidak aktif';
+          apiStatus.style.color = 'var(--red)';
+        }
+        apiStatus.style.display = 'block';
 
-    document.getElementById('loginClose').onclick = closeLogin;
-    document.getElementById('loginModal').addEventListener('click', function(e) {
-      if (e.target === this) closeLogin();
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      var usr = document.getElementById('inUser').value.trim();
-      var pwd = document.getElementById('inPass').value;
-      var btn = document.getElementById('btnLoginSubmit');
-
-      if (!usr || !pwd) {
-        showErr('Username dan password wajib diisi');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = '⏳ Memproses...';
-      hideErr();
-
-      fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'login', username: usr, password: pwd })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(j) {
-        btn.disabled = false;
-        btn.textContent = '🚀 Masuk';
-
-        if (j.ok && j.user) {
-          saveSession(j.user);
+        // ── Redirect setelah 600ms (biar status sempat terlihat) ─
+        setTimeout(function() {
           closeLogin();
           updateUI();
           location.href = 'dashboard.html';
-        } else {
-          showErr(j.message || 'Login gagal');
-        }
-      })
-      .catch(function(err) {
-        btn.disabled = false;
-        btn.textContent = '🚀 Masuk';
-        showErr('Error: ' + err.message);
-      });
-    });
+        }, 600);
 
-    function showErr(msg) {
-      var box = document.getElementById('loginErr');
-      box.textContent = '❌ ' + msg;
-      box.classList.add('show');
-    }
-
-    function hideErr() {
-      document.getElementById('loginErr').classList.remove('show');
-    }
-
-    // ============================================================
-    // LOGOUT
-    // ============================================================
-    document.getElementById('btnLogout').onclick = function() {
-      clearSession();
-      updateUI();
-      location.href = 'index.html';
-    };
-
-    document.getElementById('mobLogout').onclick = function() {
-      clearSession();
-      updateUI();
-      location.href = 'index.html';
-    };
-
-    // ============================================================
-    // MOBILE MENU
-    // ============================================================
-    document.getElementById('hamBtn').onclick = function() {
-      document.getElementById('mobMenu').classList.add('on');
-    };
-
-    document.getElementById('mobClose').onclick = closeMob;
-
-    function closeMob() {
-      document.getElementById('mobMenu').classList.remove('on');
-    }
-
-    // ============================================================
-    // NAV SCROLL
-    // ============================================================
-    window.addEventListener('scroll', function() {
-      var nav = document.getElementById('navbar');
-      if (window.scrollY > 20) {
-        nav.classList.add('scrolled');
       } else {
-        nav.classList.remove('scrolled');
+        showErr(j.message || 'Login gagal. Periksa username & password.');
       }
+    })
+    .catch(function(err) {
+      btn.disabled    = false;
+      btn.textContent = '🚀 Masuk';
+      showErr('Koneksi gagal: ' + err.message);
     });
+  });
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    document.getElementById('navLogin').onclick = openLogin;
-    document.getElementById('heroLogin').onclick = openLogin;
-    document.getElementById('ctaLogin').onclick = openLogin;
-    document.getElementById('mobLogin').onclick = openLogin;
-    document.getElementById('themeBtn').onclick = toggleTheme;
-    document.getElementById('themeBtn2').onclick = toggleTheme;
-
-    initTheme();
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+  function doLogout() {
+    clearSession();
     updateUI();
-  </script>
+    location.href = 'index.html';
+  }
+
+  document.getElementById('btnLogout').onclick  = doLogout;
+  document.getElementById('mobLogout').onclick  = doLogout;
+
+  // ============================================================
+  // MODAL TUTUP
+  // ============================================================
+  document.getElementById('loginClose').onclick = closeLogin;
+  document.getElementById('loginModal').addEventListener('click', function(e){
+    if (e.target === this) closeLogin();
+  });
+
+  // ============================================================
+  // MOBILE MENU
+  // ============================================================
+  document.getElementById('hamBtn').onclick  = function(){ document.getElementById('mobMenu').classList.add('on'); };
+  document.getElementById('mobClose').onclick = closeMob;
+  function closeMob(){ document.getElementById('mobMenu').classList.remove('on'); }
+
+  // ============================================================
+  // NAV SCROLL
+  // ============================================================
+  window.addEventListener('scroll', function(){
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // ============================================================
+  // BIND SEMUA TOMBOL LOGIN
+  // ============================================================
+  document.getElementById('navLogin').onclick  = openLogin;
+  document.getElementById('ctaLogin').onclick  = openLogin;
+  document.getElementById('mobLogin').onclick  = openLogin;
+  document.getElementById('themeBtn').onclick  = toggleTheme;
+  document.getElementById('themeBtn2').onclick = toggleTheme;
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  initTheme();
+  updateUI();
+</script>
 </body>
 </html>
