@@ -265,52 +265,63 @@
   </footer>
 
 <script>
-  // ============================================================
-  // CONFIG — ganti dengan URL deployment Apps Script Anda
-  // ============================================================
-  var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
+// ============================================================
+// CONFIG — ganti dengan URL deployment Apps Script Anda
+// ============================================================
+var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
-  // Kunci penyimpanan session — gunakan sessionStorage agar
-  // otomatis terhapus saat browser/tab ditutup
-  var SESSION_KEY = 'simontok-session';
+// Kunci penyimpanan session
+// SEKARANG MENGGUNAKAN localStorage agar data stabil saat pindah halaman
+var SESSION_KEY = 'simontok-session';
 
-  // ============================================================
-  // SESSION HELPERS
-  // ============================================================
+// ============================================================
+// SESSION HELPERS
+// ============================================================
 
-  /**
-   * Simpan session ke sessionStorage.
-   * Data mencakup: username, name, role, sheet_name, token, apiKey
-   * apiKey berasal dari kolom API di sheet _users via Apps Script.
-   * TIDAK pernah hardcode di sini.
-   */
-  function saveSession(userData) {
-    try {
-      // Pastikan apiKey ikut tersimpan (dari response login Apps Script)
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        username:   userData.username   || '',
-        name:       userData.name       || '',
-        role:       userData.role       || 'user',
-        sheet_name: userData.sheet_name || '',
-        token:      userData.token      || '',
-        apiKey:     userData.apiKey     || ''   // ← dari kolom API sheet _users
-      }));
-    } catch(e) {
-      console.error('saveSession error:', e);
-    }
+/**
+ * Simpan session ke localStorage.
+ * Data mencakup: username, name, role, sheet_name, token, apiKey
+ */
+function saveSession(userData) {
+  try {
+    // GANTI sessionStorage MENJADI localStorage
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      username:   userData.username   || '',
+      name:       userData.name       || '',
+      role:       userData.role       || 'user',
+      sheet_name: userData.sheet_name || '',
+      token:      userData.token      || '',
+      apiKey:     userData.apiKey     || ''   // ← dari kolom API sheet _users
+    }));
+    console.log('✅ Session saved to localStorage');
+  } catch(e) {
+    console.error('saveSession error:', e);
   }
+}
 
-  function loadSession() {
-    try {
-      var raw = sessionStorage.getItem(SESSION_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
+/**
+ * Ambil session dari localStorage.
+ */
+function loadSession() {
+  try {
+    // GANTI sessionStorage MENJADI localStorage
+    var raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { 
+    console.error('loadSession error:', e);
+    return null; 
   }
+}
 
-  function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
-  }
-
+/**
+ * Hapus session.
+ */
+function clearSession() {
+  // GANTI sessionStorage MENJADI localStorage
+  localStorage.removeItem(SESSION_KEY);
+  console.log('🗑️ Session cleared');
+}
+  
   // ============================================================
   // THEME
   // ============================================================
