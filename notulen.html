@@ -704,16 +704,6 @@ window.onload = startApp;
   renderApiKeyStatus();
 
   // ============================================================
-  // GUARD — redirect ke login jika tidak ada session
-  // ============================================================
-  (function(){
-    var s = getSession();
-    if(!s || !s.username){
-      window.location.href = 'index.html';
-    }
-  })();
-
-  // ============================================================
   // PESERTA
   // ============================================================
   var pesertaCount = 0;
