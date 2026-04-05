@@ -1233,31 +1233,39 @@
     doc.text(judulLines, W / 2, y, { align: 'center' });
     y += judulLines.length * 6 + 8;
 
-    // ── INFO RAPAT ───────────────────────────────────────────
+        // ── INFO RAPAT ───────────────────────────────────────────
     var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
-    var metaRows   = [
-      ['Hari / Tanggal', hariStr + ', ' + tglExport],
-      ['Waktu',          data.waktu   || '-'],
-      ['Tempat',         data.tempat  || '-'],
-      ['Peserta',        pesertaStr],
-      ['Notulis',        data.notulis || '-']
+
+    var colKey = 42;
+    var colSep = 6;
+    var colVal = colW - colKey - colSep;
+
+    var metaRows = [
+      ['Hari / Tanggal', ':', hariStr + ', ' + tglExport],
+      ['Waktu',          ':', data.waktu   || '-'],
+      ['Tempat',         ':', data.tempat  || '-'],
+      ['Peserta',        ':', pesertaStr],
+      ['Notulis',        ':', data.notulis || '-']
     ];
 
     doc.autoTable({
       startY: y,
       body:   metaRows,
       theme:  'plain',
-      styles: { fontSize: 10, cellPadding: 2, textColor: [30, 41, 59], lineColor: [255,255,255] },
-      columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: 38 },
-        1: { cellWidth: 8 },
-        2: { cellWidth: colW - 46 }
+      styles: {
+        fontSize:    10,
+        cellPadding: { top: 2, bottom: 2, left: 0, right: 2 },
+        textColor:   [30, 41, 59],
+        overflow:    'linebreak'
       },
-      margin: { left: mL, right: mR },
-      didParseCell: function(d) { if (d.column.index === 1) d.cell.text = [':']; }
+      columnStyles: {
+        0: { fontStyle: 'bold', cellWidth: colKey },
+        1: { cellWidth: colSep, halign: 'center' },
+        2: { cellWidth: colVal }
+      },
+      margin: { left: mL, right: mR }
     });
-    y = doc.lastAutoTable.finalY + 4;
-
+    y = doc.lastAutoTable.finalY + 6;
     // Garis single
     doc.setDrawColor(30, 41, 59);
     doc.setLineWidth(0.5);
