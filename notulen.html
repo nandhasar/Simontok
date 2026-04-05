@@ -982,49 +982,167 @@
   // ============================================================
   // BUILD PREVIEW HTML
   // ============================================================
-  function buildPreviewHTML(data){
-    var pesertaStr=data.peserta.length
-      ?data.peserta.map(function(p,i){return(i+1)+'. '+p;}).join('<br>')
-      :'-';
-    var pointsHTML=data.points.length
-      ?data.points.map(function(p){return'<li>'+esc(p)+'</li>';}).join('')
-      :'<li><em>Tidak ada point</em></li>';
-    var summaryHTML=data.summary
-      ?'<div class="doc-summary"><h4>📋 Ringkasan / Kesimpulan:</h4><p>'+esc(data.summary)+'</p></div>'
-      :'';
-    var ttdURL=getTTDDataURL();
-    var ttdHTML=ttdURL
-      ?'<img src="'+ttdURL+'" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:0 auto">'
-            :'<div style="width:160px;height:60px;border-bottom:1px solid #1e293b;margin:0 auto"></div>';
+  function buildPreviewHTML(data) {
+
+    // ── Info peserta ─────────────────────────────────────────
+    var pesertaStr = data.peserta.length
+      ? data.peserta.join(', ')
+      : '-';
+
+    // ── Hari dari tanggal ────────────────────────────────────
+    var hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    var hariStr  = '';
+    if (data.tanggal) {
+      var d = new Date(data.tanggal);
+      hariStr = hariList[d.getDay()] + ', ';
+    }
+
+    // ── Konten utama: pakai AI summary jika ada ─────────────
+    // summary = hasil generate AI (teks bebas, bisa multiline)
+    // points  = point mentah user (TIDAK diexport, hanya bahan AI)
+    var isiHTML = '';
+
+    if (data.summary && data.summary.trim() !== '') {
+      // Pecah per baris, bersihkan, render
+      var lines = data.summary.trim().split('\n');
+      var inList = false;
+      var html   = '';
+
+      lines.forEach(function(line) {
+        line = line.trim();
+        if (!line) {
+          if (inList) { html += '</ol>'; inList = false; }
+          return;
+        }
+
+        // Deteksi heading (baris yg diawali angka + titik tanpa isi panjang,
+        // atau huruf kapital semua / diawali kata kunci seksi)
+        var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA RAPAT|PENUTUP)/i.test(line)
+                     || /^\*\*(.+)\*\*$/.test(line)          // **bold**
+                     || /^#{1,3}\s/.test(line);              // markdown heading
+
+        // Deteksi list item (diawali angka. atau - atau •)
+        var listMatch = line.match(/^(\d+)\.\s+(.+)/) || line.match(/^[-•o]\s+(.+)/);
+
+        if (isHeading) {
+          if (inList) { html += '</ol>'; inList = false; }
+          // Bersihkan marker markdown
+          var headText = line
+            .replace(/^\*\*(.+)\*\*$/, '$1')
+            .replace(/^#{1,3}\s+/, '')
+            .replace(/^(\d+\.\s+)/, '');
+          html += '<h4 style="margin:16px 0 6px;font-size:13px;font-weight:700;' +
+                  'text-transform:uppercase;letter-spacing:.5px;color:#1e293b">' +
+                  esc(headText) + '</h4>';
+
+        } else if (listMatch) {
+          if (!inList) { html += '<ol style="padding-left:20px;margin:4px 0">'; inList = true; }
+          var itemText = listMatch[2] || listMatch[1];
+          html += '<li style="margin-bottom:4px;line-height:1.6">' + esc(itemText) + '</li>';
+
+        } else {
+          if (inList) { html += '</ol>'; inList = false; }
+          html += '<p style="margin:4px 0;line-height:1.7">' + esc(line) + '</p>';
+        }
+      });
+
+      if (inList) html += '</ol>';
+      isiHTML = html;
+
+    } else {
+      // Belum di-generate AI → tampilkan peringatan
+      isiHTML =
+        '<div style="padding:16px;background:#fef9c3;border-left:4px solid #eab308;' +
+        'border-radius:4px;font-size:13px;color:#713f12">' +
+        '⚠️ Notulen belum disusun oleh AI. Silakan klik <strong>"✨ Susun Notulen dengan AI"</strong> ' +
+        'terlebih dahulu sebelum export.' +
+        '</div>';
+    }
+
+    // ── TTD ──────────────────────────────────────────────────
+    var ttdURL  = getTTDDataURL();
+    var ttdHTML = ttdURL
+      ? '<img src="' + ttdURL + '" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:8px auto 0">'
+      : '<div style="width:160px;height:60px;border-bottom:2px solid #1e293b;margin:8px auto 0"></div>';
+
+    // ── Tanggal export ───────────────────────────────────────
+    var now        = new Date();
+    var bulanList  = ['Januari','Februari','Maret','April','Mei','Juni',
+                      'Juli','Agustus','September','Oktober','November','Desember'];
+    var tglExport  = now.getDate() + ' ' + bulanList[now.getMonth()] + ' ' + now.getFullYear();
 
     return (
-      '<div class="doc-preview">'+
-        '<div class="doc-header">'+
-          (data.org?'<h2>'+esc(data.org)+'</h2>':'')+
-          '<h3>NOTULEN RAPAT</h3>'+
-          '<p>Dokumen Resmi Hasil Rapat</p>'+
-        '</div>'+
-        '<div class="doc-title">'+esc(data.judul||'—')+'</div>'+
-        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">'+
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;white-space:nowrap;width:120px">Hari / Tanggal</td><td style="width:12px">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>'+
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Waktu</td><td>:</td><td>'+esc(data.waktu||'-')+'</td></tr>'+
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Tempat</td><td>:</td><td>'+esc(data.tempat||'-')+'</td></tr>'+
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;vertical-align:top">Peserta</td><td style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>'+
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Notulis</td><td>:</td><td>'+esc(data.notulis||'-')+'</td></tr>'+
-        '</table>'+
-        '<hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:16px">'+
-        '<div class="doc-points">'+
-          '<h4>Hasil Pembahasan:</h4>'+
-          '<ol style="padding-left:20px">'+pointsHTML+'</ol>'+
-        '</div>'+
-        summaryHTML+
-        '<div class="doc-ttd">'+
-          '<div class="doc-ttd-box">'+
-            '<p>Notulis,</p>'+
-            ttdHTML+
-            '<div class="name">'+esc(data.notulis||'_______________')+'</div>'+
-          '</div>'+
-        '</div>'+
+      '<div class="doc-preview">' +
+
+        /* ── KOP / HEADER ── */
+        '<div class="doc-header">' +
+          (data.org ? '<h2 style="font-size:15px;font-weight:800;margin:0 0 2px">' + esc(data.org) + '</h2>' : '') +
+          '<h3 style="font-size:18px;font-weight:900;letter-spacing:1px;margin:4px 0 2px">NOTULEN RAPAT</h3>' +
+        '</div>' +
+
+        /* ── JUDUL RAPAT ── */
+        '<div style="text-align:center;font-size:14px;font-weight:700;' +
+        'margin:12px 0 16px;text-transform:uppercase;letter-spacing:.5px">' +
+          esc(data.judul || '—') +
+        '</div>' +
+
+        /* ── INFO RAPAT ── */
+        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">' +
+          '<tr>' +
+            '<td style="font-weight:700;padding:3px 8px 3px 0;white-space:nowrap;width:110px">Hari / Tanggal</td>' +
+            '<td style="width:10px;padding:3px 8px 3px 0">:</td>' +
+            '<td style="padding:3px 0">' + esc(hariStr + formatTanggal(data.tanggal)) + '</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td style="font-weight:700;padding:3px 8px 3px 0">Waktu</td>' +
+            '<td style="padding:3px 8px 3px 0">:</td>' +
+            '<td style="padding:3px 0">' + esc(data.waktu || '-') + '</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td style="font-weight:700;padding:3px 8px 3px 0">Tempat</td>' +
+            '<td style="padding:3px 8px 3px 0">:</td>' +
+            '<td style="padding:3px 0">' + esc(data.tempat || '-') + '</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td style="font-weight:700;padding:3px 8px 3px 0;vertical-align:top">Peserta</td>' +
+            '<td style="padding:3px 8px 3px 0;vertical-align:top">:</td>' +
+            '<td style="padding:3px 0">' + esc(pesertaStr) + '</td>' +
+          '</tr>' +
+        '</table>' +
+
+        '<hr style="border:none;border-top:2px solid #1e293b;margin-bottom:4px">' +
+        '<hr style="border:none;border-top:1px solid #1e293b;margin-bottom:18px">' +
+
+        /* ── AGENDA ── */
+        '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;' +
+        'letter-spacing:.5px;margin:0 0 8px">Agenda Rapat</h4>' +
+        '<p style="margin:0 0 16px;font-size:13px;line-height:1.7">' + esc(data.judul || '-') + '</p>' +
+
+        '<hr style="border:none;border-top:1px solid #cbd5e1;margin-bottom:16px">' +
+
+        /* ── ISI NOTULEN (dari AI) ── */
+        '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;' +
+        'letter-spacing:.5px;margin:0 0 10px">Jalannya Rapat</h4>' +
+        '<div style="font-size:13px;line-height:1.8">' + isiHTML + '</div>' +
+
+        '<hr style="border:none;border-top:1px solid #cbd5e1;margin:20px 0 16px">' +
+
+        /* ── TTD ── */
+        '<div style="display:flex;justify-content:flex-end;margin-top:24px">' +
+          '<div style="text-align:center;min-width:200px">' +
+            '<p style="margin:0 0 4px;font-size:13px">' +
+              (data.tempat ? esc(data.tempat) : '___________') +
+              ', ' + tglExport +
+            '</p>' +
+            '<p style="margin:0 0 4px;font-size:13px">Notulis,</p>' +
+            ttdHTML +
+            '<p style="margin:8px 0 0;font-size:13px;font-weight:700;' +
+            'border-top:1px solid #1e293b;padding-top:4px;min-width:160px">' +
+              esc(data.notulis || '_______________') +
+            '</p>' +
+          '</div>' +
+        '</div>' +
+
       '</div>'
     );
   }
@@ -1051,212 +1169,394 @@
   document.getElementById('modalBtnPDF').addEventListener('click', function(){ closePreviewModal(); doExportPDF(); });
   document.getElementById('modalBtnWord').addEventListener('click', function(){ closePreviewModal(); doExportWord(); });
 
-  // ============================================================
+    // ============================================================
   // EXPORT PDF
   // ============================================================
-  function doExportPDF(){
-    var data   = getFormData();
+  function doExportPDF() {
+    var data = getFormData();
+    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if (!data.summary || !data.summary.trim()) {
+      showToast('⚠️ Susun notulen dengan AI dulu sebelum export!'); return;
+    }
+
+    var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    var bulanList = ['Januari','Februari','Maret','April','Mei','Juni',
+                     'Juli','Agustus','September','Oktober','November','Desember'];
+    var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
+    var hariStr   = hariList[tglObj.getDay()];
+    var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
+
+    var jsPDF  = window.jspdf.jsPDF;
     var size   = document.getElementById('paperSize').value;
     var orient = document.getElementById('paperOrient').value;
-    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
+    var doc    = new jsPDF({ orientation: orient, unit: 'mm', format: size });
+    var W      = doc.internal.pageSize.getWidth();
+    var H      = doc.internal.pageSize.getHeight();
+    var mL     = 25, mR = 20, mT = 20, mB = 20;
+    var colW   = W - mL - mR;
+    var y      = mT;
 
-    var jsPDF = window.jspdf.jsPDF;
-    var doc   = new jsPDF({ orientation:orient, unit:'mm', format:size });
-    var W     = doc.internal.pageSize.getWidth();
-    var H     = doc.internal.pageSize.getHeight();
-    var margin= 20;
-    var colW  = W - margin*2;
-    var y     = margin;
-
-    function addLine(h){
-      y+=h;
-      if(y>H-margin){ doc.addPage(); y=margin; }
+    function checkPage(need) {
+      if (y + need > H - mB) { doc.addPage(); y = mT; }
     }
 
-    // HEADER ORG
-    if(data.org){
-      doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-      doc.text(data.org.toUpperCase(), W/2, y, {align:'center'});
-      addLine(7);
+    // ── KOP ORGANISASI ───────────────────────────────────────
+    if (data.org) {
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 41, 59);
+      doc.text(data.org.toUpperCase(), W / 2, y, { align: 'center' });
+      y += 7;
     }
 
-    // NOTULEN RAPAT
-    doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-    doc.text('NOTULEN RAPAT', W/2, y, {align:'center'});
-    addLine(2);
+    // ── JUDUL DOKUMEN ────────────────────────────────────────
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('NOTULEN RAPAT', W / 2, y, { align: 'center' });
+    y += 5;
 
     // Garis double
-    doc.setDrawColor(30,41,59); doc.setLineWidth(0.8);
-    doc.line(margin, y, W-margin, y);
-    addLine(1.5);
+    doc.setDrawColor(30, 41, 59);
+    doc.setLineWidth(0.8);
+    doc.line(mL, y, W - mR, y);
+    y += 1.5;
     doc.setLineWidth(0.3);
-    doc.line(margin, y, W-margin, y);
-    addLine(8);
+    doc.line(mL, y, W - mR, y);
+    y += 10;
 
-    // JUDUL
-    doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-    doc.text(data.judul||'—', W/2, y, {align:'center'});
-    addLine(10);
+    // ── JUDUL RAPAT ──────────────────────────────────────────
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    var judulLines = doc.splitTextToSize(data.judul.toUpperCase(), colW);
+    doc.text(judulLines, W / 2, y, { align: 'center' });
+    y += judulLines.length * 6 + 8;
 
-    // META TABLE
-    var metaRows=[
-      ['Hari / Tanggal', formatTanggal(data.tanggal)],
-      ['Waktu',          data.waktu  ||'-'],
-      ['Tempat',         data.tempat ||'-'],
-      ['Peserta',        data.peserta.length?data.peserta.join(', '):'-'],
-      ['Notulis',        data.notulis||'-']
+    // ── INFO RAPAT ───────────────────────────────────────────
+    var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
+    var metaRows   = [
+      ['Hari / Tanggal', hariStr + ', ' + tglExport],
+      ['Waktu',          data.waktu   || '-'],
+      ['Tempat',         data.tempat  || '-'],
+      ['Peserta',        pesertaStr],
+      ['Notulis',        data.notulis || '-']
     ];
+
     doc.autoTable({
       startY: y,
       body:   metaRows,
       theme:  'plain',
-      styles: {fontSize:10, cellPadding:2.5, textColor:[30,41,59]},
-      columnStyles:{ 0:{fontStyle:'bold',cellWidth:40}, 1:{cellWidth:6}, 2:{} },
-      margin: {left:margin, right:margin},
-      didParseCell: function(d){ if(d.column.index===1) d.cell.text=[':']; }
+      styles: { fontSize: 10, cellPadding: 2, textColor: [30, 41, 59], lineColor: [255,255,255] },
+      columnStyles: {
+        0: { fontStyle: 'bold', cellWidth: 38 },
+        1: { cellWidth: 8 },
+        2: { cellWidth: colW - 46 }
+      },
+      margin: { left: mL, right: mR },
+      didParseCell: function(d) { if (d.column.index === 1) d.cell.text = [':']; }
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 4;
 
-    // DIVIDER
-    doc.setDrawColor(226,232,240); doc.setLineWidth(0.4);
-    doc.line(margin, y, W-margin, y);
-    addLine(8);
+    // Garis single
+    doc.setDrawColor(30, 41, 59);
+    doc.setLineWidth(0.5);
+    doc.line(mL, y, W - mR, y);
+    y += 8;
 
-    // HASIL PEMBAHASAN
-    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-    doc.text('Hasil Pembahasan:', margin, y);
-    addLine(7);
+    // ── AGENDA RAPAT ─────────────────────────────────────────
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Agenda Rapat', mL, y);
+    y += 6;
 
-    if(data.points.length){
-      doc.autoTable({
-        startY: y,
-        body:   data.points.map(function(p,i){ return [(i+1)+'.', p]; }),
-        theme:  'plain',
-        styles: {fontSize:10, cellPadding:2.5, textColor:[30,41,59]},
-        columnStyles:{ 0:{cellWidth:10,fontStyle:'bold'}, 1:{} },
-        margin: {left:margin+4, right:margin}
-      });
-      y = doc.lastAutoTable.finalY + 8;
-    }
+    doc.setFont('helvetica', 'normal');
+    var agendaLines = doc.splitTextToSize(data.judul, colW);
+    doc.text(agendaLines, mL, y);
+    y += agendaLines.length * 5.5 + 8;
 
-    // SUMMARY / NOTULEN AI
-    if(data.summary){
-      var summLines = doc.splitTextToSize(data.summary, colW-8);
-      var boxH      = summLines.length*5.5+16;
-      doc.setFillColor(248,250,252);
-      doc.roundedRect(margin, y, colW, boxH, 3, 3, 'F');
-      doc.setDrawColor(226,232,240); doc.setLineWidth(0.3);
-      doc.roundedRect(margin, y, colW, boxH, 3, 3, 'S');
-      y+=7;
-      doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-      doc.text('Ringkasan / Kesimpulan:', margin+4, y);
-      y+=6;
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(51,65,85);
-      doc.text(summLines, margin+4, y);
-      y+=summLines.length*5.5+8;
-    }
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(0.3);
+    doc.line(mL, y, W - mR, y);
+    y += 8;
 
-    // TTD
-    var ttdURL = getTTDDataURL();
-    var ttdX   = W-margin-52;
-    var ttdY   = Math.max(y+12, H-margin-48);
-    if(ttdY+48>H-margin){ doc.addPage(); ttdY=margin+20; }
+    // ── JALANNYA RAPAT (dari AI) ──────────────────────────────
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Jalannya Rapat', mL, y);
+    y += 7;
 
-    doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(30,41,59);
-    doc.text('Notulis,', ttdX+26, ttdY, {align:'center'});
+    // Parse baris summary AI
+    var summaryLines = data.summary.trim().split('\n');
+    var itemCounter  = {};   // counter per section untuk sub-numbering
+    var globalNum    = 0;    // nomor section utama
 
-    if(ttdURL){
-      doc.addImage(ttdURL,'PNG', ttdX, ttdY+3, 52, 20);
-      ttdY+=24;
+    summaryLines.forEach(function(rawLine) {
+      var line = rawLine.trim();
+      if (!line) { y += 3; return; }
+
+      checkPage(10);
+
+      // Heading section
+      var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)
+                   || /^\*\*(.+)\*\*$/.test(line)
+                   || /^#{1,3}\s/.test(line)
+                   || /^\d+\.\s+[A-Z]/.test(line);
+
+      // Sub-item (diawali - atau • atau o\s)
+      var subMatch = line.match(/^[-•o]\s+(.+)/);
+
+      // Numbered item
+      var numMatch = line.match(/^(\d+)\.\s+(.+)/);
+
+      if (isHeading) {
+        var headText = line
+          .replace(/^\*\*(.+)\*\*$/, '$1')
+          .replace(/^#{1,3}\s+/, '')
+          .replace(/^\d+\.\s+/, '');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(30, 41, 59);
+        var hLines = doc.splitTextToSize(headText, colW - 6);
+        checkPage(hLines.length * 6 + 4);
+        doc.text(hLines, mL, y);
+        y += hLines.length * 6 + 2;
+
+      } else if (subMatch) {
+        var subText  = subMatch[1];
+        var subLines = doc.splitTextToSize('o  ' + subText, colW - 14);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85);
+        checkPage(subLines.length * 5.5 + 2);
+        doc.text(subLines, mL + 10, y);
+        y += subLines.length * 5.5 + 1;
+
+      } else if (numMatch) {
+        var numText  = numMatch[1] + '. ' + numMatch[2];
+        var numLines = doc.splitTextToSize(numText, colW - 8);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(30, 41, 59);
+        checkPage(numLines.length * 5.5 + 2);
+        doc.text(numLines, mL + 4, y);
+        y += numLines.length * 5.5 + 1;
+
+      } else {
+        var paraLines = doc.splitTextToSize(line, colW);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85);
+        checkPage(paraLines.length * 5.5 + 2);
+        doc.text(paraLines, mL, y);
+        y += paraLines.length * 5.5 + 2;
+      }
+    });
+
+    y += 8;
+
+    // ── TTD ──────────────────────────────────────────────────
+    var ttdBlockH = 52;
+    checkPage(ttdBlockH);
+
+    var ttdX    = W - mR - 60;
+    var ttdURL  = getTTDDataURL();
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 41, 59);
+    doc.text((data.tempat || '___________') + ', ' + tglExport, ttdX + 30, y, { align: 'center' });
+    y += 6;
+    doc.text('Notulis,', ttdX + 30, y, { align: 'center' });
+    y += 4;
+
+    if (ttdURL) {
+      doc.addImage(ttdURL, 'PNG', ttdX + 5, y, 50, 20);
+      y += 22;
     } else {
-      ttdY+=24;
+      y += 22;
     }
 
-    doc.setDrawColor(30,41,59); doc.setLineWidth(0.4);
-    doc.line(ttdX, ttdY, ttdX+52, ttdY);
-    ttdY+=5;
-    doc.setFont('helvetica','bold');
-    doc.text(data.notulis||'_______________', ttdX+26, ttdY, {align:'center'});
+    doc.setDrawColor(30, 41, 59);
+    doc.setLineWidth(0.4);
+    doc.line(ttdX, y, ttdX + 60, y);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.text(data.notulis || '_______________', ttdX + 30, y, { align: 'center' });
 
-    // FOOTER tiap halaman
+    // ── FOOTER TIAP HALAMAN ───────────────────────────────────
     var total = doc.internal.getNumberOfPages();
-    for(var p=1; p<=total; p++){
+    for (var p = 1; p <= total; p++) {
       doc.setPage(p);
-      doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(148,163,184);
-      doc.text('SIMONTOK — Notulen Rapat | Hal '+p+'/'+total, W/2, H-8, {align:'center'});
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(148, 163, 184);
+      doc.text(
+        'SIMONTOK — Notulen Rapat  |  Halaman ' + p + ' dari ' + total,
+        W / 2, H - 8, { align: 'center' }
+      );
     }
 
-    doc.save('Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'_'+size.toUpperCase()+'_'+orient+'.pdf');
+    doc.save('Notulen_' + (data.judul || 'Rapat').replace(/\s+/g, '_') + '.pdf');
     showToast('✅ PDF berhasil didownload!');
   }
 
   // ============================================================
   // EXPORT WORD
   // ============================================================
-  function doExportWord(){
+  function doExportWord() {
     var data = getFormData();
-    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if (!data.summary || !data.summary.trim()) {
+      showToast('⚠️ Susun notulen dengan AI dulu sebelum export!'); return;
+    }
 
-    var pesertaStr = data.peserta.length
-      ? data.peserta.map(function(p,i){ return (i+1)+'. '+p; }).join('<br>') : '-';
+    var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    var bulanList = ['Januari','Februari','Maret','April','Mei','Juni',
+                     'Juli','Agustus','September','Oktober','November','Desember'];
+    var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
+    var hariStr   = hariList[tglObj.getDay()];
+    var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
+    var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
+
+    // Parse summary AI → HTML Word-friendly
+    function summaryToWordHTML(text) {
+      var lines  = text.trim().split('\n');
+      var html   = '';
+      var inList = false;
+
+      lines.forEach(function(rawLine) {
+        var line = rawLine.trim();
+        if (!line) {
+          if (inList) { html += '</ol>'; inList = false; }
+          html += '<p style="margin:0">&nbsp;</p>';
+          return;
+        }
+
+        var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)
+                     || /^\*\*(.+)\*\*$/.test(line)
+                     || /^#{1,3}\s/.test(line);
+
+        var subMatch = line.match(/^[-•o]\s+(.+)/);
+        var numMatch = line.match(/^(\d+)\.\s+(.+)/);
+
+        if (isHeading) {
+          if (inList) { html += '</ol>'; inList = false; }
+          var ht = line.replace(/^\*\*(.+)\*\*$/, '$1').replace(/^#{1,3}\s+/, '').replace(/^\d+\.\s+/, '');
+          html += '<p style="font-weight:bold;margin:10pt 0 2pt">' + esc(ht) + '</p>';
+
+        } else if (subMatch) {
+          if (!inList) { html += '<ul style="margin:2pt 0 2pt 20pt;padding:0">'; inList = true; }
+          html += '<li style="margin-bottom:2pt">' + esc(subMatch[1]) + '</li>';
+
+        } else if (numMatch) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<p style="margin:2pt 0 2pt 14pt">' + esc(numMatch[1] + '. ' + numMatch[2]) + '</p>';
+
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<p style="margin:3pt 0">' + esc(line) + '</p>';
+        }
+      });
+
+      if (inList) html += '</ul>';
+      return html;
+    }
+
+    var ttdURL  = getTTDDataURL();
+    var ttdImg  = ttdURL
+      ? '<img src="' + ttdURL + '" width="120" height="50" style="display:block;margin:4pt 0">'
+      : '<p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p>';
 
     var html =
-      '<html xmlns:o="urn:schemas-microsoft-com:office:office" '+
-             'xmlns:w="urn:schemas-microsoft-com:office:word" '+
-             'xmlns="http://www.w3.org/TR/REC-html40">'+
-      '<head><meta charset="UTF-8">'+
-      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>'+
-      '<w:Zoom>90</w:Zoom></w:WordDocument></xml><![endif]-->'+
-      '<style>'+
-      'body{font-family:Times New Roman,serif;font-size:12pt;color:#1e293b;line-height:1.8;margin:2.54cm}'+
-      'h1{font-size:14pt;text-align:center;text-transform:uppercase;letter-spacing:2pt;margin:4pt 0}'+
-      'h2{font-size:12pt;text-align:center;text-decoration:underline;margin:8pt 0}'+
-      'h3{font-size:11pt;margin:10pt 0 4pt}'+
-      'table{border-collapse:collapse;width:100%}'+
-      'td{padding:3pt 6pt;vertical-align:top;font-size:11pt}'+
-      '.key{font-weight:bold;width:110pt}'+
-      '.sep{width:10pt}'+
-      '.box{border:1pt solid #e2e8f0;padding:10pt;margin-top:12pt}'+
-      '.ttd-wrap{text-align:right;margin-top:50pt}'+
-      '.ttd-line{display:inline-block;border-top:1pt solid #1e293b;width:150pt;margin-top:50pt}'+
-      '.ttd-name{font-weight:bold;font-size:11pt}'+
-      '</style></head><body>'+
-      (data.org?'<h1>'+esc(data.org)+'</h1>':'')+
-      '<h1>NOTULEN RAPAT</h1>'+
-      '<hr style="border:none;border-top:2pt double #1e293b;margin:6pt 0">'+
-      '<h2>'+esc(data.judul)+'</h2>'+
-      '<table>'+
-        '<tr><td class="key">Hari / Tanggal</td><td class="sep">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>'+
-        '<tr><td class="key">Waktu</td><td class="sep">:</td><td>'+esc(data.waktu||'-')+'</td></tr>'+
-        '<tr><td class="key">Tempat</td><td class="sep">:</td><td>'+esc(data.tempat||'-')+'</td></tr>'+
-        '<tr><td class="key" style="vertical-align:top">Peserta</td><td class="sep" style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>'+
-        '<tr><td class="key">Notulis</td><td class="sep">:</td><td>'+esc(data.notulis||'-')+'</td></tr>'+
-      '</table>'+
-      '<hr style="border:none;border-top:1pt solid #e2e8f0;margin:10pt 0">'+
-      '<h3>Hasil Pembahasan:</h3>'+
-      '<ol>'+data.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ol>'+
-      (data.summary
-        ?'<div class="box"><h3>Ringkasan / Kesimpulan:</h3><p>'+esc(data.summary)+'</p></div>'
-        :'')+
-      '<div class="ttd-wrap">'+
-        '<p>Notulis,</p>'+
-        '<div class="ttd-line"></div><br>'+
-        '<span class="ttd-name">'+esc(data.notulis||'_______________')+'</span>'+
-      '</div>'+
+      '<!DOCTYPE html>' +
+      '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+            'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
+            'xmlns="http://www.w3.org/TR/REC-html40">' +
+      '<head><meta charset="UTF-8">' +
+      '<!--[if gte mso 9]><xml><w:WordDocument>' +
+        '<w:View>Print</w:View><w:Zoom>100</w:Zoom>' +
+        '<w:DoNotOptimizeForBrowser/>' +
+      '</w:WordDocument></xml><![endif]-->' +
+      '<style>' +
+        '@page { margin: 2.54cm; }' +
+        'body { font-family: "Times New Roman", serif; font-size: 12pt; ' +
+               'color: #1e293b; line-height: 1.8; }' +
+        'p, li { font-size: 11pt; margin: 3pt 0; }' +
+        'h1 { font-size: 14pt; font-weight: bold; text-align: center; ' +
+             'text-transform: uppercase; letter-spacing: 1pt; margin: 4pt 0; }' +
+        'h2 { font-size: 12pt; font-weight: bold; text-align: center; margin: 6pt 0; }' +
+        'h3 { font-size: 11pt; font-weight: bold; margin: 10pt 0 4pt; ' +
+             'text-transform: uppercase; letter-spacing: .5pt; }' +
+        'table { border-collapse: collapse; width: 100%; }' +
+        'td { padding: 2pt 6pt; vertical-align: top; font-size: 11pt; }' +
+        '.key { font-weight: bold; width: 110pt; white-space: nowrap; }' +
+        '.sep { width: 10pt; }' +
+        'hr.double { border: none; border-top: 3pt double #1e293b; margin: 4pt 0; }' +
+        'hr.single { border: none; border-top: 1pt solid #1e293b; margin: 6pt 0; }' +
+        'hr.light  { border: none; border-top: 1pt solid #cbd5e1; margin: 6pt 0; }' +
+      '</style></head><body>' +
+
+      /* KOP */
+      (data.org ? '<h1>' + esc(data.org) + '</h1>' : '') +
+      '<h1>NOTULEN RAPAT</h1>' +
+      '<hr class="double">' +
+
+      /* JUDUL */
+      '<h2>' + esc(data.judul) + '</h2>' +
+
+      /* INFO */
+      '<table>' +
+        '<tr><td class="key">Hari / Tanggal</td><td class="sep">:</td>' +
+            '<td>' + esc(hariStr + ', ' + tglExport) + '</td></tr>' +
+        '<tr><td class="key">Waktu</td><td class="sep">:</td>' +
+            '<td>' + esc(data.waktu || '-') + '</td></tr>' +
+        '<tr><td class="key">Tempat</td><td class="sep">:</td>' +
+            '<td>' + esc(data.tempat || '-') + '</td></tr>' +
+        '<tr><td class="key">Peserta</td><td class="sep">:</td>' +
+            '<td>' + esc(pesertaStr) + '</td></tr>' +
+      '</table>' +
+      '<hr class="single">' +
+
+      /* AGENDA */
+      '<h3>Agenda Rapat</h3>' +
+      '<p>' + esc(data.judul) + '</p>' +
+      '<hr class="light">' +
+
+      /* JALANNYA RAPAT — dari AI */
+      '<h3>Jalannya Rapat</h3>' +
+      summaryToWordHTML(data.summary) +
+
+      '<hr class="light">' +
+
+      /* TTD */
+      '<table style="width:100%"><tr>' +
+        '<td style="width:60%"></td>' +
+        '<td style="text-align:center;width:40%">' +
+          '<p style="margin:0">' + esc((data.tempat || '___________') + ', ' + tglExport) + '</p>' +
+          '<p style="margin:0">Notulis,</p>' +
+          ttdImg +
+          '<p style="margin:0;font-weight:bold;border-top:1pt solid #1e293b;' +
+          'padding-top:2pt">' + esc(data.notulis || '_______________') + '</p>' +
+        '</td>' +
+      '</tr></table>' +
+
       '</body></html>';
 
-    var blob = new Blob([html],{type:'application/msword'});
+    var blob = new Blob([html], { type: 'application/msword' });
     var url  = URL.createObjectURL(blob);
     var a    = document.createElement('a');
-    a.href=url;
-    a.download='Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.doc';
+    a.href     = url;
+    a.download = 'Notulen_' + (data.judul || 'Rapat').replace(/\s+/g, '_') + '.doc';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showToast('✅ Word (.doc) berhasil didownload!');
   }
-
+  
   // ============================================================
   // BIND EXPORT BUTTONS
   // ============================================================
