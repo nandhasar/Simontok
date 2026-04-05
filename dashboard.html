@@ -10,25 +10,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg: #f1f5f9; --bg2: #ffffff; --bg3: #f8fafc;
-      --text: #0f172a; --text2: #334155; --text3: #64748b; --text4: #94a3b8;
-      --border: #e2e8f0; --border2: #f1f5f9;
-      --blue: #2563eb; --blue2: #3b82f6; --blue-bg: #dbeafe; --blue-bg2: #eff6ff;
-      --green: #059669; --green-bg: #d1fae5;
-      --red: #dc2626; --red-bg: #ffe4e6; --red2: #be123c;
-      --yellow: #d97706; --yellow-bg: #fef3c7;
-      --shadow: 0 1px 3px rgba(0,0,0,.06); --shadow2: 0 8px 30px rgba(0,0,0,.08);
-      --radius: 20px; --radius2: 14px;
+      --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;
+      --text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;
+      --border:#e2e8f0;--border2:#f1f5f9;
+      --blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;
+      --green:#059669;--green-bg:#d1fae5;
+      --red:#dc2626;--red-bg:#ffe4e6;--red2:#be123c;
+      --yellow:#d97706;--yellow-bg:#fef3c7;
+      --purple:#7c3aed;--purple-bg:#ede9fe;
+      --shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.15);
+      --radius:20px;--radius2:14px;
     }
     [data-theme="dark"] {
-      --bg: #0f172a; --bg2: #1e293b; --bg3: #1e293b;
-      --text: #f1f5f9; --text2: #cbd5e1; --text3: #94a3b8; --text4: #64748b;
-      --border: #334155; --border2: #334155;
-      --blue: #3b82f6; --blue2: #60a5fa; --blue-bg: #1e3a5f; --blue-bg2: #172554;
-      --green: #34d399; --green-bg: #064e3b;
-      --red: #f87171; --red-bg: #450a0a; --red2: #fca5a5;
-      --yellow: #fbbf24; --yellow-bg: #451a03;
-      --shadow: 0 1px 3px rgba(0,0,0,.2); --shadow2: 0 8px 30px rgba(0,0,0,.3);
+      --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
+      --text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;
+      --border:#334155;--border2:#334155;
+      --blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;
+      --green:#34d399;--green-bg:#064e3b;
+      --red:#f87171;--red-bg:#450a0a;--red2:#fca5a5;
+      --yellow:#fbbf24;--yellow-bg:#451a03;
+      --purple:#a78bfa;--purple-bg:#2e1065;
+      --shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
@@ -43,14 +45,75 @@
     .topbar-info h1{font-size:22px;font-weight:800;line-height:1.2}
     .topbar-info p{font-size:12px;color:var(--text3);letter-spacing:.05em}
     .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn-nav{border:1px solid var(--border);background:var(--bg2);padding:10px 16px;border-radius:var(--radius2);font-size:13px;font-weight:600;color:var(--text2);transition:all .2s}
+    .btn-nav{border:1px solid var(--border);background:var(--bg2);padding:10px 16px;border-radius:var(--radius2);font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;display:inline-flex;align-items:center;gap:6px}
     .btn-nav:hover{background:var(--bg3);transform:translateY(-1px)}
     .btn-nav.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
     .btn-nav.primary:hover{background:var(--blue2)}
+    .btn-nav.purple{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none}
+    .btn-nav.purple:hover{opacity:.9;transform:translateY(-1px)}
     .btn-nav.danger{background:#fff1f2;color:var(--red2);border-color:#fecdd3}
     .btn-nav.danger:hover{background:#ffe4e6}
-    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;position:relative}
     .btn-icon:hover{background:var(--bg3);transform:translateY(-1px)}
+
+    /* SETTINGS DROPDOWN */
+    .settings-wrap{position:relative}
+    .settings-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow3);z-index:9999;overflow:hidden;display:none;animation:dropIn .2s ease}
+    .settings-dropdown.open{display:block}
+    @keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    .sd-header{padding:16px 18px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#2563eb,#7c3aed)}
+    .sd-header h3{font-size:15px;font-weight:800;color:#fff}
+    .sd-header p{font-size:11px;color:rgba(255,255,255,.7);margin-top:2px}
+    .sd-section{padding:12px 18px;border-bottom:1px solid var(--border)}
+    .sd-section:last-child{border-bottom:none}
+    .sd-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text4);margin-bottom:10px}
+    .sd-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+    .sd-row label{font-size:13px;font-weight:600;color:var(--text2)}
+    .sd-row p{font-size:11px;color:var(--text4)}
+    .toggle{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+    .toggle.on{background:var(--blue)}
+    .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle.on::after{left:23px}
+    .sd-btn{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:11px 14px;border-radius:var(--radius2);font-weight:600;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s;text-align:left}
+    .sd-btn:last-child{margin-bottom:0}
+    .sd-btn:hover{background:var(--blue-bg2);border-color:var(--blue);color:var(--blue)}
+    .sd-btn .sd-icon{font-size:18px;width:24px;text-align:center}
+    .sd-notulen{background:var(--purple-bg);border-color:var(--purple);color:var(--purple)}
+    .sd-notulen:hover{background:var(--purple-bg);opacity:.85}
+    .export-range{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .export-range-item label{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:4px;display:block}
+    .export-range-item input{width:100%;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px;outline:none}
+    .export-range-item input:focus{border-color:var(--blue)}
+
+    /* ADMIN BANNER */
+    .admin-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius2);margin-bottom:16px;flex-wrap:wrap}
+    .admin-banner-left{display:flex;align-items:center;gap:10px}
+    .admin-banner-icon{font-size:24px}
+    .admin-banner-text h4{font-size:14px;font-weight:700;color:var(--purple)}
+    .admin-banner-text p{font-size:12px;color:var(--text3)}
+    .btn-admin{padding:10px 18px;border-radius:var(--radius2);font-size:13px;font-weight:700;background:var(--purple);color:#fff;border:none;transition:all .2s}
+    .btn-admin:hover{opacity:.85;transform:translateY(-1px)}
+
+    /* ADMIN MODAL */
+    .admin-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px;backdrop-filter:blur(4px)}
+    .admin-modal.active{display:flex}
+    .admin-box{width:min(700px,100%);background:var(--bg2);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow3);position:relative;max-height:85vh;overflow-y:auto;animation:popIn .25s ease}
+    .admin-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:32px;cursor:pointer;color:var(--text3);line-height:1}
+    .admin-close:hover{color:var(--text)}
+    .admin-box h3{font-size:20px;font-weight:800;margin-bottom:16px}
+    .user-card{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--radius2);border:1px solid var(--border);background:var(--bg3);margin-bottom:10px;transition:all .2s}
+    .user-card:hover{border-color:var(--blue);background:var(--blue-bg2)}
+    .user-avatar{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+    .user-info{flex:1;min-width:0}
+    .user-info h4{font-size:14px;font-weight:700;color:var(--text)}
+    .user-info p{font-size:12px;color:var(--text3)}
+    .user-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .role-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+    .role-admin{background:var(--purple-bg);color:var(--purple)}
+    .role-user{background:var(--blue-bg);color:var(--blue)}
+    .active-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+    .active-true{background:var(--green-bg);color:var(--green)}
+    .active-false{background:var(--red-bg);color:var(--red)}
 
     /* FILTER BAR */
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -142,10 +205,16 @@
     .deadline-soon{background:var(--yellow-bg);color:var(--yellow)}
     .deadline-ok{background:var(--green-bg);color:var(--green)}
 
+    /* SHORTCUT NOTULEN CARD */
+    .notulen-shortcut{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius);padding:20px;text-align:center;transition:all .2s;cursor:pointer;text-decoration:none;display:block}
+    .notulen-shortcut:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+    .notulen-shortcut h3{font-size:15px;font-weight:700;color:var(--purple);margin:8px 0 4px}
+    .notulen-shortcut p{font-size:12px;color:var(--text3)}
+
     /* MODAL */
-    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px;backdrop-filter:blur(4px)}
     .modal-overlay.active{display:flex}
-    .modal-box{width:min(620px,100%);background:var(--bg2);color:var(--text);border-radius:var(--radius);padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25);position:relative;animation:popIn .25s ease;max-height:90vh;overflow-y:auto}
+    .modal-box{width:min(620px,100%);background:var(--bg2);color:var(--text);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow3);position:relative;animation:popIn .25s ease;max-height:90vh;overflow-y:auto}
     .modal-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:32px;cursor:pointer;color:var(--text3);line-height:1}
     .modal-close:hover{color:var(--text)}
     .modal-box h3{margin-bottom:14px;font-size:20px;font-weight:700}
@@ -162,32 +231,6 @@
     .btn-m-secondary:hover{background:var(--bg3)}
     @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
 
-    /* SETTINGS PANEL */
-    .settings-panel{position:fixed;top:0;right:-400px;width:min(380px,90vw);height:100vh;background:var(--bg2);border-left:1px solid var(--border);box-shadow:-10px 0 40px rgba(0,0,0,.15);z-index:10000;transition:right .3s ease;overflow-y:auto;padding:24px}
-    .settings-panel.open{right:0}
-    .settings-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9999;display:none}
-    .settings-backdrop.open{display:block}
-    .settings-panel h2{font-size:20px;font-weight:800;margin-bottom:20px}
-    .settings-close{position:absolute;top:14px;right:14px;border:none;background:transparent;font-size:28px;color:var(--text3);cursor:pointer}
-    .settings-close:hover{color:var(--text)}
-    .settings-section{margin-bottom:24px}
-    .settings-section h4{font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
-    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)}
-    .settings-row:last-child{border-bottom:none}
-    .settings-row label{font-size:14px;font-weight:600;color:var(--text2)}
-    .settings-row p{font-size:12px;color:var(--text4);margin-top:2px}
-    .toggle{width:48px;height:26px;border-radius:13px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
-    .toggle.on{background:var(--blue)}
-    .toggle::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-    .toggle.on::after{left:25px}
-    .btn-export{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:14px;border-radius:var(--radius2);font-weight:600;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;transition:all .2s}
-    .btn-export:hover{background:var(--blue-bg2);border-color:var(--blue);color:var(--blue)}
-    .btn-export .icon{font-size:20px}
-    .export-range{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-    .export-range input{border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:10px;border-radius:10px;font-size:13px;outline:none}
-    .export-range input:focus{border-color:var(--blue)}
-    .export-range label{font-size:12px;color:var(--text3);font-weight:600;margin-bottom:4px;display:block}
-
     /* MOBILE */
     @media(max-width:768px){
       .topbar{padding:12px 14px}
@@ -202,740 +245,875 @@
       .status-pills{justify-content:center}
       .cal-cell{min-height:44px}
       .cal-task-preview{display:none}
-      .cal-count{font-size:8px;padding:1px 4px}
+      .settings-dropdown{width:280px}
       .modal-grid{grid-template-columns:1fr}
     }
     @media(max-width:480px){
       .stats{grid-template-columns:1fr 1fr}
       .stat-num{font-size:26px}
-      .topbar-brand{gap:8px}
       .topbar-logo{width:36px;height:36px;font-size:16px;border-radius:10px}
     }
-
     ::-webkit-scrollbar{width:6px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-    ::-webkit-scrollbar-thumb:hover{background:var(--text4)}
   </style>
 </head>
 <body>
-  <div class="page">
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="topbar-brand">
-        <div class="topbar-logo">S</div>
-        <div class="topbar-info">
-          <h1>SIMONTOK</h1>
-          <!-- ✅ FIX: Tampilkan nama user yang login -->
-          <p id="topbarUser">Sistem Monitoring Organisasi Kerja</p>
+<div class="page">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">S</div>
+      <div class="topbar-info">
+        <h1>SIMONTOK</h1>
+        <p id="topbarUser">Sistem Monitoring Organisasi Kerja</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <a href="index.html" class="btn-nav"><span>←</span> Home</a>
+      <a href="entri.html" class="btn-nav primary"><span>+</span> Entri</a>
+      <a href="notulen.html" class="btn-nav purple">📝 <span>Notulen</span></a>
+      <button class="btn-nav danger" id="logoutBtn">🚪 <span>Logout</span></button>
+
+      <!-- SETTINGS ICON + DROPDOWN -->
+      <div class="settings-wrap">
+        <button class="btn-icon" id="settingsBtn" title="Pengaturan">⚙️</button>
+        <div class="settings-dropdown" id="settingsDropdown">
+
+          <!-- HEADER -->
+          <div class="sd-header">
+            <h3>⚙️ Pengaturan</h3>
+            <p>SIMONTOK v1.0</p>
+          </div>
+
+          <!-- TAMPILAN -->
+          <div class="sd-section">
+            <div class="sd-label">Tampilan</div>
+            <div class="sd-row">
+              <div>
+                <label>🌙 Mode Gelap</label>
+                <p>Ganti tema terang / gelap</p>
+              </div>
+              <button class="toggle" id="darkToggle"></button>
+            </div>
+          </div>
+
+          <!-- NOTULEN -->
+          <div class="sd-section">
+            <div class="sd-label">Tools</div>
+            <a href="notulen.html" class="sd-btn sd-notulen">
+              <span class="sd-icon">📝</span>
+              <div>
+                <strong>Buka Notulen</strong><br>
+                <span style="font-size:11px;opacity:.7">Kelola notulen rapat</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- EXPORT -->
+          <div class="sd-section">
+            <div class="sd-label">Export Data</div>
+            <div class="export-range">
+              <div class="export-range-item">
+                <label>Dari</label>
+                <input type="date" id="exportFrom" />
+              </div>
+              <div class="export-range-item">
+                <label>Sampai</label>
+                <input type="date" id="exportTo" />
+              </div>
+            </div>
+            <button class="sd-btn" id="exportFilterMonth">
+              <span class="sd-icon">📅</span>
+              <div>
+                <strong>Export Bulan Ini</strong><br>
+                <span style="font-size:11px;color:var(--text4)">Filter bulan aktif</span>
+              </div>
+            </button>
+            <button class="sd-btn" id="exportPDF">
+              <span class="sd-icon">📄</span>
+              <div>
+                <strong>Export PDF</strong><br>
+                <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
+              </div>
+            </button>
+            <button class="sd-btn" id="exportExcel">
+              <span class="sd-icon">📊</span>
+              <div>
+                <strong>Export Excel</strong><br>
+                <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
+              </div>
+            </button>
+          </div>
+
         </div>
       </div>
-      <div class="topbar-actions">
-        <a href="index.html" class="btn-nav"><span>← </span>Home</a>
-        <a href="entri.html" class="btn-nav primary"><span>+ </span>Entri</a>
-        <!-- ✅ FIX: Tombol logout ditambahkan -->
-        <button class="btn-nav danger" id="logoutBtn">🚪 Logout</button>
-        <button class="btn-icon" id="settingsBtn" title="Settings">⚙️</button>
-      </div>
-    </div>
+      <!-- END SETTINGS -->
 
-    <div id="loadingState" class="loading">⏳ Memuat data dari Spreadsheet...</div>
-    <div id="app" style="display:none"></div>
-  </div>
-
-  <!-- SETTINGS PANEL -->
-  <div class="settings-backdrop" id="settingsBackdrop"></div>
-  <div class="settings-panel" id="settingsPanel">
-    <button class="settings-close" id="settingsClose">&times;</button>
-    <h2>⚙️ Pengaturan</h2>
-    <div class="settings-section">
-      <h4>Tampilan</h4>
-      <div class="settings-row">
-        <div><label>Mode Gelap</label><p>Ganti tema terang/gelap</p></div>
-        <button class="toggle" id="darkToggle"></button>
-      </div>
-    </div>
-    <div class="settings-section">
-      <h4>Export Data</h4>
-      <p style="font-size:12px;color:var(--text4);margin-bottom:12px">Pilih rentang waktu untuk export</p>
-      <div class="export-range">
-        <div><label>Dari</label><input type="date" id="exportFrom" /></div>
-        <div><label>Sampai</label><input type="date" id="exportTo" /></div>
-      </div>
-      <button class="btn-export" id="exportFilterMonth">
-        <span class="icon">📅</span>
-        <div><strong>Export Bulan Ini</strong><br><span style="font-size:11px;color:var(--text4)">Sesuai filter bulan aktif</span></div>
-      </button>
-      <button class="btn-export" id="exportPDF">
-        <span class="icon">📄</span>
-        <div><strong>Export PDF</strong><br><span style="font-size:11px;color:var(--text4)">Rentang waktu di atas</span></div>
-      </button>
-      <button class="btn-export" id="exportExcel">
-        <span class="icon">📊</span>
-        <div><strong>Export Excel</strong><br><span style="font-size:11px;color:var(--text4)">Rentang waktu di atas</span></div>
-      </button>
-    </div>
-    <div class="settings-section">
-      <h4>Info Aplikasi</h4>
-      <div class="settings-row">
-        <div><label>SIMONTOK v1.0</label><p>Sistem Monitoring Organisasi Kerja</p></div>
-      </div>
     </div>
   </div>
 
-  <!-- DETAIL MODAL -->
-  <div id="popupModal" class="modal-overlay">
-    <div class="modal-box">
-      <button class="modal-close" id="closeModal">&times;</button>
-      <div id="modalBody"></div>
-    </div>
+  <!-- LOADING -->
+  <div id="loadingState" class="loading">⏳ Memuat data dari Spreadsheet...</div>
+
+  <!-- APP -->
+  <div id="app" style="display:none"></div>
+
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="admin-modal" id="adminModal">
+  <div class="admin-box">
+    <button class="admin-close" id="adminClose">&times;</button>
+    <h3>👥 Kelola Users</h3>
+    <div id="adminUserList"><div class="loading">⏳ Memuat data users...</div></div>
   </div>
+</div>
 
-  <!-- CALENDAR DAY MODAL -->
-  <div id="calModal" class="modal-overlay">
-    <div class="modal-box">
-      <button class="modal-close" id="closeCalModal">&times;</button>
-      <div id="calModalBody"></div>
-    </div>
+<!-- DETAIL MODAL -->
+<div id="popupModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" id="closeModal">&times;</button>
+    <div id="modalBody"></div>
   </div>
+</div>
 
-  <script>
-    // ============================================================
-    // CONFIG — satu deklarasi saja
-    // ============================================================
-    var API_URL = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
+<!-- CALENDAR DAY MODAL -->
+<div id="calModal" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" id="closeCalModal">&times;</button>
+    <div id="calModalBody"></div>
+  </div>
+</div>
 
-    // ============================================================
-    // AUTH GUARD
-    // ============================================================
-    var SESSION = null;
+<script>
+  // ============================================================
+  // CONFIG
+  // ============================================================
+  var API_URL = 'https://script.google.com/macros/s/AKfycbw1TLkJ-FIYL0hS8WA53h38eLEXw2ZRQnjSJ0aRVhF-cWHNjTQQDhnnIy7cWv25tT0p/exec';
 
-    function getSession() {
-      try {
-        var s = localStorage.getItem('simontok-session');
-        if (s) SESSION = JSON.parse(s);
-      } catch(e) { SESSION = null; }
-      if (!SESSION || !SESSION.token) {
-        alert('Silakan login terlebih dahulu.');
-        window.location.href = 'index.html';
-        return false;
+  // ============================================================
+  // AUTH GUARD
+  // ============================================================
+  var SESSION = null;
+
+  function getSession() {
+    try {
+      var s = localStorage.getItem('simontok-session');
+      if (s) SESSION = JSON.parse(s);
+    } catch(e) { SESSION = null; }
+    if (!SESSION || !SESSION.token) {
+      alert('Silakan login terlebih dahulu.');
+      window.location.href = 'index.html';
+      return false;
+    }
+    return true;
+  }
+
+  if (!getSession()) throw new Error('Not logged in');
+
+  // Tampilkan info user di topbar
+  document.getElementById('topbarUser').textContent =
+    '👤 ' + (SESSION.name || SESSION.username) +
+    (SESSION.role === 'admin' ? ' — Admin' : ' — User');
+
+  function authURL(action) {
+    return API_URL
+      + '?action=' + encodeURIComponent(action)
+      + '&user='   + encodeURIComponent(SESSION.username)
+      + '&token='  + encodeURIComponent(SESSION.token);
+  }
+
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    if (!confirm('Yakin ingin logout?')) return;
+    localStorage.removeItem('simontok-session');
+    window.location.href = 'index.html';
+  });
+
+  // ============================================================
+  // THEME — sinkron dengan index.html (pakai simontok-theme)
+  // ============================================================
+  function initTheme() {
+    var t = localStorage.getItem('simontok-theme');
+    var isDark = t === 'dark';
+    applyTheme(isDark);
+  }
+
+  function applyTheme(isDark) {
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('darkToggle').classList.add('on');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('darkToggle').classList.remove('on');
+    }
+  }
+
+  document.getElementById('darkToggle').addEventListener('click', function() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    isDark = !isDark;
+    localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
+    applyTheme(isDark);
+    if (DATA.length) render();
+  });
+
+  initTheme();
+
+  // ============================================================
+  // SETTINGS DROPDOWN — toggle buka/tutup
+  // ============================================================
+  var settingsOpen = false;
+
+  document.getElementById('settingsBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    settingsOpen = !settingsOpen;
+    document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (settingsOpen && !document.getElementById('settingsDropdown').contains(e.target)
+        && e.target !== document.getElementById('settingsBtn')) {
+      settingsOpen = false;
+      document.getElementById('settingsDropdown').classList.remove('open');
+    }
+  });
+
+  // Jangan tutup dropdown saat klik di dalam
+  document.getElementById('settingsDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+
+  // ============================================================
+  // ADMIN MODAL
+  // ============================================================
+  document.getElementById('adminClose').addEventListener('click', function() {
+    document.getElementById('adminModal').classList.remove('active');
+  });
+  document.getElementById('adminModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
+
+  function openAdminModal() {
+    document.getElementById('adminModal').classList.add('active');
+    loadUsers();
+  }
+
+  function loadUsers() {
+    var box = document.getElementById('adminUserList');
+    box.innerHTML = '<div class="loading">⏳ Memuat data users...</div>';
+
+    fetch(authURL('users'), { redirect: 'follow' })
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        var j;
+        try { j = JSON.parse(text); } catch(e) {
+          box.innerHTML = '<div class="empty">❌ Gagal parse response</div>'; return;
+        }
+        if (!j.ok || !j.users) {
+          box.innerHTML = '<div class="empty">❌ ' + esc(j.message || 'Gagal memuat') + '</div>'; return;
+        }
+        var html = '';
+        j.users.forEach(function(u) {
+          html +=
+            '<div class="user-card">' +
+            '<div class="user-avatar">' + esc(u.name.charAt(0).toUpperCase()) + '</div>' +
+            '<div class="user-info">' +
+            '<h4>' + esc(u.name) + '</h4>' +
+            '<p>@' + esc(u.username) + ' · Sheet: ' + esc(u.sheet_name) + '</p>' +
+            '<div class="user-meta" style="margin-top:4px">' +
+            '<span class="role-badge ' + (u.role === 'admin' ? 'role-admin' : 'role-user') + '">' + esc(u.role) + '</span>' +
+            '<span class="active-badge ' + (u.active.toUpperCase() === 'TRUE' ? 'active-true' : 'active-false') + '">' +
+            (u.active.toUpperCase() === 'TRUE' ? '✅ Aktif' : '❌ Nonaktif') + '</span>' +
+            '</div></div></div>';
+        });
+        box.innerHTML = html || '<div class="empty">Tidak ada user</div>';
+      })
+      .catch(function(err) {
+        box.innerHTML = '<div class="empty">❌ Error: ' + esc(err.message) + '</div>';
+      });
+  }
+
+  // ============================================================
+  // MODALS — task detail & calendar
+  // ============================================================
+  var modal1 = document.getElementById('popupModal');
+  function openPopup(h)  { document.getElementById('modalBody').innerHTML = h; modal1.classList.add('active'); }
+  function closePopup()  { modal1.classList.remove('active'); }
+  document.getElementById('closeModal').addEventListener('click', closePopup);
+  modal1.addEventListener('click', function(e) { if (e.target === modal1) closePopup(); });
+
+  var modal2 = document.getElementById('calModal');
+  function openCalPopup(h) { document.getElementById('calModalBody').innerHTML = h; modal2.classList.add('active'); }
+  function closeCalPopup() { modal2.classList.remove('active'); }
+  document.getElementById('closeCalModal').addEventListener('click', closeCalPopup);
+  modal2.addEventListener('click', function(e) { if (e.target === modal2) closeCalPopup(); });
+
+  // ============================================================
+  // STATE & UTILS
+  // ============================================================
+  var DATA = [];
+  var searchQ      = '';
+  var filterStatus = 'All';
+  var filterMonth  = new Date().getMonth();
+  var filterYear   = new Date().getFullYear();
+  var calMonth     = new Date().getMonth();
+  var calYear      = new Date().getFullYear();
+  var chartStatus, chartPriority;
+
+  var MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var DAYS   = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+  function esc(s) {
+    return String(s||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function badgeCls(s) { return {'To Do':'b-todo','Doing':'b-doing','Done':'b-done','Blocked':'b-blocked'}[s]||'b-todo'; }
+  function priCls(s)   { return {'High':'p-high','Medium':'p-medium','Low':'p-low'}[s]||''; }
+  function dotColor(s) { return {'To Do':'#94a3b8','Doing':'#3b82f6','Done':'#10b981','Blocked':'#ef4444'}[s]||'#94a3b8'; }
+
+  function parseDate(s) {
+    if (!s) return null;
+    var d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function daysBetween(a,b) { return Math.ceil((b-a)/(1000*60*60*24)); }
+
+  // ============================================================
+  // SHOW DETAIL TASK
+  // ============================================================
+  function showDetail(id) {
+    var t = null;
+    for (var i = 0; i < DATA.length; i++) {
+      if (String(DATA[i].id) === String(id)) { t = DATA[i]; break; }
+    }
+    if (!t) return;
+    openPopup(
+      '<h3>📋 Detail Task</h3>' +
+      '<p style="font-size:18px;font-weight:700;margin-bottom:14px">' + esc(t.title) + '</p>' +
+      '<div class="modal-grid">' +
+      '<div class="modal-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:12px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
+      '<div class="modal-item"><strong>Priority</strong><span class="' + priCls(t.priority) + '">' + esc(t.priority||'-') + '</span></div>' +
+      '<div class="modal-item"><strong>Due Date</strong><span>' + esc(t.due_date||'-') + '</span></div>' +
+      '<div class="modal-item"><strong>Updated</strong><span>' + esc(t.updated_at||'-') + '</span></div>' +
+      '<div class="modal-item"><strong>Created</strong><span>' + esc(t.created_at||'-') + '</span></div>' +
+      '<div class="modal-item"><strong>ID</strong><span style="font-size:10px;color:var(--text4)">' + esc(t.id) + '</span></div>' +
+      '</div>' +
+      (t.note
+        ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
+        : '<p style="color:var(--text4);margin-top:12px;font-size:13px">Tidak ada catatan.</p>') +
+      '<div class="modal-footer">' +
+      '<a href="entri.html?editId=' + esc(t.id) + '" class="btn-m btn-m-primary">✏️ Edit Task</a>' +
+      '<button class="btn-m btn-m-secondary" onclick="closePopup()">Tutup</button>' +
+      '</div>'
+    );
+  }
+
+  function showDayTasks(dateStr, tasks) {
+    var html = '<h3>📅 ' + dateStr + '</h3>';
+    if (!tasks.length) {
+      html += '<p class="empty">Tidak ada task di tanggal ini.</p>';
+    } else {
+      html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">';
+      tasks.forEach(function(t) {
+        html +=
+          '<div class="priority-item" onclick="closeCalPopup();showDetail(\'' + esc(t.id) + '\')">' +
+          '<div class="priority-dot" style="background:' + dotColor(t.status) + '"></div>' +
+          '<div class="priority-item-title">' + esc(t.title) + '</div>' +
+          '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status) + '</span>' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+    html += '<div class="modal-footer"><button class="btn-m btn-m-secondary" onclick="closeCalPopup()">Tutup</button></div>';
+    openCalPopup(html);
+  }
+
+  // ============================================================
+  // LOAD DATA
+  // ============================================================
+  function loadData() {
+    document.getElementById('loadingState').style.display = '';
+    document.getElementById('loadingState').innerHTML = '⏳ Memuat data dari Spreadsheet...';
+    document.getElementById('app').style.display = 'none';
+
+    fetch(authURL('list'), { redirect: 'follow' })
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        var j;
+        try { j = JSON.parse(text); } catch(e) {
+          throw new Error('Response bukan JSON. Cek URL deployment.');
+        }
+        if (!j.ok) throw new Error(j.message || 'Gagal memuat data');
+        DATA = Array.isArray(j.data) ? j.data : [];
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('app').style.display = '';
+        render();
+      })
+      .catch(function(err) {
+        document.getElementById('loadingState').innerHTML =
+          '<div style="color:var(--red)">⚠️ Gagal: ' + esc(err.message) +
+          '<br><button onclick="loadData()" style="margin-top:8px;color:var(--blue);background:none;border:none;cursor:pointer;font-weight:600">🔄 Coba lagi</button></div>';
+      });
+  }
+
+  // ============================================================
+  // FILTER
+  // ============================================================
+  function getFiltered() {
+    return DATA.filter(function(t) {
+      if (filterStatus !== 'All' && t.status !== filterStatus) return false;
+      if (searchQ) {
+        var q = searchQ.toLowerCase();
+        if ((t.title+' '+t.note+' '+t.priority).toLowerCase().indexOf(q) === -1) return false;
+      }
+      var d = parseDate(t.due_date);
+      if (d) {
+        if (d.getMonth() !== filterMonth || d.getFullYear() !== filterYear) return false;
+      } else {
+        var c = parseDate(t.created_at);
+        if (c && (c.getMonth() !== filterMonth || c.getFullYear() !== filterYear)) return false;
       }
       return true;
-    }
-
-    if (!getSession()) throw new Error('Not logged in');
-
-    // ✅ FIX: Tampilkan username di topbar
-    document.getElementById('topbarUser').textContent =
-      '👤 ' + SESSION.username + ' — Monitoring Kerja';
-
-    function authURL(action) {
-      return API_URL
-        + '?action=' + encodeURIComponent(action)
-        + '&user='   + encodeURIComponent(SESSION.username)
-        + '&token='  + encodeURIComponent(SESSION.token);
-    }
-
-    function authBody(obj) {
-      obj.user  = SESSION.username;
-      obj.token = SESSION.token;
-      return obj;
-    }
-
-    function logout() {
-      if (!confirm('Yakin ingin logout?')) return;
-      localStorage.removeItem('simontok-session');
-      window.location.href = 'index.html';
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-
-    // ============================================================
-    // STATE & UTILS
-    // ============================================================
-    var DATA = [];
-    var searchQ = '';
-    var filterStatus = 'All';
-    var filterMonth = new Date().getMonth();
-    var filterYear  = new Date().getFullYear();
-    var calMonth    = new Date().getMonth();
-    var calYear     = new Date().getFullYear();
-    var chartStatus, chartPriority;
-
-    function $(id) { return document.getElementById(id); }
-    function esc(s) {
-      return String(s || '')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    var MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    var DAYS   = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-
-    function badgeCls(s) { return {'To Do':'b-todo','Doing':'b-doing','Done':'b-done','Blocked':'b-blocked'}[s] || 'b-todo'; }
-    function priCls(s)   { return {'High':'p-high','Medium':'p-medium','Low':'p-low'}[s] || ''; }
-    function dotColor(s) { return {'To Do':'#94a3b8','Doing':'#3b82f6','Done':'#10b981','Blocked':'#ef4444'}[s] || '#94a3b8'; }
-
-    function parseDate(s) {
-      if (!s) return null;
-      var d = new Date(s);
-      return isNaN(d.getTime()) ? null : d;
-    }
-
-    function daysBetween(a, b) {
-      return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
-    }
-
-    // ============================================================
-    // SETTINGS PANEL
-    // ============================================================
-    $('settingsBtn').addEventListener('click', function() {
-      $('settingsPanel').classList.add('open');
-      $('settingsBackdrop').classList.add('open');
     });
-    function closeSettings() {
-      $('settingsPanel').classList.remove('open');
-      $('settingsBackdrop').classList.remove('open');
-    }
-    $('settingsClose').addEventListener('click', closeSettings);
-    $('settingsBackdrop').addEventListener('click', closeSettings);
+  }
 
-    // Dark mode
-    var isDark = localStorage.getItem('simontok-dark') === 'true';
-    function applyTheme() {
-      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      isDark ? $('darkToggle').classList.add('on') : $('darkToggle').classList.remove('on');
-    }
-    applyTheme();
-    $('darkToggle').addEventListener('click', function() {
-      isDark = !isDark;
-      localStorage.setItem('simontok-dark', isDark);
-      applyTheme();
-      if (DATA.length) render();
+  function getMonthData(m, y) {
+    return DATA.filter(function(t) {
+      var d = parseDate(t.due_date);
+      return d && d.getMonth() === m && d.getFullYear() === y;
+    });
+  }
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+  function render() {
+    var app   = document.getElementById('app');
+    var tasks = getFiltered();
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    var total = tasks.length;
+    var todo=0, doing=0, done=0, blocked=0;
+    tasks.forEach(function(t) {
+      if      (t.status==='To Do')   todo++;
+      else if (t.status==='Doing')   doing++;
+      else if (t.status==='Done')    done++;
+      else if (t.status==='Blocked') blocked++;
     });
 
-    // ============================================================
-    // MODALS
-    // ============================================================
-    var modal1 = $('popupModal');
-    function openPopup(h)    { $('modalBody').innerHTML = h; modal1.classList.add('active'); }
-    function closePopup()    { modal1.classList.remove('active'); }
-    $('closeModal').addEventListener('click', closePopup);
-    modal1.addEventListener('click', function(e) { if (e.target === modal1) closePopup(); });
+    var totalAll = DATA.length;
+    var doneAll  = DATA.filter(function(t){ return t.status==='Done'; }).length;
 
-    var modal2 = $('calModal');
-    function openCalPopup(h) { $('calModalBody').innerHTML = h; modal2.classList.add('active'); }
-    function closeCalPopup() { modal2.classList.remove('active'); }
-    $('closeCalModal').addEventListener('click', closeCalPopup);
-    modal2.addEventListener('click', function(e) { if (e.target === modal2) closeCalPopup(); });
+    var urgent = DATA.filter(function(t){ return t.priority==='High' && t.status!=='Done'; }).slice(0,5);
 
-    // ✅ FIX: Tombol edit di modal sekarang membawa ID task ke entri.html
-    function showDetail(id) {
-      var t = null;
-      for (var i = 0; i < DATA.length; i++) {
-        if (String(DATA[i].id) === String(id)) { t = DATA[i]; break; }
-      }
-      if (!t) return;
-      openPopup(
-        '<h3>📋 Detail Task</h3>' +
-        '<p style="font-size:18px;font-weight:700;margin-bottom:14px">' + esc(t.title) + '</p>' +
-        '<div class="modal-grid">' +
-        '<div class="modal-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:12px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
-        '<div class="modal-item"><strong>Priority</strong><span class="' + priCls(t.priority) + '">' + esc(t.priority || '-') + '</span></div>' +
-        '<div class="modal-item"><strong>Due Date</strong><span>' + esc(t.due_date || '-') + '</span></div>' +
-        '<div class="modal-item"><strong>Updated</strong><span>' + esc(t.updated_at || '-') + '</span></div>' +
-        '<div class="modal-item"><strong>Created</strong><span>' + esc(t.created_at || '-') + '</span></div>' +
-        '<div class="modal-item"><strong>ID</strong><span style="font-size:10px;color:var(--text4)">' + esc(t.id) + '</span></div>' +
-        '</div>' +
-        (t.note
-          ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
-          : '<p style="color:var(--text4);margin-top:12px">Tidak ada catatan.</p>') +
-        '<div class="modal-footer">' +
-        // ✅ FIX: Kirim ID task sebagai query param ke entri.html
-        '<a href="entri.html?editId=' + esc(t.id) + '" class="btn-m btn-m-primary">✏️ Edit di Entri</a>' +
-        '<button class="btn-m btn-m-secondary" onclick="closePopup()">Tutup</button>' +
-        '</div>'
-      );
-    }
+    var now = new Date(); now.setHours(0,0,0,0);
+    var deadlines = DATA
+      .filter(function(t){ return t.status!=='Done' && parseDate(t.due_date); })
+      .map(function(t){ return { task:t, diff:daysBetween(now, parseDate(t.due_date)) }; })
+      .sort(function(a,b){ return a.diff-b.diff; })
+      .slice(0,6);
 
-    function showDayTasks(dateStr, tasks) {
-      var html = '<h3>📅 ' + dateStr + '</h3>';
-      if (!tasks.length) {
-        html += '<p class="empty">Tidak ada task di tanggal ini.</p>';
-      } else {
-        html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">';
-        for (var i = 0; i < tasks.length; i++) {
-          var t = tasks[i];
-          html +=
-            '<div class="priority-item" onclick="closeCalPopup();showDetail(\'' + esc(t.id) + '\')">' +
-            '<div class="priority-dot" style="background:' + dotColor(t.status) + '"></div>' +
-            '<div class="priority-item-title">' + esc(t.title) + '</div>' +
-            '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status) + '</span>' +
-            '</div>';
-        }
-        html += '</div>';
-      }
-      html += '<div class="modal-footer"><button class="btn-m btn-m-secondary" onclick="closeCalPopup()">Tutup</button></div>';
-      openCalPopup(html);
-    }
+    // Year options
+    var years = {};
+    DATA.forEach(function(t) {
+      var d1 = parseDate(t.due_date), d2 = parseDate(t.created_at);
+      if (d1) years[d1.getFullYear()] = true;
+      if (d2) years[d2.getFullYear()] = true;
+    });
+    years[new Date().getFullYear()] = true;
+    var yearList = Object.keys(years).sort();
 
-    // ============================================================
-    // ✅ FIX: loadData() — pakai r.text() dulu lalu parse manual
-    // untuk handle redirect Google Apps Script dengan benar
-    // ============================================================
-    function loadData() {
-      $('loadingState').style.display = '';
-      $('loadingState').innerHTML = '⏳ Memuat data dari Spreadsheet...';
-      $('app').style.display = 'none';
+    var monthOpts = MONTHS.map(function(m,i){
+      return '<option value="'+i+'"'+(i===filterMonth?' selected':'')+'>'+m+'</option>';
+    }).join('');
+    var yearOpts = yearList.map(function(y){
+      return '<option value="'+y+'"'+(parseInt(y)===filterYear?' selected':'')+'>'+y+'</option>';
+    }).join('');
 
-      return fetch(authURL('list'), { redirect: 'follow' })
-        .then(function(r) { return r.text(); })
-        .then(function(text) {
-          var j;
-          try { j = JSON.parse(text); }
-          catch(e) {
-            throw new Error('Response bukan JSON. Cek URL deployment.');
-          }
-          if (!j.ok) throw new Error(j.message || 'Gagal memuat data');
-          DATA = Array.isArray(j.data) ? j.data : [];
-          $('loadingState').style.display = 'none';
-          $('app').style.display = '';
-          render();
-        })
-        .catch(function(err) {
-          $('loadingState').innerHTML =
-            '<div style="color:var(--red)">⚠️ Gagal: ' + esc(err.message) +
-            '<br><button onclick="loadData()" style="margin-top:8px;color:var(--blue);background:none;border:none;cursor:pointer;font-weight:600">🔄 Coba lagi</button></div>';
-        });
-    }
+    var pTodo    = total ? Math.round(todo/total*100)    : 0;
+    var pDoing   = total ? Math.round(doing/total*100)   : 0;
+    var pDone    = total ? Math.round(done/total*100)    : 0;
+    var pBlocked = total ? Math.round(blocked/total*100) : 0;
+    var pDoneAll = totalAll ? Math.round(doneAll/totalAll*100) : 0;
 
-    // ============================================================
-    // FILTER
-    // ============================================================
-    function getFiltered() {
-      return DATA.filter(function(t) {
-        if (filterStatus !== 'All' && t.status !== filterStatus) return false;
-        if (searchQ) {
-          var q = searchQ.toLowerCase();
-          if ((t.title + ' ' + t.note + ' ' + t.priority).toLowerCase().indexOf(q) === -1) return false;
-        }
-        var d = parseDate(t.due_date);
-        if (d) {
-          if (d.getMonth() !== filterMonth || d.getFullYear() !== filterYear) return false;
-        } else {
-          var c = parseDate(t.created_at);
-          if (c) {
-            if (c.getMonth() !== filterMonth || c.getFullYear() !== filterYear) return false;
-          }
-        }
-        return true;
-      });
-    }
-
-    function getMonthData(m, y) {
-      return DATA.filter(function(t) {
-        var d = parseDate(t.due_date);
-        return d && d.getMonth() === m && d.getFullYear() === y;
-      });
-    }
-
-    // ============================================================
-    // RENDER
-    // ============================================================
-    function render() {
-      var app   = $('app');
-      var tasks = getFiltered(); // Data yang sudah difilter per bulan
-
-      // ✅ FIX: Hitung stats dari data FILTERED (per bulan), bukan semua DATA
-      var total = tasks.length;
-      var todo = 0, doing = 0, done = 0, blocked = 0;
-      for (var i = 0; i < tasks.length; i++) {
-        if      (tasks[i].status === 'To Do')   todo++;
-        else if (tasks[i].status === 'Doing')   doing++;
-        else if (tasks[i].status === 'Done')    done++;
-        else if (tasks[i].status === 'Blocked') blocked++;
-      }
-
-      // Total keseluruhan untuk ringkasan sidebar
-      var totalAll = DATA.length;
-      var doneAll  = DATA.filter(function(t){ return t.status === 'Done'; }).length;
-
-      // Urgent — dari semua data (tidak difilter bulan)
-      var urgent = [];
-      for (var i = 0; i < DATA.length; i++) {
-        if (DATA[i].priority === 'High' && DATA[i].status !== 'Done') {
-          urgent.push(DATA[i]);
-          if (urgent.length >= 5) break;
-        }
-      }
-
-      // Deadlines — dari semua data (tidak difilter bulan)
-      var now = new Date(); now.setHours(0,0,0,0);
-      var deadlines = [];
-      for (var i = 0; i < DATA.length; i++) {
-        if (DATA[i].status === 'Done') continue;
-        var dd = parseDate(DATA[i].due_date);
-        if (dd) deadlines.push({ task: DATA[i], diff: daysBetween(now, dd) });
-      }
-      deadlines.sort(function(a,b){ return a.diff - b.diff; });
-      deadlines = deadlines.slice(0, 6);
-
-      // Year options
-      var years = {};
-      for (var i = 0; i < DATA.length; i++) {
-        var d1 = parseDate(DATA[i].due_date);
-        var d2 = parseDate(DATA[i].created_at);
-        if (d1) years[d1.getFullYear()] = true;
-        if (d2) years[d2.getFullYear()] = true;
-      }
-      years[new Date().getFullYear()] = true;
-      var yearList = Object.keys(years).sort();
-
-      var monthOpts = '';
-      for (var m = 0; m < 12; m++) {
-        monthOpts += '<option value="' + m + '"' + (m === filterMonth ? ' selected' : '') + '>' + MONTHS[m] + '</option>';
-      }
-      var yearOpts = '';
-      for (var y = 0; y < yearList.length; y++) {
-        yearOpts += '<option value="' + yearList[y] + '"' + (parseInt(yearList[y]) === filterYear ? ' selected' : '') + '>' + yearList[y] + '</option>';
-      }
-
-      var pTodo    = total ? Math.round(todo    / total * 100) : 0;
-      var pDoing   = total ? Math.round(doing   / total * 100) : 0;
-      var pDone    = total ? Math.round(done    / total * 100) : 0;
-      var pBlocked = total ? Math.round(blocked / total * 100) : 0;
-      var pDoneAll = totalAll ? Math.round(doneAll / totalAll * 100) : 0;
-
-      app.innerHTML =
-        // FILTER BAR
-        '<div class="filter-bar">' +
-        '<label>📅 Bulan:</label>' +
-        '<select class="filter-select" id="fMonth">' + monthOpts + '</select>' +
-        '<select class="filter-select" id="fYear">'  + yearOpts  + '</select>' +
-        '<div class="sep"></div>' +
-        '<input class="filter-search" id="fSearch" placeholder="🔍 Cari task..." value="' + esc(searchQ) + '" />' +
-        '<div class="sep"></div>' +
-        '<div class="status-pills">' +
-        ['All','To Do','Doing','Done','Blocked'].map(function(s){
-          return '<button class="pill' + (filterStatus === s ? ' active' : '') + '" data-f="' + s + '">' + (s === 'All' ? 'Semua' : s) + '</button>';
-        }).join('') +
+    // ADMIN BANNER
+    var adminBanner = '';
+    if (SESSION.role === 'admin') {
+      adminBanner =
+        '<div class="admin-banner">' +
+        '<div class="admin-banner-left">' +
+        '<div class="admin-banner-icon">👑</div>' +
+        '<div class="admin-banner-text">' +
+        '<h4>Mode Admin</h4>' +
+        '<p>Anda login sebagai admin. Kelola semua user dari sini.</p>' +
         '</div></div>' +
-
-        // STATS — ✅ berdasarkan filter bulan
-        '<div class="stats">' +
-        '<div class="stat"><div class="stat-icon">📊</div><div class="stat-num">' + total + '</div><div class="stat-label">' + MONTHS[filterMonth] + '</div><div class="stat-sub">Total bulan ini</div><div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div></div>' +
-        '<div class="stat"><div class="stat-icon">📋</div><div class="stat-num">' + todo + '</div><div class="stat-label">To Do</div><div class="stat-bar"><div class="stat-bar-fill" style="width:' + pTodo + '%;background:#94a3b8"></div></div></div>' +
-        '<div class="stat"><div class="stat-icon">⚡</div><div class="stat-num">' + doing + '</div><div class="stat-label">Doing</div><div class="stat-bar"><div class="stat-bar-fill" style="width:' + pDoing + '%;background:#3b82f6"></div></div></div>' +
-        '<div class="stat"><div class="stat-icon">✅</div><div class="stat-num">' + done + '</div><div class="stat-label">Done</div><div class="stat-bar"><div class="stat-bar-fill" style="width:' + pDone + '%;background:#10b981"></div></div></div>' +
-        '<div class="stat"><div class="stat-icon">🚫</div><div class="stat-num">' + blocked + '</div><div class="stat-label">Blocked</div><div class="stat-bar"><div class="stat-bar-fill" style="width:' + pBlocked + '%;background:#ef4444"></div></div></div>' +
-        '</div>' +
-
-        // CHARTS
-        '<div class="charts">' +
-        '<div class="chart-card"><div class="card-head"><h3>Status — ' + MONTHS[filterMonth] + '</h3></div><canvas id="chartStatus"></canvas></div>' +
-        '<div class="chart-card"><div class="card-head"><h3>Priority — Semua Data</h3></div><canvas id="chartPriority"></canvas></div>' +
-        '</div>' +
-
-        // CALENDAR
-        '<div id="calendarArea"></div>' +
-
-        // CONTENT
-        '<div class="content">' +
-        '<div><div class="card">' +
-        '<div class="card-head"><h2>📋 ' + MONTHS[filterMonth] + ' ' + filterYear + '</h2><span style="font-size:12px;color:var(--text4)">' + tasks.length + ' task</span></div>' +
-        (tasks.length
-          ? '<div class="table-wrap"><table><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Updated</th></tr></thead><tbody>' +
-            tasks.map(function(t) {
-              return '<tr data-id="' + esc(t.id) + '">' +
-                '<td style="font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(t.title) + '</td>' +
-                '<td><span class="badge ' + badgeCls(t.status) + '">' + esc(t.status) + '</span></td>' +
-                '<td class="' + priCls(t.priority) + '">' + esc(t.priority) + '</td>' +
-                '<td>' + esc(t.due_date || '-') + '</td>' +
-                '<td>' + esc(t.updated_at || '-') + '</td>' +
-                '</tr>';
-            }).join('') +
-            '</tbody></table></div>'
-          : '<div class="empty">Tidak ada task di ' + MONTHS[filterMonth] + ' ' + filterYear + '</div>') +
-        '</div></div>' +
-
-        // SIDEBAR
-        '<div class="sidebar">' +
-        '<div class="card"><div class="card-head"><h3>🔥 Prioritas Tinggi</h3></div>' +
-        (urgent.length
-          ? '<div class="priority-list">' + urgent.map(function(t) {
-              return '<div class="priority-item" data-id="' + esc(t.id) + '">' +
-                '<div class="priority-dot" style="background:' + dotColor(t.status) + '"></div>' +
-                '<div class="priority-item-title">' + esc(t.title) + '</div>' +
-                '<div class="priority-item-meta">' + esc(t.due_date || '-') + '</div>' +
-                '</div>';
-            }).join('') + '</div>'
-          : '<div class="empty">Tidak ada 🎉</div>') +
-        '</div>' +
-
-        '<div class="card"><div class="card-head"><h3>⏰ Deadline</h3></div>' +
-        (deadlines.length
-          ? '<div>' + deadlines.map(function(d) {
-              var cls   = d.diff < 0 ? 'deadline-overdue' : d.diff <= 3 ? 'deadline-soon' : 'deadline-ok';
-              var label = d.diff < 0 ? Math.abs(d.diff) + 'h lalu' : d.diff === 0 ? 'Hari ini!' : d.diff + ' hari';
-              return '<div class="deadline-item" data-id="' + esc(d.task.id) + '">' +
-                '<span class="deadline-days ' + cls + '">' + label + '</span>' +
-                '<div style="flex:1;min-width:0">' +
-                '<div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(d.task.title) + '</div>' +
-                '<div style="font-size:11px;color:var(--text4)">' + esc(d.task.due_date) + '</div>' +
-                '</div></div>';
-            }).join('') + '</div>'
-          : '<div class="empty">Tidak ada deadline</div>') +
-        '</div>' +
-
-        // ✅ FIX: Ringkasan menampilkan data bulan ini VS semua data
-        '<div class="card"><div class="card-head"><h3>📈 Ringkasan</h3></div>' +
-        '<div style="font-size:13px;color:var(--text2);line-height:2.4">' +
-        '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Bulan Ini (' + MONTHS[filterMonth] + ')</div>' +
-        '<div>Total: <strong>' + total + '</strong></div>' +
-        '<div>Selesai: <strong>' + done + '</strong> <span style="color:var(--green)">(' + pDone + '%)</span></div>' +
-        '<div>Blocked: <strong style="color:var(--red)">' + blocked + '</strong></div>' +
-        '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px">Semua Data</div>' +
-        '<div>Total: <strong>' + totalAll + '</strong></div>' +
-        '<div>Selesai: <strong>' + doneAll + '</strong> <span style="color:var(--green)">(' + pDoneAll + '%)</span></div>' +
-        '<div>High Priority: <strong>' + DATA.filter(function(t){ return t.priority === 'High'; }).length + '</strong></div>' +
-        '</div></div>' +
-
-        '<div class="card" style="text-align:center"><button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh</button></div>' +
-        '</div></div>';
-
-      // RENDER SUB-COMPONENTS
-      renderCalendar();
-
-      // EVENTS — filter
-      $('fMonth').addEventListener('change', function() { filterMonth = parseInt(this.value); calMonth = filterMonth; render(); });
-      $('fYear').addEventListener('change',  function() { filterYear  = parseInt(this.value); calYear  = filterYear;  render(); });
-      $('fSearch').addEventListener('input', function() { searchQ = this.value; render(); });
-
-      document.querySelectorAll('[data-f]').forEach(function(btn) {
-        btn.addEventListener('click', function() { filterStatus = btn.getAttribute('data-f'); render(); });
-      });
-
-      // EVENTS — table rows
-      document.querySelectorAll('tr[data-id]').forEach(function(r) {
-        r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-      });
-
-      // EVENTS — sidebar items
-      document.querySelectorAll('.priority-item[data-id]').forEach(function(r) {
-        r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-      });
-      document.querySelectorAll('.deadline-item[data-id]').forEach(function(r) {
-        r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-      });
-
-      renderCharts(todo, doing, done, blocked);
+        '<button class="btn-admin" id="openAdminBtn">👥 Kelola Users</button>' +
+        '</div>';
     }
 
-    // ============================================================
-    // CALENDAR
-    // ============================================================
-    function renderCalendar() {
-      var area = $('calendarArea');
-      if (!area) return;
+    app.innerHTML =
+      adminBanner +
 
-      var firstDay    = new Date(calYear, calMonth, 1).getDay();
-      var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-      var today       = new Date();
+      // FILTER BAR
+      '<div class="filter-bar">' +
+      '<label>📅 Bulan:</label>' +
+      '<select class="filter-select" id="fMonth">'+monthOpts+'</select>' +
+      '<select class="filter-select" id="fYear">'+yearOpts+'</select>' +
+      '<div class="sep"></div>' +
+      '<input class="filter-search" id="fSearch" placeholder="🔍 Cari task..." value="'+esc(searchQ)+'" />' +
+      '<div class="sep"></div>' +
+      '<div class="status-pills">' +
+      ['All','To Do','Doing','Done','Blocked'].map(function(s){
+        return '<button class="pill'+(filterStatus===s?' active':'')+'" data-f="'+s+'">'+(s==='All'?'Semua':s)+'</button>';
+      }).join('') +
+      '</div></div>' +
 
-      var monthTasks = getMonthData(calMonth, calYear);
-      var tasksByDay = {};
-      for (var i = 0; i < monthTasks.length; i++) {
-        var d = parseDate(monthTasks[i].due_date);
-        if (d) {
-          var day = d.getDate();
-          if (!tasksByDay[day]) tasksByDay[day] = [];
-          tasksByDay[day].push(monthTasks[i]);
-        }
-      }
+      // STATS
+      '<div class="stats">' +
+      '<div class="stat"><div class="stat-icon">📊</div><div class="stat-num">'+total+'</div><div class="stat-label">'+MONTHS[filterMonth]+'</div><div class="stat-sub">Total bulan ini</div><div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div></div>' +
+      '<div class="stat"><div class="stat-icon">📋</div><div class="stat-num">'+todo+'</div><div class="stat-label">To Do</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pTodo+'%;background:#94a3b8"></div></div></div>' +
+      '<div class="stat"><div class="stat-icon">⚡</div><div class="stat-num">'+doing+'</div><div class="stat-label">Doing</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDoing+'%;background:#3b82f6"></div></div></div>' +
+      '<div class="stat"><div class="stat-icon">✅</div><div class="stat-num">'+done+'</div><div class="stat-label">Done</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDone+'%;background:#10b981"></div></div></div>' +
+      '<div class="stat"><div class="stat-icon">🚫</div><div class="stat-num">'+blocked+'</div><div class="stat-label">Blocked</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pBlocked+'%;background:#ef4444"></div></div></div>' +
+      '</div>' +
 
-      var html = '<div class="cal">';
-      html += '<div class="cal-head"><h3>📅 ' + MONTHS[calMonth] + ' ' + calYear + '</h3>';
-      html += '<div class="cal-nav"><button id="calPrev">◀</button><button id="calToday">Hari Ini</button><button id="calNext">▶</button></div></div>';
-      html += '<div class="cal-grid">';
+      // CHARTS
+      '<div class="charts">' +
+      '<div class="chart-card"><div class="card-head"><h3>Status — '+MONTHS[filterMonth]+'</h3></div><canvas id="chartStatus"></canvas></div>' +
+      '<div class="chart-card"><div class="card-head"><h3>Priority — Semua Data</h3></div><canvas id="chartPriority"></canvas></div>' +
+      '</div>' +
 
-      for (var d = 0; d < 7; d++) html += '<div class="cal-day-name">' + DAYS[d] + '</div>';
-      for (var e = 0; e < firstDay; e++) html += '<div class="cal-cell empty-cell"></div>';
+      // CALENDAR
+      '<div id="calendarArea"></div>' +
 
-      for (var day = 1; day <= daysInMonth; day++) {
-        var isToday   = day === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
-        var dayTasks  = tasksByDay[day] || [];
-        html += '<div class="cal-cell' + (isToday ? ' today' : '') + '" data-day="' + day + '">';
-        html += '<div class="cal-date">' + day + '</div>';
-        if (dayTasks.length) {
-          html += '<span class="cal-count">' + dayTasks.length + '</span>';
-          for (var t = 0; t < Math.min(dayTasks.length, 2); t++) {
-            html += '<div class="cal-task-preview"><span class="cal-dot" style="background:' + dotColor(dayTasks[t].status) + '"></span>' + esc(dayTasks[t].title) + '</div>';
-          }
-          if (dayTasks.length > 2) html += '<div class="cal-task-preview" style="color:var(--blue);font-weight:600">+' + (dayTasks.length - 2) + ' lagi</div>';
-        }
-        html += '</div>';
-      }
-      html += '</div></div>';
-      area.innerHTML = html;
+      // CONTENT
+      '<div class="content">' +
 
-      $('calPrev').addEventListener('click', function() {
-        calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar();
-      });
-      $('calNext').addEventListener('click', function() {
-        calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar();
-      });
-      $('calToday').addEventListener('click', function() {
-        calMonth = new Date().getMonth(); calYear = new Date().getFullYear(); renderCalendar();
-      });
+      // TASK TABLE
+      '<div><div class="card">' +
+      '<div class="card-head"><h2>📋 '+MONTHS[filterMonth]+' '+filterYear+'</h2><span style="font-size:12px;color:var(--text4)">'+tasks.length+' task</span></div>' +
+      (tasks.length
+        ? '<div class="table-wrap"><table><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Updated</th></tr></thead><tbody>' +
+          tasks.map(function(t) {
+            return '<tr data-id="'+esc(t.id)+'">' +
+              '<td style="font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(t.title)+'</td>' +
+              '<td><span class="badge '+badgeCls(t.status)+'">'+esc(t.status)+'</span></td>' +
+              '<td class="'+priCls(t.priority)+'">'+esc(t.priority)+'</td>' +
+              '<td>'+esc(t.due_date||'-')+'</td>' +
+              '<td>'+esc(t.updated_at||'-')+'</td>' +
+              '</tr>';
+          }).join('') +
+          '</tbody></table></div>'
+        : '<div class="empty">Tidak ada task di '+MONTHS[filterMonth]+' '+filterYear+'</div>') +
+      '</div></div>' +
 
-      document.querySelectorAll('.cal-cell[data-day]').forEach(function(cell) {
-        cell.addEventListener('click', function() {
-          var d2       = parseInt(cell.getAttribute('data-day'));
-          var dayTasks = tasksByDay[d2] || [];
-          showDayTasks(d2 + ' ' + MONTHS[calMonth] + ' ' + calYear, dayTasks);
-        });
-      });
-    }
+      // SIDEBAR
+      '<div class="sidebar">' +
 
-    // ============================================================
-    // CHARTS
-    // ============================================================
-    function renderCharts(todo, doing, done, blocked) {
-      if (chartStatus)   chartStatus.destroy();
-      if (chartPriority) chartPriority.destroy();
+      // NOTULEN SHORTCUT
+      '<a href="notulen.html" class="notulen-shortcut">' +
+      '<div style="font-size:32px">📝</div>' +
+      '<h3>Tools Notulen</h3>' +
+      '<p>Buat & kelola notulen rapat Anda</p>' +
+      '</a>' +
 
-      var high = 0, med = 0, low = 0;
-      for (var i = 0; i < DATA.length; i++) {
-        if      (DATA[i].priority === 'High')   high++;
-        else if (DATA[i].priority === 'Medium') med++;
-        else if (DATA[i].priority === 'Low')    low++;
-      }
+      // HIGH PRIORITY
+      '<div class="card"><div class="card-head"><h3>🔥 Prioritas Tinggi</h3></div>' +
+      (urgent.length
+        ? '<div class="priority-list">' + urgent.map(function(t) {
+            return '<div class="priority-item" data-id="'+esc(t.id)+'">' +
+              '<div class="priority-dot" style="background:'+dotColor(t.status)+'"></div>' +
+              '<div class="priority-item-title">'+esc(t.title)+'</div>' +
+              '<div class="priority-item-meta">'+esc(t.due_date||'-')+'</div>' +
+              '</div>';
+          }).join('') + '</div>'
+        : '<div class="empty">Tidak ada 🎉</div>') +
+      '</div>' +
 
-      var txtColor = isDark ? '#94a3b8' : '#475569';
+      // DEADLINE
+      '<div class="card"><div class="card-head"><h3>⏰ Deadline</h3></div>' +
+      (deadlines.length
+        ? '<div>' + deadlines.map(function(d) {
+            var cls   = d.diff<0?'deadline-overdue':d.diff<=3?'deadline-soon':'deadline-ok';
+            var label = d.diff<0?Math.abs(d.diff)+'h lalu':d.diff===0?'Hari ini!':d.diff+' hari';
+            return '<div class="deadline-item" data-id="'+esc(d.task.id)+'">' +
+              '<span class="deadline-days '+cls+'">'+label+'</span>' +
+              '<div style="flex:1;min-width:0">' +
+              '<div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(d.task.title)+'</div>' +
+              '<div style="font-size:11px;color:var(--text4)">'+esc(d.task.due_date)+'</div>' +
+              '</div></div>';
+          }).join('') + '</div>'
+        : '<div class="empty">Tidak ada deadline</div>') +
+      '</div>' +
 
-      var el1 = $('chartStatus');
-      if (el1) {
-        chartStatus = new Chart(el1, {
-          type: 'doughnut',
-          data: {
-            labels: ['To Do','Doing','Done','Blocked'],
-            datasets: [{ data: [todo,doing,done,blocked], backgroundColor:['#94a3b8','#3b82f6','#10b981','#ef4444'], borderWidth:0, spacing:4, borderRadius:6 }]
-          },
-          options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:txtColor, padding:12, usePointStyle:true, pointStyleWidth:10 } } } }
-        });
-      }
+      // RINGKASAN
+      '<div class="card"><div class="card-head"><h3>📈 Ringkasan</h3></div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:2.4">' +
+      '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Bulan Ini ('+MONTHS[filterMonth]+')</div>' +
+      '<div>Total: <strong>'+total+'</strong></div>' +
+      '<div>Selesai: <strong>'+done+'</strong> <span style="color:var(--green)">('+pDone+'%)</span></div>' +
+      '<div>Blocked: <strong style="color:var(--red)">'+blocked+'</strong></div>' +
+      '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px">Semua Data</div>' +
+      '<div>Total: <strong>'+totalAll+'</strong></div>' +
+      '<div>Selesai: <strong>'+doneAll+'</strong> <span style="color:var(--green)">('+pDoneAll+'%)</span></div>' +
+      '<div>High Priority: <strong>'+DATA.filter(function(t){return t.priority==='High';}).length+'</strong></div>' +
+      '</div></div>' +
 
-      var el2 = $('chartPriority');
-      if (el2) {
-        chartPriority = new Chart(el2, {
-          type: 'bar',
-          data: {
-            labels: ['High','Medium','Low'],
-            datasets: [{ label:'Jumlah', data:[high,med,low], backgroundColor:['#ef4444','#f59e0b','#10b981'], borderRadius:10, borderSkipped:false }]
-          },
-          options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ color:txtColor, stepSize:1 }, grid:{ color: isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)' } }, x:{ ticks:{ color:txtColor }, grid:{ display:false } } } }
-        });
-      }
-    }
+      // REFRESH
+      '<div class="card" style="text-align:center">' +
+      '<button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh Data</button>' +
+      '</div>' +
 
-    // ============================================================
-    // EXPORT
-    // ============================================================
-    function getExportData(from, to) {
-      var fromD = from ? new Date(from) : null;
-      var toD   = to   ? new Date(to)   : null;
-      if (fromD) fromD.setHours(0,0,0,0);
-      if (toD)   toD.setHours(23,59,59,999);
-      return DATA.filter(function(t) {
-        var d = parseDate(t.due_date) || parseDate(t.created_at);
-        if (!d) return !fromD && !toD;
-        if (fromD && d < fromD) return false;
-        if (toD   && d > toD)   return false;
-        return true;
-      });
-    }
+      '</div></div>'; // end sidebar & content
 
-    function getMonthRange() {
-      return {
-        from: new Date(filterYear, filterMonth, 1).toISOString().slice(0,10),
-        to:   new Date(filterYear, filterMonth + 1, 0).toISOString().slice(0,10)
-      };
-    }
+    // BIND EVENTS
+    // Filter
+    document.getElementById('fMonth').addEventListener('change', function() { filterMonth=parseInt(this.value); calMonth=filterMonth; render(); });
+    document.getElementById('fYear').addEventListener('change',  function() { filterYear=parseInt(this.value);  calYear=filterYear;   render(); });
+    document.getElementById('fSearch').addEventListener('input', function() { searchQ=this.value; render(); });
 
-    function exportPDF(tasks, title) {
-      var jsPDF = window.jspdf.jsPDF;
-      var doc   = new jsPDF('l','mm','a4');
-      doc.setFontSize(18); doc.setFont(undefined,'bold');
-      doc.text('SIMONTOK', 14, 18);
-      doc.setFontSize(10); doc.setFont(undefined,'normal');
-      doc.text('Sistem Monitoring Organisasi Kerja', 14, 24);
-      doc.setFontSize(12); doc.setFont(undefined,'bold');
-      doc.text(title, 14, 34);
-      doc.setFontSize(9); doc.setFont(undefined,'normal');
-      doc.text('Dicetak: ' + new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), 14, 40);
-      var rows = tasks.map(function(t,i) {
-        return [i+1, t.title||'', t.status||'', t.priority||'', t.due_date||'', t.updated_at||'', (t.note||'').substring(0,60)];
-      });
-      doc.autoTable({
-        startY: 46,
-        head: [['No','Task','Status','Priority','Due Date','Updated','Note']],
-        body: rows,
-        styles: { fontSize:9, cellPadding:3 },
-        headStyles: { fillColor:[37,99,235], textColor:255, fontStyle:'bold' },
-        alternateRowStyles: { fillColor:[248,250,252] },
-        columnStyles: { 0:{cellWidth:10}, 1:{cellWidth:70}, 6:{cellWidth:50} }
-      });
-      var totalPages = doc.internal.getNumberOfPages();
-      for (var p = 1; p <= totalPages; p++) {
-        doc.setPage(p); doc.setFontSize(8); doc.setTextColor(150);
-        doc.text('SIMONTOK - Hal ' + p + '/' + totalPages, doc.internal.pageSize.getWidth()-14, doc.internal.pageSize.getHeight()-8, { align:'right' });
-      }
-      doc.save('SIMONTOK_' + title.replace(/\s/g,'_') + '.pdf');
-    }
-
-    function exportExcel(tasks, title) {
-      var rows = [['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note']];
-      tasks.forEach(function(t,i) {
-        rows.push([i+1, t.id, t.title, t.status, t.priority, t.due_date, t.updated_at, t.created_at, t.note]);
-      });
-      var wb = XLSX.utils.book_new();
-      var ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{wch:5},{wch:15},{wch:40},{wch:12},{wch:10},{wch:14},{wch:14},{wch:14},{wch:40}];
-      XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
-      XLSX.writeFile(wb, 'SIMONTOK_' + title.replace(/\s/g,'_') + '.xlsx');
-    }
-
-    $('exportFilterMonth').addEventListener('click', function() {
-      var range = getMonthRange();
-      var tasks = getExportData(range.from, range.to);
-      var title = MONTHS[filterMonth] + ' ' + filterYear;
-      if (!tasks.length) { alert('Tidak ada data di ' + title); return; }
-      exportPDF(tasks, title); closeSettings();
-    });
-    $('exportPDF').addEventListener('click', function() {
-      var from = $('exportFrom').value, to = $('exportTo').value;
-      var tasks = getExportData(from, to);
-      if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
-      exportPDF(tasks, (from||'Semua') + ' - ' + (to||'Semua')); closeSettings();
-    });
-    $('exportExcel').addEventListener('click', function() {
-      var from = $('exportFrom').value, to = $('exportTo').value;
-      var tasks = getExportData(from, to);
-      if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
-      exportExcel(tasks, (from||'Semua') + ' - ' + (to||'Semua')); closeSettings();
+    document.querySelectorAll('[data-f]').forEach(function(btn) {
+      btn.addEventListener('click', function() { filterStatus=btn.getAttribute('data-f'); render(); });
     });
 
-    // Set default export range
-    (function() {
-      var now  = new Date();
-      $('exportFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
-      $('exportTo').value   = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
-    })();
+    // Table rows
+    document.querySelectorAll('tr[data-id]').forEach(function(r) {
+      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
+    });
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    window.addEventListener('DOMContentLoaded', loadData);
-  </script>
+    // Sidebar items
+    document.querySelectorAll('.priority-item[data-id]').forEach(function(r) {
+      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
+    });
+    document.querySelectorAll('.deadline-item[data-id]').forEach(function(r) {
+      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
+    });
+
+    // Admin button
+    if (SESSION.role === 'admin') {
+      var adminBtn = document.getElementById('openAdminBtn');
+      if (adminBtn) adminBtn.addEventListener('click', openAdminModal);
+    }
+
+    renderCalendar();
+    renderCharts(todo, doing, done, blocked, isDark);
+  }
+
+  // ============================================================
+  // CALENDAR
+  // ============================================================
+  function renderCalendar() {
+    var area = document.getElementById('calendarArea');
+    if (!area) return;
+
+    var firstDay    = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+    var today       = new Date();
+
+    var monthTasks  = getMonthData(calMonth, calYear);
+    var tasksByDay  = {};
+    monthTasks.forEach(function(t) {
+      var d = parseDate(t.due_date);
+      if (d) {
+        var day = d.getDate();
+        if (!tasksByDay[day]) tasksByDay[day] = [];
+        tasksByDay[day].push(t);
+      }
+    });
+
+    var html = '<div class="cal">';
+    html += '<div class="cal-head"><h3>📅 '+MONTHS[calMonth]+' '+calYear+'</h3>';
+    html += '<div class="cal-nav"><button id="calPrev">◀</button><button id="calToday">Hari Ini</button><button id="calNext">▶</button></div></div>';
+    html += '<div class="cal-grid">';
+    DAYS.forEach(function(d) { html += '<div class="cal-day-name">'+d+'</div>'; });
+    for (var e=0; e<firstDay; e++) html += '<div class="cal-cell empty-cell"></div>';
+    for (var day=1; day<=daysInMonth; day++) {
+      var isToday  = day===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear();
+      var dayTasks = tasksByDay[day] || [];
+      html += '<div class="cal-cell'+(isToday?' today':'')+'" data-day="'+day+'">';
+      html += '<div class="cal-date">'+day+'</div>';
+      if (dayTasks.length) {
+        html += '<span class="cal-count">'+dayTasks.length+'</span>';
+        dayTasks.slice(0,2).forEach(function(t) {
+          html += '<div class="cal-task-preview"><span class="cal-dot" style="background:'+dotColor(t.status)+'"></span>'+esc(t.title)+'</div>';
+        });
+        if (dayTasks.length>2) html += '<div class="cal-task-preview" style="color:var(--blue);font-weight:600">+'+(dayTasks.length-2)+' lagi</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+    area.innerHTML = html;
+
+    document.getElementById('calPrev').addEventListener('click', function() {
+      calMonth--; if (calMonth<0){ calMonth=11; calYear--; } renderCalendar();
+    });
+    document.getElementById('calNext').addEventListener('click', function() {
+      calMonth++; if (calMonth>11){ calMonth=0; calYear++; } renderCalendar();
+    });
+    document.getElementById('calToday').addEventListener('click', function() {
+      calMonth=new Date().getMonth(); calYear=new Date().getFullYear(); renderCalendar();
+    });
+    document.querySelectorAll('.cal-cell[data-day]').forEach(function(cell) {
+      cell.addEventListener('click', function() {
+        var d2 = parseInt(cell.getAttribute('data-day'));
+        showDayTasks(d2+' '+MONTHS[calMonth]+' '+calYear, tasksByDay[d2]||[]);
+      });
+    });
+  }
+
+  // ============================================================
+  // CHARTS
+  // ============================================================
+  function renderCharts(todo, doing, done, blocked, isDark) {
+    if (chartStatus)   chartStatus.destroy();
+    if (chartPriority) chartPriority.destroy();
+
+    var high=0, med=0, low=0;
+    DATA.forEach(function(t) {
+      if      (t.priority==='High')   high++;
+      else if (t.priority==='Medium') med++;
+      else if (t.priority==='Low')    low++;
+    });
+
+    var txtColor = isDark ? '#94a3b8' : '#475569';
+    var el1 = document.getElementById('chartStatus');
+    var el2 = document.getElementById('chartPriority');
+
+    if (el1) {
+      chartStatus = new Chart(el1, {
+        type: 'doughnut',
+        data: {
+          labels: ['To Do','Doing','Done','Blocked'],
+          datasets: [{ data:[todo,doing,done,blocked], backgroundColor:['#94a3b8','#3b82f6','#10b981','#ef4444'], borderWidth:0, spacing:4, borderRadius:6 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:txtColor, padding:12, usePointStyle:true, pointStyleWidth:10 } } } }
+      });
+    }
+    if (el2) {
+      chartPriority = new Chart(el2, {
+        type: 'bar',
+        data: {
+          labels: ['High','Medium','Low'],
+          datasets: [{ label:'Jumlah', data:[high,med,low], backgroundColor:['#ef4444','#f59e0b','#10b981'], borderRadius:10, borderSkipped:false }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ color:txtColor, stepSize:1 }, grid:{ color: isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)' } }, x:{ ticks:{ color:txtColor }, grid:{ display:false } } } }
+      });
+    }
+  }
+
+  // ============================================================
+  // EXPORT
+  // ============================================================
+  function getExportData(from, to) {
+    var fromD = from ? new Date(from) : null;
+    var toD   = to   ? new Date(to)   : null;
+    if (fromD) fromD.setHours(0,0,0,0);
+    if (toD)   toD.setHours(23,59,59,999);
+    return DATA.filter(function(t) {
+      var d = parseDate(t.due_date) || parseDate(t.created_at);
+      if (!d) return !fromD && !toD;
+      if (fromD && d < fromD) return false;
+      if (toD   && d > toD)   return false;
+      return true;
+    });
+  }
+
+  function getMonthRange() {
+    return {
+      from: new Date(filterYear, filterMonth, 1).toISOString().slice(0,10),
+      to:   new Date(filterYear, filterMonth+1, 0).toISOString().slice(0,10)
+    };
+  }
+
+  function exportPDF(tasks, title) {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc   = new jsPDF('l','mm','a4');
+    doc.setFontSize(18); doc.setFont(undefined,'bold');
+    doc.text('SIMONTOK', 14, 18);
+    doc.setFontSize(10); doc.setFont(undefined,'normal');
+    doc.text('Sistem Monitoring Organisasi Kerja', 14, 24);
+    doc.setFontSize(12); doc.setFont(undefined,'bold');
+    doc.text(title, 14, 34);
+    doc.setFontSize(9); doc.setFont(undefined,'normal');
+    doc.text('Dicetak: '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), 14, 40);
+    var rows = tasks.map(function(t,i) {
+      return [i+1, t.title||'', t.status||'', t.priority||'', t.due_date||'', t.updated_at||'', (t.note||'').substring(0,60)];
+    });
+    doc.autoTable({
+      startY: 46,
+      head: [['No','Task','Status','Priority','Due Date','Updated','Note']],
+      body: rows,
+      styles: { fontSize:9, cellPadding:3 },
+      headStyles: { fillColor:[37,99,235], textColor:255, fontStyle:'bold' },
+      alternateRowStyles: { fillColor:[248,250,252] },
+      columnStyles: { 0:{cellWidth:10}, 1:{cellWidth:70}, 6:{cellWidth:50} }
+    });
+    var total = doc.internal.getNumberOfPages();
+    for (var p=1; p<=total; p++) {
+      doc.setPage(p); doc.setFontSize(8); doc.setTextColor(150);
+      doc.text('SIMONTOK - Hal '+p+'/'+total, doc.internal.pageSize.getWidth()-14, doc.internal.pageSize.getHeight()-8, { align:'right' });
+    }
+    doc.save('SIMONTOK_'+title.replace(/\s/g,'_')+'.pdf');
+  }
+
+  function exportExcel(tasks, title) {
+    var rows = [['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note']];
+    tasks.forEach(function(t,i) {
+      rows.push([i+1, t.id, t.title, t.status, t.priority, t.due_date, t.updated_at, t.created_at, t.note]);
+    });
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:5},{wch:15},{wch:40},{wch:12},{wch:10},{wch:14},{wch:14},{wch:14},{wch:40}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
+    XLSX.writeFile(wb, 'SIMONTOK_'+title.replace(/\s/g,'_')+'.xlsx');
+  }
+
+  document.getElementById('exportFilterMonth').addEventListener('click', function() {
+    var range = getMonthRange();
+    var tasks = getExportData(range.from, range.to);
+    var title = MONTHS[filterMonth]+' '+filterYear;
+    if (!tasks.length) { alert('Tidak ada data di '+title); return; }
+    exportPDF(tasks, title);
+    settingsOpen = false;
+    document.getElementById('settingsDropdown').classList.remove('open');
+  });
+
+  document.getElementById('exportPDF').addEventListener('click', function() {
+    var from = document.getElementById('exportFrom').value;
+    var to   = document.getElementById('exportTo').value;
+    var tasks = getExportData(from, to);
+    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
+    exportPDF(tasks, (from||'Semua')+' - '+(to||'Semua'));
+    settingsOpen = false;
+    document.getElementById('settingsDropdown').classList.remove('open');
+  });
+
+  document.getElementById('exportExcel').addEventListener('click', function() {
+    var from = document.getElementById('exportFrom').value;
+    var to   = document.getElementById('exportTo').value;
+    var tasks = getExportData(from, to);
+    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
+    exportExcel(tasks, (from||'Semua')+' - '+(to||'Semua'));
+    settingsOpen = false;
+    document.getElementById('settingsDropdown').classList.remove('open');
+  });
+
+  // Default export range
+  (function() {
+    var now = new Date();
+    document.getElementById('exportFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+    document.getElementById('exportTo').value   = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
+  })();
+
+  // ============================================================
+  // INIT
+  // ============================================================
+  window.addEventListener('DOMContentLoaded', loadData);
+</script>
 </body>
 </html>
