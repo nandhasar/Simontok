@@ -291,12 +291,10 @@
 
         <!-- API KEY -->
         <div class="form-group">
-          <label class="ai-label">🔑 API Key Ollama Cloud</label>
-          <div style="display:flex;gap:8px">
-            <input type="password" id="ollamaApiKey"
-              placeholder="Masukkan API Key Ollama Cloud..."
-              style="flex:1;border-color:var(--purple)" />
-            <button class="btn-save-key" id="btnSaveKey">💾 Simpan</button>
+          <label class="ai-label">🔑 API Key OpenRouter</label>
+          <input type="password" id="ollamaApiKey"
+            placeholder="sk-or-v1-xxxxxxxxxxxx (dari openrouter.ai)"
+            style="flex:1;border-color:var(--purple)" />
           </div>
           <p class="model-info" style="margin-top:4px">
             🔒 Tersimpan di browser saja, tidak dikirim ke server lain.
@@ -304,12 +302,12 @@
         </div>
 
         <!-- MODEL (readonly) -->
-        <div class="form-group">
-          <label class="ai-label">🤖 Model</label>
-          <input type="text" id="ollamaModel" value="gpt-oss:20b-cloud" readonly
+          <input type="text" id="ollamaModel" value="llama-3.2-3b-instruct:free" readonly
             style="border-color:var(--purple)" />
           <p class="model-info">
-            Model otomatis: <strong>gpt-oss:20b-cloud</strong>
+            Model: <strong>meta-llama/llama-3.2-3b-instruct</strong> — 
+            <a href="https://openrouter.ai/keys" target="_blank" 
+               style="color:var(--purple)">Dapatkan API Key gratis →</a>
           </p>
         </div>
 
@@ -642,25 +640,134 @@
     status.style.color = 'var(--purple)';
     result.value       = '';
 
-    fetch('https://api.ollama.com/api/chat', {
-      method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + apiKey
+    // ============================================================
+// AI — OPENROUTER (CORS-friendly, support dari browser)
+// ============================================================
+
+(function(){
+  var saved = localStorage.getItem('simontok-ollama-key');
+  if (saved) document.getElementById('ollamaApiKey').value = saved;
+})();
+
+document.getElementById('btnSaveKey').addEventListener('click', function(){
+  var key = document.getElementById('ollamaApiKey').value.trim();
+  if (!key) { showToast('⚠️ API Key tidak boleh kosong!'); return; }
+  localStorage.setItem('simontok-ollama-key', key);
+  showToast('🔑 API Key berhasil disimpan!');
+});
+
+document.getElementById('btnGenAI').addEventListener('click', function(){
+  var points = getPoints();
+  if (!points.length) {
+    showToast('⚠️ Isi minimal 1 point rapat dulu!'); return;
+  }
+
+  var apiKey = document.getElementById('ollamaApiKey').value.trim()
+            || localStorage.getItem('simontok-ollama-key') || '';
+  if (!apiKey) {
+    showToast('⚠️ Masukkan API Key dulu!');
+    document.getElementById('ollamaApiKey').focus();
+    return;
+  }
+
+  var btn    = document.getElementById('btnGenAI');
+  var status = document.getElementById('aiStatus');
+  var result = document.getElementById('aiResult');
+
+  var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
+  var tanggal = document.getElementById('fTanggal').value;
+  var tempat  = document.getElementById('fTempat').value.trim()  || '-';
+  var notulis = document.getElementById('fNotulis').value.trim() || '-';
+  var peserta = getPeserta();
+
+  var systemPrompt =
+    'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi ' +
+    'dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
+    'Ubah point-point mentah menjadi notulen terstruktur yang rapi, ' +
+    'gunakan kalimat pasif formal, perbaiki ejaan dan tata bahasa, ' +
+    'kelompokkan topik yang berkaitan. ' +
+    'Format: gunakan penomoran (1. 2. 3. dst) untuk setiap butir. ' +
+    'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. ' +
+    'Jangan tambah informasi yang tidak ada di input. Bahasa formal dan baku.';
+
+  var userPrompt =
+    'Data rapat dan point-point mentah:\n\n' +
+    '=== DATA RAPAT ===\n' +
+    'Kegiatan : ' + judul + '\n' +
+    'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
+    'Tempat   : ' + tempat + '\n' +
+    'Notulis  : ' + notulis + '\n' +
+    (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
+    '\n=== POINT-POINT MENTAH ===\n' +
+    points.map(function(p,i){ return (i+1)+'. '+p; }).join('\n') +
+    '\n\nSusun menjadi notulen formal terstruktur. ' +
+    'Hasilkan HANYA teks notulen, tanpa penjelasan tambahan.';
+
+  btn.disabled       = true;
+  btn.textContent    = '⏳ Menyusun Notulen...';
+  status.textContent = '🔄 Menghubungi AI...';
+  status.style.color = 'var(--purple)';
+  result.value       = '';
+
+  // ── Coba OpenRouter dulu, fallback ke endpoint lain ──
+  var ENDPOINTS = [
+    {
+      // OpenRouter — CORS OK dari browser
+      url: 'https://openrouter.ai/api/v1/chat/completions',
+      headers: function(key) {
+        return {
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + key,
+          'HTTP-Referer':  'https://nandhasar.github.io',
+          'X-Title':       'SIMONTOK Notulen'
+        };
       },
-      body: JSON.stringify({
-        model:    model,
-        stream:   true,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user',   content: userPrompt   }
-        ]
-      })
+      body: function(msgs) {
+        return JSON.stringify({
+          model:  'meta-llama/llama-3.2-3b-instruct:free',
+          stream: true,
+          messages: msgs
+        });
+      },
+      // OpenRouter stream format: data.choices[0].delta.content
+      parseToken: function(j) {
+        return j.choices && j.choices[0] && j.choices[0].delta
+          ? (j.choices[0].delta.content || '')
+          : '';
+      },
+      // OpenRouter stream prefix: "data: {...}"
+      isSSE: true
+    }
+  ];
+
+  var messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user',   content: userPrompt   }
+  ];
+
+  function tryEndpoint(idx) {
+    if (idx >= ENDPOINTS.length) {
+      status.textContent = '❌ Semua endpoint gagal. Cek API Key atau koneksi.';
+      status.style.color = 'var(--red)';
+      btn.disabled       = false;
+      btn.textContent    = '✨ Susun Notulen dengan AI';
+      showToast('❌ Gagal terhubung ke AI. Cek API Key!', 4000);
+      return;
+    }
+
+    var ep = ENDPOINTS[idx];
+    status.textContent = '🔄 Mencoba ' + ep.url.split('/')[2] + '...';
+
+    fetch(ep.url, {
+      method:  'POST',
+      headers: ep.headers(apiKey),
+      body:    ep.body(messages)
     })
     .then(function(r) {
-      if (r.status === 401) throw new Error('API Key tidak valid atau expired.');
-      if (r.status === 404) throw new Error('Model tidak ditemukan di Ollama Cloud.');
-      if (!r.ok)            throw new Error('HTTP ' + r.status + ' — Gagal terhubung.');
+      if (r.status === 401) throw new Error('AUTH:API Key tidak valid. Pastikan API Key OpenRouter Anda benar.');
+      if (r.status === 402) throw new Error('CREDIT:Kredit OpenRouter habis. Top up di openrouter.ai');
+      if (r.status === 429) throw new Error('LIMIT:Rate limit. Tunggu sebentar lalu coba lagi.');
+      if (!r.ok)            throw new Error('HTTP:HTTP ' + r.status);
 
       status.textContent = '⚡ Menerima response...';
 
@@ -678,34 +785,68 @@
             showToast('✅ Notulen berhasil disusun oleh AI!');
             return;
           }
-          var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
+
+          var raw   = decoder.decode(chunk.value, { stream: true });
+          var lines = raw.split('\n');
+
           lines.forEach(function(line) {
             line = line.trim();
             if (!line) return;
-            try {
-              var j     = JSON.parse(line);
-              var token = (j.message && j.message.content) ? j.message.content : '';
-              if (token) {
-                full        += token;
-                result.value = full;
-                result.scrollTop = result.scrollHeight;
-              }
-            } catch(e) { /* skip */ }
+
+            // SSE format: "data: {...}" atau "data: [DONE]"
+            if (ep.isSSE) {
+              if (!line.startsWith('data:')) return;
+              var jsonStr = line.slice(5).trim();
+              if (jsonStr === '[DONE]') return;
+              try {
+                var j     = JSON.parse(jsonStr);
+                var token = ep.parseToken(j);
+                if (token) {
+                  full        += token;
+                  result.value = full;
+                  result.scrollTop = result.scrollHeight;
+                }
+              } catch(e) { /* skip */ }
+            } else {
+              // NDJSON format (Ollama)
+              try {
+                var j     = JSON.parse(line);
+                var token = ep.parseToken(j);
+                if (token) {
+                  full        += token;
+                  result.value = full;
+                  result.scrollTop = result.scrollHeight;
+                }
+              } catch(e) { /* skip */ }
+            }
           });
+
           return read();
         });
       }
+
       return read();
     })
     .catch(function(err) {
-      status.textContent = '❌ ' + err.message;
-      status.style.color = 'var(--red)';
-      btn.disabled       = false;
-      btn.textContent    = '✨ Susun Notulen dengan AI';
-      showToast('❌ ' + err.message, 4000);
+      var msg = err.message || '';
+      // Error spesifik → tampilkan langsung, jangan retry
+      if (msg.startsWith('AUTH:') || msg.startsWith('CREDIT:') || msg.startsWith('LIMIT:')) {
+        var clean = msg.split(':').slice(1).join(':');
+        status.textContent = '❌ ' + clean;
+        status.style.color = 'var(--red)';
+        btn.disabled       = false;
+        btn.textContent    = '✨ Susun Notulen dengan AI';
+        showToast('❌ ' + clean, 4000);
+      } else {
+        // CORS / network error → coba endpoint berikutnya
+        console.warn('Endpoint ' + idx + ' gagal:', msg);
+        tryEndpoint(idx + 1);
+      }
     });
-  });
+  }
 
+  tryEndpoint(0);
+});
   // ============================================================
   // TTD CANVAS
   // ============================================================
