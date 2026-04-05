@@ -13,10 +13,11 @@
       --border:#e2e8f0;--border2:#f1f5f9;
       --blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;
       --green:#059669;--green-bg:#d1fae5;
-      --red:#dc2626;--red-bg:#ffe4e6;--red2:#be123c;
-      --yellow:#d97706;--yellow-bg:#fef3c7;
-      --purple:#7c3aed;--purple-bg:#ede9fe;--purple2:#6d28d9;
-      --shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.15);
+      --red:#dc2626;--red-bg:#ffe4e6;
+      --purple:#7c3aed;--purple-bg:#ede9fe;
+      --shadow:0 1px 3px rgba(0,0,0,.06);
+      --shadow2:0 8px 30px rgba(0,0,0,.08);
+      --shadow3:0 20px 60px rgba(0,0,0,.15);
       --radius:20px;--radius2:14px;--radius3:10px;
     }
     [data-theme="dark"]{
@@ -25,29 +26,39 @@
       --border:#334155;--border2:#334155;
       --blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;
       --green:#34d399;--green-bg:#064e3b;
-      --red:#f87171;--red-bg:#450a0a;--red2:#fca5a5;
-      --yellow:#fbbf24;--yellow-bg:#451a03;
-      --purple:#a78bfa;--purple-bg:#2e1065;--purple2:#7c3aed;
-      --shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4);
+      --red:#f87171;--red-bg:#450a0a;
+      --purple:#a78bfa;--purple-bg:#2e1065;
+      --shadow:0 1px 3px rgba(0,0,0,.2);
+      --shadow2:0 8px 30px rgba(0,0,0,.3);
+      --shadow3:0 20px 60px rgba(0,0,0,.4);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+         background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
     a{text-decoration:none;color:inherit}
     button{cursor:pointer;font-family:inherit;font-size:inherit}
     .page{max-width:1100px;margin:0 auto;padding:20px 16px;min-height:100vh}
 
     /* TOPBAR */
-    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+            gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);
+            border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .topbar-brand{display:flex;align-items:center;gap:12px}
-    .topbar-logo{width:44px;height:44px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800;flex-shrink:0}
+    .topbar-logo{width:44px;height:44px;background:linear-gradient(135deg,#7c3aed,#2563eb);
+                 border-radius:14px;display:flex;align-items:center;justify-content:center;
+                 font-size:20px;color:#fff;font-weight:800;flex-shrink:0}
     .topbar-info h1{font-size:20px;font-weight:800;line-height:1.2}
     .topbar-info p{font-size:12px;color:var(--text3)}
     .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn-nav{border:1px solid var(--border);background:var(--bg2);padding:9px 16px;border-radius:var(--radius2);font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+    .btn-nav{border:1px solid var(--border);background:var(--bg2);padding:9px 16px;
+             border-radius:var(--radius2);font-size:13px;font-weight:600;color:var(--text2);
+             transition:all .2s;display:inline-flex;align-items:center;gap:6px}
     .btn-nav:hover{background:var(--bg3);transform:translateY(-1px)}
     .btn-nav.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
     .btn-nav.primary:hover{background:var(--blue2)}
-    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);
+              border-radius:12px;display:flex;align-items:center;justify-content:center;
+              font-size:18px;transition:all .2s}
     .btn-icon:hover{background:var(--bg3)}
 
     /* LAYOUT */
@@ -55,20 +66,22 @@
     @media(min-width:900px){.layout{grid-template-columns:1fr 340px}}
 
     /* CARD */
-    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
-    .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+          padding:22px;box-shadow:var(--shadow)}
+    .card-head{display:flex;align-items:center;justify-content:space-between;
+               margin-bottom:18px;flex-wrap:wrap;gap:8px}
     .card-head h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
     .section-divider{height:1px;background:var(--border);margin:18px 0}
 
     /* FORM */
     .form-group{margin-bottom:14px}
-    .form-group label{display:block;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+    .form-group label{display:block;font-size:12px;font-weight:700;color:var(--text3);
+                      text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    input[type=text],input[type=date],input[type=time],input[type=url],input[type=password],textarea,select{
+    input[type=text],input[type=date],input[type=time],textarea,select{
       width:100%;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);
       padding:10px 14px;border-radius:var(--radius3);font-size:13px;font-family:inherit;
-      outline:none;transition:border-color .2s;resize:vertical
-    }
+      outline:none;transition:border-color .2s;resize:vertical}
     input:focus,textarea:focus,select:focus{border-color:var(--blue)}
     input::placeholder,textarea::placeholder{color:var(--text4)}
     input[readonly]{background:var(--bg3);color:var(--text3);cursor:not-allowed}
@@ -76,90 +89,145 @@
     /* PESERTA */
     .peserta-list{display:flex;flex-direction:column;gap:8px}
     .peserta-item{display:flex;align-items:center;gap:8px}
-    .peserta-num{width:24px;height:24px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .peserta-num{width:24px;height:24px;border-radius:50%;background:var(--blue-bg);
+                 color:var(--blue);font-size:11px;font-weight:700;display:flex;
+                 align-items:center;justify-content:center;flex-shrink:0}
     .peserta-item input{flex:1}
-    .btn-rm{width:32px;height:32px;border:1px solid var(--red-bg);background:var(--red-bg);color:var(--red);border-radius:8px;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+    .btn-rm{width:32px;height:32px;border:1px solid var(--red-bg);background:var(--red-bg);
+            color:var(--red);border-radius:8px;font-size:16px;display:flex;
+            align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
     .btn-rm:hover{background:var(--red);color:#fff}
-    .btn-add{border:1.5px dashed var(--border);background:transparent;color:var(--text3);padding:9px;border-radius:var(--radius3);font-size:13px;font-weight:600;width:100%;margin-top:8px;transition:all .2s}
+    .btn-add{border:1.5px dashed var(--border);background:transparent;color:var(--text3);
+             padding:9px;border-radius:var(--radius3);font-size:13px;font-weight:600;
+             width:100%;margin-top:8px;transition:all .2s}
     .btn-add:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg2)}
 
     /* POINTS */
     .points-list{display:flex;flex-direction:column;gap:10px}
     .point-item{display:flex;gap:10px;align-items:flex-start}
-    .point-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:6px}
+    .point-num{width:28px;height:28px;border-radius:50%;
+               background:linear-gradient(135deg,var(--blue),var(--purple));
+               color:#fff;font-size:12px;font-weight:700;display:flex;
+               align-items:center;justify-content:center;flex-shrink:0;margin-top:6px}
     .point-item textarea{flex:1;min-height:72px;border-radius:var(--radius3)}
     .point-actions{display:flex;flex-direction:column;gap:4px;margin-top:6px}
-    .btn-move{width:28px;height:28px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);border-radius:6px;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .btn-move{width:28px;height:28px;border:1px solid var(--border);background:var(--bg3);
+              color:var(--text3);border-radius:6px;font-size:12px;display:flex;
+              align-items:center;justify-content:center;transition:all .2s}
     .btn-move:hover{background:var(--blue-bg);color:var(--blue)}
 
     /* AI SECTION */
-    .ai-card{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1.5px solid var(--purple);border-radius:var(--radius);padding:20px;margin-bottom:16px}
-    .ai-card h2{font-size:16px;font-weight:700;color:var(--purple);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-    .ai-label{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block}
-    .ai-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:10px}
-    .btn-ai{padding:10px 18px;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none;border-radius:var(--radius3);font-weight:700;font-size:13px;transition:all .2s;white-space:nowrap;cursor:pointer}
+    .ai-card{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));
+             border:1.5px solid var(--purple);border-radius:var(--radius);
+             padding:20px;margin-bottom:16px}
+    .ai-card h2{font-size:16px;font-weight:700;color:var(--purple);
+                margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .ai-label{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;
+              letter-spacing:.05em;margin-bottom:6px;display:block}
+    .btn-ai{padding:12px 18px;background:linear-gradient(135deg,var(--purple),var(--blue));
+            color:#fff;border:none;border-radius:var(--radius3);font-weight:700;
+            font-size:13px;transition:all .2s;white-space:nowrap;
+            cursor:pointer;width:100%}
     .btn-ai:hover{opacity:.85;transform:translateY(-1px)}
     .btn-ai:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .btn-save-key{padding:10px 14px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius3);font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;transition:all .2s;flex-shrink:0}
-    .btn-save-key:hover{opacity:.85}
     .ai-status{font-size:12px;font-weight:600;min-height:20px;margin-bottom:8px}
-    .ai-result{width:100%;min-height:120px;border:1.5px solid var(--purple);border-radius:var(--radius3);background:var(--bg2);color:var(--text);padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none}
+    .ai-result{width:100%;min-height:120px;border:1.5px solid var(--purple);
+               border-radius:var(--radius3);background:var(--bg2);color:var(--text);
+               padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none}
     .ai-result:focus{border-color:var(--blue)}
+    .ai-key-info{display:flex;align-items:center;gap:8px;padding:10px 14px;
+                 background:var(--bg2);border:1px solid var(--border);
+                 border-radius:var(--radius3);margin-bottom:12px;font-size:12px}
+    .ai-key-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .ai-key-dot.ok{background:var(--green)}
+    .ai-key-dot.err{background:var(--red)}
     .model-info{font-size:11px;color:var(--text4);margin-top:4px}
     .model-info strong{color:var(--purple)}
 
     /* SIDEBAR */
     .sidebar{display:flex;flex-direction:column;gap:16px}
 
-    /* EXPORT OPTIONS */
-    .export-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .export-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    /* EXPORT */
+    .export-card{background:var(--bg2);border:1px solid var(--border);
+                 border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .export-card h3{font-size:15px;font-weight:700;margin-bottom:14px;
+                    display:flex;align-items:center;gap:8px}
     .export-opt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-    .export-opt label{font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;margin-bottom:4px;display:block}
+    .export-opt label{font-size:11px;color:var(--text3);font-weight:700;
+                      text-transform:uppercase;margin-bottom:4px;display:block}
     .export-opt select{font-size:12px;padding:9px 10px}
-    .btn-export-main{width:100%;padding:12px;border-radius:var(--radius3);font-weight:700;font-size:13px;border:none;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;cursor:pointer}
+    .btn-export-main{width:100%;padding:12px;border-radius:var(--radius3);font-weight:700;
+                     font-size:13px;border:none;margin-bottom:8px;display:flex;
+                     align-items:center;justify-content:center;gap:8px;
+                     transition:all .2s;cursor:pointer}
     .btn-export-main:last-child{margin-bottom:0}
     .btn-pdf{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
     .btn-pdf:hover{opacity:.85;transform:translateY(-1px)}
     .btn-word{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}
     .btn-word:hover{opacity:.85;transform:translateY(-1px)}
-    .btn-preview{background:var(--bg3);border:1.5px solid var(--border);color:var(--text2);width:100%;padding:10px;border-radius:var(--radius3);font-weight:600;font-size:13px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;cursor:pointer}
+    .btn-preview{background:var(--bg3);border:1.5px solid var(--border);color:var(--text2);
+                 width:100%;padding:10px;border-radius:var(--radius3);font-weight:600;
+                 font-size:13px;margin-bottom:10px;display:flex;align-items:center;
+                 justify-content:center;gap:6px;transition:all .2s;cursor:pointer}
     .btn-preview:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg2)}
 
-    /* TTD CANVAS */
-    .ttd-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .ttd-card h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-    .canvas-wrap{border:1.5px solid var(--border);border-radius:var(--radius3);background:#fff;overflow:hidden;position:relative}
+    /* TTD */
+    .ttd-card{background:var(--bg2);border:1px solid var(--border);
+              border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .ttd-card h3{font-size:15px;font-weight:700;margin-bottom:12px;
+                 display:flex;align-items:center;gap:8px}
+    .canvas-wrap{border:1.5px solid var(--border);border-radius:var(--radius3);
+                 background:#fff;overflow:hidden;position:relative}
     canvas#ttdCanvas{display:block;width:100%;height:140px;cursor:crosshair;touch-action:none}
-    .canvas-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;color:#94a3b8;pointer-events:none;text-align:center;white-space:nowrap}
+    .canvas-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                 font-size:12px;color:#94a3b8;pointer-events:none;text-align:center;
+                 white-space:nowrap}
     .canvas-hint.hidden{display:none}
     .ttd-actions{display:flex;gap:8px;margin-top:8px}
-    .btn-clear-ttd{flex:1;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:8px;border-radius:8px;font-size:12px;font-weight:600;transition:all .2s;cursor:pointer}
+    .btn-clear-ttd{flex:1;border:1px solid var(--border);background:var(--bg3);
+                   color:var(--text2);padding:8px;border-radius:8px;font-size:12px;
+                   font-weight:600;transition:all .2s;cursor:pointer}
     .btn-clear-ttd:hover{border-color:var(--red);color:var(--red)}
 
     /* HISTORY */
-    .history-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .history-card h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-    .history-item{padding:12px;border-radius:var(--radius3);border:1px solid var(--border2);background:var(--bg3);margin-bottom:8px;cursor:pointer;transition:all .2s}
+    .history-card{background:var(--bg2);border:1px solid var(--border);
+                  border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .history-card h3{font-size:15px;font-weight:700;margin-bottom:12px;
+                     display:flex;align-items:center;gap:8px}
+    .history-item{padding:12px;border-radius:var(--radius3);border:1px solid var(--border2);
+                  background:var(--bg3);margin-bottom:8px;cursor:pointer;transition:all .2s}
     .history-item:hover{border-color:var(--blue);background:var(--blue-bg2)}
-    .history-item h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-item h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;
+                     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .history-item p{font-size:11px;color:var(--text4)}
-    .history-item-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-    .btn-del-history{border:none;background:transparent;color:var(--text4);font-size:16px;padding:2px 6px;border-radius:6px;transition:all .2s;cursor:pointer}
+    .history-item-footer{display:flex;justify-content:space-between;
+                         align-items:center;margin-top:6px}
+    .btn-del-history{border:none;background:transparent;color:var(--text4);
+                     font-size:16px;padding:2px 6px;border-radius:6px;
+                     transition:all .2s;cursor:pointer}
     .btn-del-history:hover{color:var(--red);background:var(--red-bg)}
     .empty-history{text-align:center;padding:16px;color:var(--text4);font-size:13px}
 
-    /* PREVIEW MODAL */
-    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px;backdrop-filter:blur(4px)}
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;
+                   align-items:center;justify-content:center;z-index:9999;padding:16px;
+                   backdrop-filter:blur(4px)}
     .modal-overlay.active{display:flex}
-    .modal-box{width:min(820px,100%);background:var(--bg2);border-radius:var(--radius);box-shadow:var(--shadow3);position:relative;animation:popIn .25s ease;max-height:92vh;display:flex;flex-direction:column}
-    .modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .modal-box{width:min(820px,100%);background:var(--bg2);border-radius:var(--radius);
+               box-shadow:var(--shadow3);animation:popIn .25s ease;
+               max-height:92vh;display:flex;flex-direction:column}
+    .modal-header{padding:18px 22px;border-bottom:1px solid var(--border);
+                  display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
     .modal-header h3{font-size:18px;font-weight:700}
-    .modal-close{border:none;background:transparent;font-size:28px;cursor:pointer;color:var(--text3);line-height:1}
+    .modal-close{border:none;background:transparent;font-size:28px;
+                 cursor:pointer;color:var(--text3);line-height:1}
     .modal-close:hover{color:var(--text)}
     .modal-body{padding:22px;overflow-y:auto;flex:1}
-    .modal-footer{padding:16px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;flex-wrap:wrap}
-    .btn-m{padding:10px 18px;border-radius:12px;font-weight:600;font-size:13px;border:1px solid var(--border);transition:all .2s;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+    .modal-footer{padding:16px 22px;border-top:1px solid var(--border);
+                  display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;flex-wrap:wrap}
+    .btn-m{padding:10px 18px;border-radius:12px;font-weight:600;font-size:13px;
+           border:1px solid var(--border);transition:all .2s;
+           display:inline-flex;align-items:center;gap:6px;cursor:pointer}
     .btn-m-pdf{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;border:none}
     .btn-m-pdf:hover{opacity:.85}
     .btn-m-word{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none}
@@ -168,26 +236,36 @@
     .btn-m-secondary:hover{border-color:var(--blue)}
     @keyframes popIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
 
-    /* PREVIEW DOCUMENT */
-    .doc-preview{background:#fff;color:#1e293b;border-radius:var(--radius2);padding:32px;font-family:'Times New Roman',Times,serif;font-size:14px;line-height:1.8;box-shadow:0 2px 16px rgba(0,0,0,.08);min-height:400px}
-    .doc-header{text-align:center;border-bottom:3px double #1e293b;padding-bottom:14px;margin-bottom:20px}
-    .doc-header h2{font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+    /* DOC PREVIEW */
+    .doc-preview{background:#fff;color:#1e293b;border-radius:var(--radius2);padding:32px;
+                 font-family:'Times New Roman',Times,serif;font-size:14px;
+                 line-height:1.8;box-shadow:0 2px 16px rgba(0,0,0,.08);min-height:400px}
+    .doc-header{text-align:center;border-bottom:3px double #1e293b;
+                padding-bottom:14px;margin-bottom:20px}
+    .doc-header h2{font-size:18px;font-weight:700;text-transform:uppercase;
+                   letter-spacing:.08em;margin-bottom:4px}
     .doc-header h3{font-size:15px;font-weight:700;margin-bottom:4px}
     .doc-header p{font-size:12px;color:#64748b}
-    .doc-title{text-align:center;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;text-decoration:underline}
+    .doc-title{text-align:center;font-size:16px;font-weight:700;text-transform:uppercase;
+               letter-spacing:.05em;margin-bottom:16px;text-decoration:underline}
     .doc-points h4{font-size:14px;font-weight:700;margin-bottom:10px}
     .doc-points ol{padding-left:20px}
     .doc-points li{margin-bottom:8px;font-size:13px;line-height:1.7}
-    .doc-summary{margin-top:16px;padding:12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc}
+    .doc-summary{margin-top:16px;padding:12px;border:1px solid #e2e8f0;
+                 border-radius:8px;background:#f8fafc}
     .doc-summary h4{font-size:13px;font-weight:700;margin-bottom:6px}
     .doc-summary p{font-size:12px;line-height:1.7;color:#334155;white-space:pre-wrap}
     .doc-ttd{margin-top:32px;display:flex;justify-content:flex-end}
     .doc-ttd-box{text-align:center;min-width:180px}
     .doc-ttd-box p{font-size:12px;color:#64748b}
-    .doc-ttd-box .name{font-weight:700;font-size:13px;margin-top:4px;border-top:1px solid #1e293b;padding-top:4px}
+    .doc-ttd-box .name{font-weight:700;font-size:13px;margin-top:4px;
+                       border-top:1px solid #1e293b;padding-top:4px}
 
     /* TOAST */
-    .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:12px 20px;border-radius:var(--radius2);font-size:13px;font-weight:600;z-index:99999;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none;box-shadow:var(--shadow3)}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);
+           padding:12px 20px;border-radius:var(--radius2);font-size:13px;font-weight:600;
+           z-index:99999;opacity:0;transform:translateY(20px);transition:all .3s;
+           pointer-events:none;box-shadow:var(--shadow3)}
     .toast.show{opacity:1;transform:translateY(0)}
 
     @media(max-width:600px){
@@ -195,7 +273,6 @@
       .export-opt{grid-template-columns:1fr}
       .modal-body{padding:14px}
       .doc-preview{padding:16px}
-      .ai-row{grid-template-columns:1fr}
     }
     ::-webkit-scrollbar{width:6px}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -220,28 +297,21 @@
     </div>
   </div>
 
-  <!-- LAYOUT -->
   <div class="layout">
-
-    <!-- MAIN FORM -->
     <div>
 
       <!-- DETAIL RAPAT -->
       <div class="card" style="margin-bottom:16px">
-        <div class="card-head">
-          <h2>📋 Detail Rapat</h2>
-        </div>
+        <div class="card-head"><h2>📋 Detail Rapat</h2></div>
 
         <div class="form-group">
           <label>Nama Organisasi / Instansi</label>
           <input type="text" id="fOrg" placeholder="Contoh: Organisasi Mahasiswa FT" />
         </div>
-
         <div class="form-group">
           <label>Judul / Kegiatan Rapat</label>
           <input type="text" id="fJudul" placeholder="Contoh: Rapat Koordinasi Divisi" />
         </div>
-
         <div class="form-row">
           <div class="form-group" style="margin-bottom:0">
             <label>Tanggal</label>
@@ -252,9 +322,7 @@
             <input type="time" id="fWaktu" />
           </div>
         </div>
-
         <div class="section-divider"></div>
-
         <div class="form-row">
           <div class="form-group" style="margin-bottom:0">
             <label>Tempat</label>
@@ -265,9 +333,7 @@
             <input type="text" id="fNotulis" placeholder="Nama notulis..." />
           </div>
         </div>
-
         <div class="section-divider"></div>
-
         <div class="form-group" style="margin-bottom:0">
           <label>Peserta Rapat</label>
           <div class="peserta-list" id="pesertaList"></div>
@@ -287,45 +353,36 @@
 
       <!-- AI SECTION -->
       <div class="ai-card">
-        <h2>✨ AI Susun Notulen (Ollama Cloud)</h2>
+        <h2>✨ AI Susun Notulen</h2>
 
-        <!-- API KEY -->
-        <div class="form-group">
-          <label class="ai-label">🔑 API Key OpenRouter</label>
-          <input type="password" id="ollamaApiKey"
-            placeholder="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"
-            style="flex:1;border-color:var(--purple)" />
+        <!-- Status API Key dari session -->
+        <div class="ai-key-info" id="aiKeyInfo">
+          <div class="ai-key-dot" id="aiKeyDot" style="background:var(--text4)"></div>
+          <span id="aiKeyMsg" style="color:var(--text3)">Memeriksa sesi login...</span>
+        </div>
+
+        <!-- Model info -->
+        <div style="margin-bottom:12px">
+          <div class="model-info">
+            🤖 Model: <strong>meta-llama/llama-3.2-3b-instruct:free</strong>
+            &nbsp;·&nbsp; via OpenRouter
           </div>
-          <p class="model-info" style="margin-top:4px">
-            🔒 Tersimpan di browser saja, tidak dikirim ke server lain.
-          </p>
         </div>
 
-        <!-- MODEL (readonly) -->
-          <input type="text" id="ollamaModel" value="llama-3.2-3b-instruct:free" readonly
-            style="border-color:var(--purple)" />
-          <p class="model-info">
-            Model: <strong>meta-llama/llama-3.2-3b-instruct</strong> — 
-            <a href="https://openrouter.ai/keys" target="_blank" 
-               style="color:var(--purple)">Dapatkan API Key gratis →</a>
-          </p>
-        </div>
-
-        <!-- GENERATE BUTTON -->
+        <!-- Generate Button -->
         <div style="margin-bottom:10px">
-          <button class="btn-ai" id="btnGenAI" style="width:100%;padding:12px">
+          <button class="btn-ai" id="btnGenAI">
             ✨ Susun Notulen dengan AI
           </button>
         </div>
 
-        <!-- STATUS -->
+        <!-- Status -->
         <div class="ai-status" id="aiStatus"></div>
 
-        <!-- RESULT -->
+        <!-- Result -->
         <label class="ai-label">Hasil Notulen Terstruktur (bisa diedit manual)</label>
         <textarea class="ai-result" id="aiResult"
-          placeholder="Klik '✨ Susun Notulen dengan AI' untuk menyusun notulen formal dari point-point di atas, atau ketik manual...">
-        </textarea>
+          placeholder="Klik '✨ Susun Notulen dengan AI' untuk menyusun notulen formal dari point-point di atas, atau ketik manual..."></textarea>
       </div>
 
     </div>
@@ -400,7 +457,6 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -409,50 +465,45 @@
   // ============================================================
   (function(){
     var t = localStorage.getItem('simontok-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    if (t==='dark') document.documentElement.setAttribute('data-theme','dark');
   })();
-
   document.getElementById('darkToggleBtn').addEventListener('click', function(){
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var isDark = document.documentElement.getAttribute('data-theme')==='dark';
     isDark = !isDark;
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-    localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
-    this.textContent = isDark ? '☀️' : '🌙';
+    document.documentElement.setAttribute('data-theme', isDark?'dark':'light');
+    localStorage.setItem('simontok-theme', isDark?'dark':'light');
+    this.textContent = isDark?'☀️':'🌙';
   });
-
   (function(){
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    document.getElementById('darkToggleBtn').textContent = isDark ? '☀️' : '🌙';
+    var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+    document.getElementById('darkToggleBtn').textContent = isDark?'☀️':'🌙';
   })();
 
   // ============================================================
   // TOAST
   // ============================================================
-  function showToast(msg, duration) {
+  function showToast(msg, duration){
     var t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(function(){ t.classList.remove('show'); }, duration || 2800);
+    setTimeout(function(){ t.classList.remove('show'); }, duration||2800);
   }
 
   // ============================================================
   // UTILS
   // ============================================================
   function esc(s){
-    return String(s||'')
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
-  function formatTanggal(val) {
-    if (!val) return '-';
+  function formatTanggal(val){
+    if(!val) return '-';
     var d = new Date(val);
-    var months = ['Januari','Februari','Maret','April','Mei','Juni',
-                  'Juli','Agustus','September','Oktober','November','Desember'];
-    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    var months=['Januari','Februari','Maret','April','Mei','Juni',
+                'Juli','Agustus','September','Oktober','November','Desember'];
+    return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
   }
-
-  function getFormData() {
+  function getFormData(){
     return {
       org:     document.getElementById('fOrg').value.trim(),
       judul:   document.getElementById('fJudul').value.trim(),
@@ -467,307 +518,218 @@
   }
 
   // ============================================================
+  // SESSION — ambil API key dari sessionStorage (diset saat login)
+  // ============================================================
+  var SESSION_KEY = 'simontok-session';
+
+  function getSession(){
+    try{
+      var raw = sessionStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+
+  function getApiKey(){
+    var s = getSession();
+    // API key tersimpan di session saat login, TIDAK pernah hardcode di HTML
+    return (s && s.apiKey) ? s.apiKey : null;
+  }
+
+  // Tampilkan status API key di UI
+  function renderApiKeyStatus(){
+    var dot = document.getElementById('aiKeyDot');
+    var msg = document.getElementById('aiKeyMsg');
+    var s   = getSession();
+
+    if(!s){
+      dot.className = 'ai-key-dot err';
+      msg.innerHTML = '⚠️ Sesi tidak ditemukan. <a href="index.html" style="color:var(--blue)">Login ulang</a>';
+      return;
+    }
+    if(!s.apiKey){
+      dot.className = 'ai-key-dot err';
+      msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
+      return;
+    }
+    dot.className = 'ai-key-dot ok';
+    msg.textContent = '✅ API Key aktif · Login sebagai ' + (s.name||s.username||'User');
+  }
+
+  renderApiKeyStatus();
+
+  // ============================================================
+  // GUARD — redirect ke login jika tidak ada session
+  // ============================================================
+  (function(){
+    var s = getSession();
+    if(!s || !s.username){
+      window.location.href = 'index.html';
+    }
+  })();
+
+  // ============================================================
   // PESERTA
   // ============================================================
   var pesertaCount = 0;
-
-  function addPeserta(val) {
+  function addPeserta(val){
     pesertaCount++;
-    var idx  = pesertaCount;
     var list = document.getElementById('pesertaList');
     var div  = document.createElement('div');
     div.className = 'peserta-item';
     div.innerHTML =
-      '<div class="peserta-num">'+idx+'</div>' +
-      '<input type="text" placeholder="Nama peserta '+idx+'" value="'+esc(val||'')+'" />' +
+      '<div class="peserta-num">'+pesertaCount+'</div>'+
+      '<input type="text" placeholder="Nama peserta '+pesertaCount+'" value="'+esc(val||'')+'"/>'+
       '<button class="btn-rm" title="Hapus">&times;</button>';
-    div.querySelector('.btn-rm').addEventListener('click', function(){
+    div.querySelector('.btn-rm').addEventListener('click',function(){
       div.remove(); reindexPeserta();
     });
     list.appendChild(div);
   }
-
-  function reindexPeserta() {
+  function reindexPeserta(){
     document.querySelectorAll('.peserta-item .peserta-num').forEach(function(el,i){
-      el.textContent = i + 1;
+      el.textContent=i+1;
     });
   }
-
-  function getPeserta() {
-    var r = [];
+  function getPeserta(){
+    var r=[];
     document.querySelectorAll('.peserta-item input').forEach(function(inp){
-      if (inp.value.trim()) r.push(inp.value.trim());
+      if(inp.value.trim()) r.push(inp.value.trim());
     });
     return r;
   }
-
-  document.getElementById('btnAddPeserta').addEventListener('click', function(){ addPeserta(''); });
+  document.getElementById('btnAddPeserta').addEventListener('click',function(){ addPeserta(''); });
   addPeserta('');
 
   // ============================================================
   // POINTS
   // ============================================================
   var pointCount = 0;
-
-  function addPoint(val) {
+  function addPoint(val){
     pointCount++;
     var list = document.getElementById('pointsList');
     var div  = document.createElement('div');
     div.className = 'point-item';
     div.innerHTML =
-      '<div class="point-num">1</div>' +
-      '<textarea placeholder="Tulis point pembahasan...">'+esc(val||'')+'</textarea>' +
-      '<div class="point-actions">' +
-        '<button class="btn-move" title="Naik">▲</button>' +
-        '<button class="btn-move" title="Turun">▼</button>' +
-        '<button class="btn-rm" style="width:28px;height:28px;font-size:13px" title="Hapus">&times;</button>' +
+      '<div class="point-num">1</div>'+
+      '<textarea placeholder="Tulis point pembahasan...">'+esc(val||'')+'</textarea>'+
+      '<div class="point-actions">'+
+        '<button class="btn-move" title="Naik">▲</button>'+
+        '<button class="btn-move" title="Turun">▼</button>'+
+        '<button class="btn-rm" style="width:28px;height:28px;font-size:13px" title="Hapus">&times;</button>'+
       '</div>';
-
     var btns = div.querySelectorAll('.btn-move');
-    btns[0].addEventListener('click', function(){
-      var prev = div.previousElementSibling;
-      if (prev) list.insertBefore(div, prev);
-      reindexPoints();
+    btns[0].addEventListener('click',function(){
+      var prev=div.previousElementSibling;
+      if(prev){ list.insertBefore(div,prev); reindexPoints(); }
     });
-    btns[1].addEventListener('click', function(){
-      var next = div.nextElementSibling;
-      if (next) list.insertBefore(next, div);
-      reindexPoints();
+    btns[1].addEventListener('click',function(){
+      var next=div.nextElementSibling;
+      if(next){ list.insertBefore(next,div); reindexPoints(); }
     });
-    div.querySelector('.btn-rm').addEventListener('click', function(){
+    div.querySelector('.btn-rm').addEventListener('click',function(){
       div.remove(); reindexPoints(); updatePointCount();
     });
-
     list.appendChild(div);
     reindexPoints();
     updatePointCount();
   }
-
-  function reindexPoints() {
+  function reindexPoints(){
     document.querySelectorAll('.point-item .point-num').forEach(function(el,i){
-      el.textContent = i + 1;
+      el.textContent=i+1;
     });
   }
-
-  function getPoints() {
-    var r = [];
+  function getPoints(){
+    var r=[];
     document.querySelectorAll('.point-item textarea').forEach(function(ta){
-      if (ta.value.trim()) r.push(ta.value.trim());
+      if(ta.value.trim()) r.push(ta.value.trim());
     });
     return r;
   }
-
-  function updatePointCount() {
-    var n = document.querySelectorAll('.point-item').length;
-    document.getElementById('pointCount').textContent = n + ' point';
+  function updatePointCount(){
+    var n=document.querySelectorAll('.point-item').length;
+    document.getElementById('pointCount').textContent=n+' point';
   }
-
-  document.getElementById('btnAddPoint').addEventListener('click', function(){ addPoint(''); });
+  document.getElementById('btnAddPoint').addEventListener('click',function(){ addPoint(''); });
   addPoint(''); addPoint(''); addPoint('');
 
   // ============================================================
-  // AI — OLLAMA CLOUD
+  // AI — OpenRouter, API key dari sessionStorage (TIDAK hardcode)
   // ============================================================
-
-  // Load API key tersimpan
-  (function(){
-    var saved = localStorage.getItem('simontok-ollama-key');
-    if (saved) document.getElementById('ollamaApiKey').value = saved;
-  })();
-
-  // Simpan API Key
-  document.getElementById('btnSaveKey').addEventListener('click', function(){
-    var key = document.getElementById('ollamaApiKey').value.trim();
-    if (!key) { showToast('⚠️ API Key tidak boleh kosong!'); return; }
-    localStorage.setItem('simontok-ollama-key', key);
-    showToast('🔑 API Key berhasil disimpan!');
-  });
-
-  // Generate / Susun Notulen
   document.getElementById('btnGenAI').addEventListener('click', function(){
     var points = getPoints();
-    if (!points.length) {
+    if(!points.length){
       showToast('⚠️ Isi minimal 1 point rapat dulu!'); return;
     }
 
-    var apiKey = document.getElementById('ollamaApiKey').value.trim()
-              || localStorage.getItem('simontok-ollama-key') || '';
-    if (!apiKey) {
-      showToast('⚠️ Masukkan API Key Ollama Cloud dulu!');
-      document.getElementById('ollamaApiKey').focus();
+    // Ambil API key dari session (diisi saat login dari Google Sheet)
+    var apiKey = getApiKey();
+    if(!apiKey){
+      showToast('⚠️ API Key tidak tersedia. Hubungi admin atau login ulang.');
+      renderApiKeyStatus();
       return;
     }
 
-    var model  = 'gpt-oss:20b-cloud';
     var btn    = document.getElementById('btnGenAI');
     var status = document.getElementById('aiStatus');
     var result = document.getElementById('aiResult');
 
-    var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
+    var judul   = document.getElementById('fJudul').value.trim()  || 'Rapat';
     var tanggal = document.getElementById('fTanggal').value;
-    var tempat  = document.getElementById('fTempat').value.trim()  || '-';
-    var notulis = document.getElementById('fNotulis').value.trim() || '-';
+    var tempat  = document.getElementById('fTempat').value.trim() || '-';
+    var notulis = document.getElementById('fNotulis').value.trim()|| '-';
     var peserta = getPeserta();
 
     var systemPrompt =
-      'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi ' +
-      'dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
-      'Tugasmu adalah mengubah point-point mentah menjadi notulen terstruktur yang rapi, ' +
-      'menggunakan kalimat pasif formal, memperbaiki ejaan dan tata bahasa, ' +
-      'serta mengelompokkan topik yang berkaitan. ' +
-      'Format output: gunakan penomoran (1. 2. 3. dst) untuk setiap butir hasil pembahasan. ' +
-      'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. ' +
-      'Jangan tambah informasi yang tidak ada di input. Gunakan bahasa formal dan baku.';
+      'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi '+
+      'dalam Bahasa Indonesia yang baik, benar, dan formal. '+
+      'Ubah point-point mentah menjadi notulen terstruktur yang rapi, '+
+      'gunakan kalimat pasif formal, perbaiki ejaan dan tata bahasa, '+
+      'kelompokkan topik yang berkaitan. '+
+      'Format: gunakan penomoran (1. 2. 3. dst) untuk setiap butir. '+
+      'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. '+
+      'Jangan tambah informasi yang tidak ada di input. Bahasa formal dan baku.';
 
     var userPrompt =
-      'Berikut data rapat dan point-point mentah yang perlu disusun menjadi notulen formal:\n\n' +
-      '=== DATA RAPAT ===\n' +
-      'Kegiatan : ' + judul + '\n' +
-      'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
-      'Tempat   : ' + tempat + '\n' +
-      'Notulis  : ' + notulis + '\n' +
-      (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
-      '\n=== POINT-POINT MENTAH ===\n' +
-      points.map(function(p,i){ return (i+1)+'. '+p; }).join('\n') +
-      '\n\n=== TUGAS ===\n' +
-      'Susun point-point di atas menjadi butir-butir notulen formal yang terstruktur. ' +
-      'Perbaiki kalimat agar baku dan formal. Tambahkan Kesimpulan dan Tindak Lanjut jika ada. ' +
-      'Hasilkan HANYA teks notulen saja, tanpa penjelasan tambahan.';
+      'Data rapat dan point-point mentah:\n\n'+
+      '=== DATA RAPAT ===\n'+
+      'Kegiatan : '+judul+'\n'+
+      'Tanggal  : '+(tanggal?formatTanggal(tanggal):'-')+'\n'+
+      'Tempat   : '+tempat+'\n'+
+      'Notulis  : '+notulis+'\n'+
+      (peserta.length?'Peserta  : '+peserta.join(', ')+'\n':'')+
+      '\n=== POINT-POINT MENTAH ===\n'+
+      points.map(function(p,i){ return (i+1)+'. '+p; }).join('\n')+
+      '\n\nSusun menjadi notulen formal terstruktur. '+
+      'Hasilkan HANYA teks notulen, tanpa penjelasan tambahan.';
 
     btn.disabled       = true;
     btn.textContent    = '⏳ Menyusun Notulen...';
-    status.textContent = '🔄 Menghubungi Ollama Cloud...';
+    status.textContent = '🔄 Menghubungi AI...';
     status.style.color = 'var(--purple)';
     result.value       = '';
 
-    // ============================================================
-// AI — OPENROUTER (CORS-friendly, support dari browser)
-// ============================================================
-
-(function(){
-  var saved = localStorage.getItem('simontok-ollama-key');
-  if (saved) document.getElementById('ollamaApiKey').value = saved;
-})();
-
-document.getElementById('btnSaveKey').addEventListener('click', function(){
-  var key = document.getElementById('ollamaApiKey').value.trim();
-  if (!key) { showToast('⚠️ API Key tidak boleh kosong!'); return; }
-  localStorage.setItem('simontok-ollama-key', key);
-  showToast('🔑 API Key berhasil disimpan!');
-});
-
-document.getElementById('btnGenAI').addEventListener('click', function(){
-  var points = getPoints();
-  if (!points.length) {
-    showToast('⚠️ Isi minimal 1 point rapat dulu!'); return;
-  }
-
-  var apiKey = document.getElementById('ollamaApiKey').value.trim()
-            || localStorage.getItem('simontok-ollama-key') || '';
-  if (!apiKey) {
-    showToast('⚠️ Masukkan API Key dulu!');
-    document.getElementById('ollamaApiKey').focus();
-    return;
-  }
-
-  var btn    = document.getElementById('btnGenAI');
-  var status = document.getElementById('aiStatus');
-  var result = document.getElementById('aiResult');
-
-  var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
-  var tanggal = document.getElementById('fTanggal').value;
-  var tempat  = document.getElementById('fTempat').value.trim()  || '-';
-  var notulis = document.getElementById('fNotulis').value.trim() || '-';
-  var peserta = getPeserta();
-
-  var systemPrompt =
-    'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi ' +
-    'dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
-    'Ubah point-point mentah menjadi notulen terstruktur yang rapi, ' +
-    'gunakan kalimat pasif formal, perbaiki ejaan dan tata bahasa, ' +
-    'kelompokkan topik yang berkaitan. ' +
-    'Format: gunakan penomoran (1. 2. 3. dst) untuk setiap butir. ' +
-    'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. ' +
-    'Jangan tambah informasi yang tidak ada di input. Bahasa formal dan baku.';
-
-  var userPrompt =
-    'Data rapat dan point-point mentah:\n\n' +
-    '=== DATA RAPAT ===\n' +
-    'Kegiatan : ' + judul + '\n' +
-    'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
-    'Tempat   : ' + tempat + '\n' +
-    'Notulis  : ' + notulis + '\n' +
-    (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
-    '\n=== POINT-POINT MENTAH ===\n' +
-    points.map(function(p,i){ return (i+1)+'. '+p; }).join('\n') +
-    '\n\nSusun menjadi notulen formal terstruktur. ' +
-    'Hasilkan HANYA teks notulen, tanpa penjelasan tambahan.';
-
-  btn.disabled       = true;
-  btn.textContent    = '⏳ Menyusun Notulen...';
-  status.textContent = '🔄 Menghubungi AI...';
-  status.style.color = 'var(--purple)';
-  result.value       = '';
-
-  // ── Coba OpenRouter dulu, fallback ke endpoint lain ──
-  var ENDPOINTS = [
-    {
-      // OpenRouter — CORS OK dari browser
-      url: 'https://openrouter.ai/api/v1/chat/completions',
-      headers: function(key) {
-        return {
-          'Content-Type':  'application/json',
-          'Authorization': 'Bearer ' + key,
-          'HTTP-Referer':  'https://nandhasar.github.io',
-          'X-Title':       'SIMONTOK Notulen'
-        };
-      },
-      body: function(msgs) {
-        return JSON.stringify({
-          model:  'meta-llama/llama-3.2-3b-instruct:free',
-          stream: true,
-          messages: msgs
-        });
-      },
-      // OpenRouter stream format: data.choices[0].delta.content
-      parseToken: function(j) {
-        return j.choices && j.choices[0] && j.choices[0].delta
-          ? (j.choices[0].delta.content || '')
-          : '';
-      },
-      // OpenRouter stream prefix: "data: {...}"
-      isSSE: true
-    }
-  ];
-
-  var messages = [
-    { role: 'system', content: systemPrompt },
-    { role: 'user',   content: userPrompt   }
-  ];
-
-  function tryEndpoint(idx) {
-    if (idx >= ENDPOINTS.length) {
-      status.textContent = '❌ Semua endpoint gagal. Cek API Key atau koneksi.';
-      status.style.color = 'var(--red)';
-      btn.disabled       = false;
-      btn.textContent    = '✨ Susun Notulen dengan AI';
-      showToast('❌ Gagal terhubung ke AI. Cek API Key!', 4000);
-      return;
-    }
-
-    var ep = ENDPOINTS[idx];
-    status.textContent = '🔄 Mencoba ' + ep.url.split('/')[2] + '...';
-
-    fetch(ep.url, {
+    fetch('https://openrouter.ai/api/v1/chat/completions', {
       method:  'POST',
-      headers: ep.headers(apiKey),
-      body:    ep.body(messages)
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer '+apiKey,
+        'HTTP-Referer':  'https://nandhasar.github.io',
+        'X-Title':       'SIMONTOK Notulen'
+      },
+      body: JSON.stringify({
+        model:    'meta-llama/llama-3.2-3b-instruct:free',
+        stream:   true,
+        messages: [
+          { role:'system', content:systemPrompt },
+          { role:'user',   content:userPrompt   }
+        ]
+      })
     })
-    .then(function(r) {
-      if (r.status === 401) throw new Error('AUTH:API Key tidak valid. Pastikan API Key OpenRouter Anda benar.');
-      if (r.status === 402) throw new Error('CREDIT:Kredit OpenRouter habis. Top up di openrouter.ai');
-      if (r.status === 429) throw new Error('LIMIT:Rate limit. Tunggu sebentar lalu coba lagi.');
-      if (!r.ok)            throw new Error('HTTP:HTTP ' + r.status);
+    .then(function(r){
+      if(r.status===401) throw new Error('AUTH:API Key tidak valid. Hubungi admin.');
+      if(r.status===402) throw new Error('CREDIT:Kredit OpenRouter habis. Hubungi admin.');
+      if(r.status===429) throw new Error('LIMIT:Rate limit. Tunggu sebentar lalu coba lagi.');
+      if(!r.ok)          throw new Error('HTTP:Gagal — HTTP '+r.status);
 
       status.textContent = '⚡ Menerima response...';
 
@@ -775,9 +737,9 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
       var decoder = new TextDecoder();
       var full    = '';
 
-      function read() {
-        return reader.read().then(function(chunk) {
-          if (chunk.done) {
+      function read(){
+        return reader.read().then(function(chunk){
+          if(chunk.done){
             status.textContent = '✅ Notulen berhasil disusun!';
             status.style.color = 'var(--green)';
             btn.disabled       = false;
@@ -785,68 +747,39 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
             showToast('✅ Notulen berhasil disusun oleh AI!');
             return;
           }
-
-          var raw   = decoder.decode(chunk.value, { stream: true });
-          var lines = raw.split('\n');
-
-          lines.forEach(function(line) {
+          var lines = decoder.decode(chunk.value,{stream:true}).split('\n');
+          lines.forEach(function(line){
             line = line.trim();
-            if (!line) return;
-
-            // SSE format: "data: {...}" atau "data: [DONE]"
-            if (ep.isSSE) {
-              if (!line.startsWith('data:')) return;
-              var jsonStr = line.slice(5).trim();
-              if (jsonStr === '[DONE]') return;
-              try {
-                var j     = JSON.parse(jsonStr);
-                var token = ep.parseToken(j);
-                if (token) {
-                  full        += token;
-                  result.value = full;
-                  result.scrollTop = result.scrollHeight;
-                }
-              } catch(e) { /* skip */ }
-            } else {
-              // NDJSON format (Ollama)
-              try {
-                var j     = JSON.parse(line);
-                var token = ep.parseToken(j);
-                if (token) {
-                  full        += token;
-                  result.value = full;
-                  result.scrollTop = result.scrollHeight;
-                }
-              } catch(e) { /* skip */ }
-            }
+            if(!line||!line.startsWith('data:')) return;
+            var jsonStr = line.slice(5).trim();
+            if(jsonStr==='[DONE]') return;
+            try{
+              var j     = JSON.parse(jsonStr);
+              var token = (j.choices&&j.choices[0]&&j.choices[0].delta)
+                          ? (j.choices[0].delta.content||'') : '';
+              if(token){
+                full        += token;
+                result.value = full;
+                result.scrollTop = result.scrollHeight;
+              }
+            }catch(e){}
           });
-
           return read();
         });
       }
-
       return read();
     })
-    .catch(function(err) {
-      var msg = err.message || '';
-      // Error spesifik → tampilkan langsung, jangan retry
-      if (msg.startsWith('AUTH:') || msg.startsWith('CREDIT:') || msg.startsWith('LIMIT:')) {
-        var clean = msg.split(':').slice(1).join(':');
-        status.textContent = '❌ ' + clean;
-        status.style.color = 'var(--red)';
-        btn.disabled       = false;
-        btn.textContent    = '✨ Susun Notulen dengan AI';
-        showToast('❌ ' + clean, 4000);
-      } else {
-        // CORS / network error → coba endpoint berikutnya
-        console.warn('Endpoint ' + idx + ' gagal:', msg);
-        tryEndpoint(idx + 1);
-      }
+    .catch(function(err){
+      var msg   = err.message||'';
+      var clean = msg.includes(':') ? msg.split(':').slice(1).join(':') : msg;
+      status.textContent = '❌ '+clean;
+      status.style.color = 'var(--red)';
+      btn.disabled       = false;
+      btn.textContent    = '✨ Susun Notulen dengan AI';
+      showToast('❌ '+clean, 4000);
     });
-  }
+  });
 
-  tryEndpoint(0);
-});
   // ============================================================
   // TTD CANVAS
   // ============================================================
@@ -854,94 +787,74 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   var ctx      = canvas.getContext('2d');
   var drawing  = false;
   var hasDrawn = false;
+  ctx.strokeStyle='#1e293b'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round';
 
-  ctx.strokeStyle = '#1e293b';
-  ctx.lineWidth   = 2.5;
-  ctx.lineCap     = 'round';
-  ctx.lineJoin    = 'round';
-
-  function getPos(e) {
-    var rect   = canvas.getBoundingClientRect();
-    var scaleX = canvas.width  / rect.width;
-    var scaleY = canvas.height / rect.height;
-    if (e.touches) {
-      return {
-        x: (e.touches[0].clientX - rect.left) * scaleX,
-        y: (e.touches[0].clientY - rect.top)  * scaleY
-      };
-    }
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top)  * scaleY
-    };
+  function getPos(e){
+    var rect=canvas.getBoundingClientRect();
+    var sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+    if(e.touches) return{x:(e.touches[0].clientX-rect.left)*sx,y:(e.touches[0].clientY-rect.top)*sy};
+    return{x:(e.clientX-rect.left)*sx,y:(e.clientY-rect.top)*sy};
   }
-
-  canvas.addEventListener('mousedown',  function(e){ drawing=true; var p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); });
-  canvas.addEventListener('mousemove',  function(e){ if(!drawing)return; var p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasDrawn=true; document.getElementById('canvasHint').classList.add('hidden'); });
-  canvas.addEventListener('mouseup',    function(){ drawing=false; });
-  canvas.addEventListener('mouseleave', function(){ drawing=false; });
-  canvas.addEventListener('touchstart', function(e){ e.preventDefault(); drawing=true; var p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); },{passive:false});
-  canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!drawing)return; var p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasDrawn=true; document.getElementById('canvasHint').classList.add('hidden'); },{passive:false});
-  canvas.addEventListener('touchend',   function(){ drawing=false; });
-
-  document.getElementById('btnClearTTD').addEventListener('click', function(){
+  canvas.addEventListener('mousedown', function(e){drawing=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+  canvas.addEventListener('mousemove', function(e){if(!drawing)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true;document.getElementById('canvasHint').classList.add('hidden');});
+  canvas.addEventListener('mouseup',   function(){drawing=false;});
+  canvas.addEventListener('mouseleave',function(){drawing=false;});
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();drawing=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+  canvas.addEventListener('touchmove', function(e){e.preventDefault();if(!drawing)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true;document.getElementById('canvasHint').classList.add('hidden');},{passive:false});
+  canvas.addEventListener('touchend',  function(){drawing=false;});
+  document.getElementById('btnClearTTD').addEventListener('click',function(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    hasDrawn = false;
+    hasDrawn=false;
     document.getElementById('canvasHint').classList.remove('hidden');
   });
-
-  function getTTDDataURL() {
-    return hasDrawn ? canvas.toDataURL('image/png') : null;
-  }
+  function getTTDDataURL(){ return hasDrawn?canvas.toDataURL('image/png'):null; }
 
   // ============================================================
   // BUILD PREVIEW HTML
   // ============================================================
-  function buildPreviewHTML(data) {
-    var pesertaStr = data.peserta.length
-      ? data.peserta.map(function(p,i){ return (i+1)+'. '+p; }).join('<br>') : '-';
-
-    var pointsHTML = data.points.length
-      ? data.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')
-      : '<li><em>Tidak ada point</em></li>';
-
-    var summaryHTML = data.summary
-      ? '<div class="doc-summary"><h4>📋 Ringkasan / Kesimpulan:</h4><p>'+esc(data.summary)+'</p></div>'
-      : '';
-
-    var ttdURL  = getTTDDataURL();
-    var ttdHTML = ttdURL
-      ? '<img src="'+ttdURL+'" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:0 auto">'
-      : '<div style="width:160px;height:60px;border-bottom:1px solid #1e293b;margin:0 auto"></div>';
+  function buildPreviewHTML(data){
+    var pesertaStr=data.peserta.length
+      ?data.peserta.map(function(p,i){return(i+1)+'. '+p;}).join('<br>')
+      :'-';
+    var pointsHTML=data.points.length
+      ?data.points.map(function(p){return'<li>'+esc(p)+'</li>';}).join('')
+      :'<li><em>Tidak ada point</em></li>';
+    var summaryHTML=data.summary
+      ?'<div class="doc-summary"><h4>📋 Ringkasan / Kesimpulan:</h4><p>'+esc(data.summary)+'</p></div>'
+      :'';
+    var ttdURL=getTTDDataURL();
+    var ttdHTML=ttdURL
+      ?'<img src="'+ttdURL+'" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:0 auto">'
+            :'<div style="width:160px;height:60px;border-bottom:1px solid #1e293b;margin:0 auto"></div>';
 
     return (
-      '<div class="doc-preview">' +
-        '<div class="doc-header">' +
-          (data.org ? '<h2>'+esc(data.org)+'</h2>' : '') +
-          '<h3>NOTULEN RAPAT</h3>' +
-          '<p>Dokumen Resmi Hasil Rapat</p>' +
-        '</div>' +
-        '<div class="doc-title">'+esc(data.judul||'—')+'</div>' +
-        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">' +
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;white-space:nowrap;width:120px">Hari / Tanggal</td><td style="width:12px">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>' +
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Waktu</td><td>:</td><td>'+esc(data.waktu||'-')+'</td></tr>' +
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Tempat</td><td>:</td><td>'+esc(data.tempat||'-')+'</td></tr>' +
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;vertical-align:top">Peserta</td><td style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>' +
-          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Notulis</td><td>:</td><td>'+esc(data.notulis||'-')+'</td></tr>' +
-        '</table>' +
-        '<hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:16px">' +
-        '<div class="doc-points">' +
-          '<h4>Hasil Pembahasan:</h4>' +
-          '<ol style="padding-left:20px">'+pointsHTML+'</ol>' +
-        '</div>' +
-        summaryHTML +
-        '<div class="doc-ttd">' +
-          '<div class="doc-ttd-box">' +
-            '<p>Notulis,</p>' +
-            ttdHTML +
-            '<div class="name">'+esc(data.notulis||'_______________')+'</div>' +
-          '</div>' +
-        '</div>' +
+      '<div class="doc-preview">'+
+        '<div class="doc-header">'+
+          (data.org?'<h2>'+esc(data.org)+'</h2>':'')+
+          '<h3>NOTULEN RAPAT</h3>'+
+          '<p>Dokumen Resmi Hasil Rapat</p>'+
+        '</div>'+
+        '<div class="doc-title">'+esc(data.judul||'—')+'</div>'+
+        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">'+
+          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;white-space:nowrap;width:120px">Hari / Tanggal</td><td style="width:12px">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>'+
+          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Waktu</td><td>:</td><td>'+esc(data.waktu||'-')+'</td></tr>'+
+          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Tempat</td><td>:</td><td>'+esc(data.tempat||'-')+'</td></tr>'+
+          '<tr><td style="font-weight:700;padding:2px 8px 2px 0;vertical-align:top">Peserta</td><td style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>'+
+          '<tr><td style="font-weight:700;padding:2px 8px 2px 0">Notulis</td><td>:</td><td>'+esc(data.notulis||'-')+'</td></tr>'+
+        '</table>'+
+        '<hr style="border:none;border-top:1px solid #e2e8f0;margin-bottom:16px">'+
+        '<div class="doc-points">'+
+          '<h4>Hasil Pembahasan:</h4>'+
+          '<ol style="padding-left:20px">'+pointsHTML+'</ol>'+
+        '</div>'+
+        summaryHTML+
+        '<div class="doc-ttd">'+
+          '<div class="doc-ttd-box">'+
+            '<p>Notulis,</p>'+
+            ttdHTML+
+            '<div class="name">'+esc(data.notulis||'_______________')+'</div>'+
+          '</div>'+
+        '</div>'+
       '</div>'
     );
   }
@@ -949,14 +862,13 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   // ============================================================
   // PREVIEW MODAL
   // ============================================================
-  function openPreview() {
+  function openPreview(){
     var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
     document.getElementById('docPreviewArea').innerHTML = buildPreviewHTML(data);
     document.getElementById('previewModal').classList.add('active');
   }
-
-  function closePreviewModal() {
+  function closePreviewModal(){
     document.getElementById('previewModal').classList.remove('active');
   }
 
@@ -964,7 +876,7 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   document.getElementById('closePreview').addEventListener('click', closePreviewModal);
   document.getElementById('closePreview2').addEventListener('click', closePreviewModal);
   document.getElementById('previewModal').addEventListener('click', function(e){
-    if (e.target === this) closePreviewModal();
+    if(e.target===this) closePreviewModal();
   });
   document.getElementById('modalBtnPDF').addEventListener('click', function(){ closePreviewModal(); doExportPDF(); });
   document.getElementById('modalBtnWord').addEventListener('click', function(){ closePreviewModal(); doExportWord(); });
@@ -972,35 +884,35 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   // ============================================================
   // EXPORT PDF
   // ============================================================
-  function doExportPDF() {
+  function doExportPDF(){
     var data   = getFormData();
     var size   = document.getElementById('paperSize').value;
     var orient = document.getElementById('paperOrient').value;
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
 
-    var jsPDF  = window.jspdf.jsPDF;
-    var doc    = new jsPDF({ orientation: orient, unit: 'mm', format: size });
-    var W      = doc.internal.pageSize.getWidth();
-    var H      = doc.internal.pageSize.getHeight();
-    var margin = 20;
-    var colW   = W - margin * 2;
-    var y      = margin;
+    var jsPDF = window.jspdf.jsPDF;
+    var doc   = new jsPDF({ orientation:orient, unit:'mm', format:size });
+    var W     = doc.internal.pageSize.getWidth();
+    var H     = doc.internal.pageSize.getHeight();
+    var margin= 20;
+    var colW  = W - margin*2;
+    var y     = margin;
 
-    function addLine(h) {
-      y += h;
-      if (y > H - margin) { doc.addPage(); y = margin; }
+    function addLine(h){
+      y+=h;
+      if(y>H-margin){ doc.addPage(); y=margin; }
     }
 
     // HEADER ORG
-    if (data.org) {
+    if(data.org){
       doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-      doc.text(data.org.toUpperCase(), W/2, y, { align:'center' });
+      doc.text(data.org.toUpperCase(), W/2, y, {align:'center'});
       addLine(7);
     }
 
     // NOTULEN RAPAT
     doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-    doc.text('NOTULEN RAPAT', W/2, y, { align:'center' });
+    doc.text('NOTULEN RAPAT', W/2, y, {align:'center'});
     addLine(2);
 
     // Garis double
@@ -1011,28 +923,27 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
     doc.line(margin, y, W-margin, y);
     addLine(8);
 
-    // JUDUL KEGIATAN
+    // JUDUL
     doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
-    doc.text(data.judul || '—', W/2, y, { align:'center' });
+    doc.text(data.judul||'—', W/2, y, {align:'center'});
     addLine(10);
 
-    // META
-    var metaRows = [
+    // META TABLE
+    var metaRows=[
       ['Hari / Tanggal', formatTanggal(data.tanggal)],
-      ['Waktu',          data.waktu  || '-'],
-      ['Tempat',         data.tempat || '-'],
-      ['Peserta',        data.peserta.length ? data.peserta.join(', ') : '-'],
-      ['Notulis',        data.notulis || '-']
+      ['Waktu',          data.waktu  ||'-'],
+      ['Tempat',         data.tempat ||'-'],
+      ['Peserta',        data.peserta.length?data.peserta.join(', '):'-'],
+      ['Notulis',        data.notulis||'-']
     ];
-
     doc.autoTable({
       startY: y,
       body:   metaRows,
       theme:  'plain',
-      styles: { fontSize:10, cellPadding:2.5, textColor:[30,41,59] },
-      columnStyles: { 0:{ fontStyle:'bold', cellWidth:40 }, 1:{ cellWidth:6 }, 2:{} },
-      margin: { left:margin, right:margin },
-      didParseCell: function(d) { if (d.column.index===1) d.cell.text=[':']; }
+      styles: {fontSize:10, cellPadding:2.5, textColor:[30,41,59]},
+      columnStyles:{ 0:{fontStyle:'bold',cellWidth:40}, 1:{cellWidth:6}, 2:{} },
+      margin: {left:margin, right:margin},
+      didParseCell: function(d){ if(d.column.index===1) d.cell.text=[':']; }
     });
     y = doc.lastAutoTable.finalY + 8;
 
@@ -1046,63 +957,63 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
     doc.text('Hasil Pembahasan:', margin, y);
     addLine(7);
 
-    if (data.points.length) {
+    if(data.points.length){
       doc.autoTable({
         startY: y,
         body:   data.points.map(function(p,i){ return [(i+1)+'.', p]; }),
         theme:  'plain',
-        styles: { fontSize:10, cellPadding:2.5, textColor:[30,41,59] },
-        columnStyles: { 0:{ cellWidth:10, fontStyle:'bold' }, 1:{} },
-        margin: { left:margin+4, right:margin }
+        styles: {fontSize:10, cellPadding:2.5, textColor:[30,41,59]},
+        columnStyles:{ 0:{cellWidth:10,fontStyle:'bold'}, 1:{} },
+        margin: {left:margin+4, right:margin}
       });
       y = doc.lastAutoTable.finalY + 8;
     }
 
     // SUMMARY / NOTULEN AI
-    if (data.summary) {
-      var summLines = doc.splitTextToSize(data.summary, colW - 8);
-      var boxH      = summLines.length * 5.5 + 16;
+    if(data.summary){
+      var summLines = doc.splitTextToSize(data.summary, colW-8);
+      var boxH      = summLines.length*5.5+16;
       doc.setFillColor(248,250,252);
       doc.roundedRect(margin, y, colW, boxH, 3, 3, 'F');
       doc.setDrawColor(226,232,240); doc.setLineWidth(0.3);
       doc.roundedRect(margin, y, colW, boxH, 3, 3, 'S');
-      y += 7;
+      y+=7;
       doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
       doc.text('Ringkasan / Kesimpulan:', margin+4, y);
-      y += 6;
+      y+=6;
       doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(51,65,85);
       doc.text(summLines, margin+4, y);
-      y += summLines.length * 5.5 + 8;
+      y+=summLines.length*5.5+8;
     }
 
     // TTD
     var ttdURL = getTTDDataURL();
-    var ttdX   = W - margin - 52;
-    var ttdY   = Math.max(y + 12, H - margin - 48);
-    if (ttdY + 48 > H - margin) { doc.addPage(); ttdY = margin + 20; }
+    var ttdX   = W-margin-52;
+    var ttdY   = Math.max(y+12, H-margin-48);
+    if(ttdY+48>H-margin){ doc.addPage(); ttdY=margin+20; }
 
     doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(30,41,59);
-    doc.text('Notulis,', ttdX + 26, ttdY, { align:'center' });
+    doc.text('Notulis,', ttdX+26, ttdY, {align:'center'});
 
-    if (ttdURL) {
-      doc.addImage(ttdURL, 'PNG', ttdX, ttdY+3, 52, 20);
-      ttdY += 24;
+    if(ttdURL){
+      doc.addImage(ttdURL,'PNG', ttdX, ttdY+3, 52, 20);
+      ttdY+=24;
     } else {
-      ttdY += 24;
+      ttdY+=24;
     }
 
     doc.setDrawColor(30,41,59); doc.setLineWidth(0.4);
     doc.line(ttdX, ttdY, ttdX+52, ttdY);
-    ttdY += 5;
+    ttdY+=5;
     doc.setFont('helvetica','bold');
-    doc.text(data.notulis || '_______________', ttdX+26, ttdY, { align:'center' });
+    doc.text(data.notulis||'_______________', ttdX+26, ttdY, {align:'center'});
 
-    // FOOTER
+    // FOOTER tiap halaman
     var total = doc.internal.getNumberOfPages();
-    for (var p=1; p<=total; p++) {
+    for(var p=1; p<=total; p++){
       doc.setPage(p);
       doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(148,163,184);
-      doc.text('SIMONTOK — Notulen Rapat | Hal '+p+'/'+total, W/2, H-8, { align:'center' });
+      doc.text('SIMONTOK — Notulen Rapat | Hal '+p+'/'+total, W/2, H-8, {align:'center'});
     }
 
     doc.save('Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'_'+size.toUpperCase()+'_'+orient+'.pdf');
@@ -1112,63 +1023,63 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   // ============================================================
   // EXPORT WORD
   // ============================================================
-  function doExportWord() {
+  function doExportWord(){
     var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
 
     var pesertaStr = data.peserta.length
       ? data.peserta.map(function(p,i){ return (i+1)+'. '+p; }).join('<br>') : '-';
 
     var html =
-      '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-             'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
-             'xmlns="http://www.w3.org/TR/REC-html40">' +
-      '<head><meta charset="UTF-8">' +
-      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>90</w:Zoom>' +
-      '</w:WordDocument></xml><![endif]-->' +
-      '<style>' +
-      'body{font-family:Times New Roman,serif;font-size:12pt;color:#1e293b;line-height:1.8;margin:2.54cm}' +
-      'h1{font-size:14pt;text-align:center;text-transform:uppercase;letter-spacing:2pt;margin:4pt 0}' +
-      'h2{font-size:12pt;text-align:center;text-decoration:underline;margin:8pt 0}' +
-      'h3{font-size:11pt;margin:10pt 0 4pt}' +
-      'table{border-collapse:collapse;width:100%}' +
-      'td{padding:3pt 6pt;vertical-align:top;font-size:11pt}' +
-      '.key{font-weight:bold;width:110pt}' +
-      '.sep{width:10pt}' +
-      '.box{border:1pt solid #e2e8f0;padding:10pt;margin-top:12pt}' +
-      '.ttd-wrap{text-align:right;margin-top:50pt}' +
-      '.ttd-line{display:inline-block;border-top:1pt solid #1e293b;width:150pt;margin-top:50pt}' +
-      '.ttd-name{font-weight:bold;font-size:11pt}' +
-      '</style></head><body>' +
-      (data.org ? '<h1>'+esc(data.org)+'</h1>' : '') +
-      '<h1>NOTULEN RAPAT</h1>' +
-      '<hr style="border:none;border-top:2pt double #1e293b;margin:6pt 0">' +
-      '<h2>'+esc(data.judul)+'</h2>' +
-      '<table>' +
-        '<tr><td class="key">Hari / Tanggal</td><td class="sep">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>' +
-        '<tr><td class="key">Waktu</td><td class="sep">:</td><td>'+esc(data.waktu||'-')+'</td></tr>' +
-        '<tr><td class="key">Tempat</td><td class="sep">:</td><td>'+esc(data.tempat||'-')+'</td></tr>' +
-        '<tr><td class="key" style="vertical-align:top">Peserta</td><td class="sep" style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>' +
-        '<tr><td class="key">Notulis</td><td class="sep">:</td><td>'+esc(data.notulis||'-')+'</td></tr>' +
-      '</table>' +
-      '<hr style="border:none;border-top:1pt solid #e2e8f0;margin:10pt 0">' +
-      '<h3>Hasil Pembahasan:</h3>' +
-      '<ol>'+data.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ol>' +
+      '<html xmlns:o="urn:schemas-microsoft-com:office:office" '+
+             'xmlns:w="urn:schemas-microsoft-com:office:word" '+
+             'xmlns="http://www.w3.org/TR/REC-html40">'+
+      '<head><meta charset="UTF-8">'+
+      '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View>'+
+      '<w:Zoom>90</w:Zoom></w:WordDocument></xml><![endif]-->'+
+      '<style>'+
+      'body{font-family:Times New Roman,serif;font-size:12pt;color:#1e293b;line-height:1.8;margin:2.54cm}'+
+      'h1{font-size:14pt;text-align:center;text-transform:uppercase;letter-spacing:2pt;margin:4pt 0}'+
+      'h2{font-size:12pt;text-align:center;text-decoration:underline;margin:8pt 0}'+
+      'h3{font-size:11pt;margin:10pt 0 4pt}'+
+      'table{border-collapse:collapse;width:100%}'+
+      'td{padding:3pt 6pt;vertical-align:top;font-size:11pt}'+
+      '.key{font-weight:bold;width:110pt}'+
+      '.sep{width:10pt}'+
+      '.box{border:1pt solid #e2e8f0;padding:10pt;margin-top:12pt}'+
+      '.ttd-wrap{text-align:right;margin-top:50pt}'+
+      '.ttd-line{display:inline-block;border-top:1pt solid #1e293b;width:150pt;margin-top:50pt}'+
+      '.ttd-name{font-weight:bold;font-size:11pt}'+
+      '</style></head><body>'+
+      (data.org?'<h1>'+esc(data.org)+'</h1>':'')+
+      '<h1>NOTULEN RAPAT</h1>'+
+      '<hr style="border:none;border-top:2pt double #1e293b;margin:6pt 0">'+
+      '<h2>'+esc(data.judul)+'</h2>'+
+      '<table>'+
+        '<tr><td class="key">Hari / Tanggal</td><td class="sep">:</td><td>'+esc(formatTanggal(data.tanggal))+'</td></tr>'+
+        '<tr><td class="key">Waktu</td><td class="sep">:</td><td>'+esc(data.waktu||'-')+'</td></tr>'+
+        '<tr><td class="key">Tempat</td><td class="sep">:</td><td>'+esc(data.tempat||'-')+'</td></tr>'+
+        '<tr><td class="key" style="vertical-align:top">Peserta</td><td class="sep" style="vertical-align:top">:</td><td>'+pesertaStr+'</td></tr>'+
+        '<tr><td class="key">Notulis</td><td class="sep">:</td><td>'+esc(data.notulis||'-')+'</td></tr>'+
+      '</table>'+
+      '<hr style="border:none;border-top:1pt solid #e2e8f0;margin:10pt 0">'+
+      '<h3>Hasil Pembahasan:</h3>'+
+      '<ol>'+data.points.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ol>'+
       (data.summary
-        ? '<div class="box"><h3>Ringkasan / Kesimpulan:</h3><p>'+esc(        data.summary)+'</p></div>'
-        : '') +
-      '<div class="ttd-wrap">' +
-        '<p>Notulis,</p>' +
-        '<div class="ttd-line"></div><br>' +
-        '<span class="ttd-name">'+esc(data.notulis||'_______________')+'</span>' +
-      '</div>' +
+        ?'<div class="box"><h3>Ringkasan / Kesimpulan:</h3><p>'+esc(data.summary)+'</p></div>'
+        :'')+
+      '<div class="ttd-wrap">'+
+        '<p>Notulis,</p>'+
+        '<div class="ttd-line"></div><br>'+
+        '<span class="ttd-name">'+esc(data.notulis||'_______________')+'</span>'+
+      '</div>'+
       '</body></html>';
 
-    var blob = new Blob([html], { type: 'application/msword' });
+    var blob = new Blob([html],{type:'application/msword'});
     var url  = URL.createObjectURL(blob);
     var a    = document.createElement('a');
-    a.href     = url;
-    a.download = 'Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.doc';
+    a.href=url;
+    a.download='Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.doc';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1179,25 +1090,22 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   // ============================================================
   // BIND EXPORT BUTTONS
   // ============================================================
-  document.getElementById('btnExportPDF').addEventListener('click', function(){
-    openPreview();
-  });
-
+  document.getElementById('btnExportPDF').addEventListener('click', function(){ openPreview(); });
   document.getElementById('btnExportWord').addEventListener('click', function(){
     var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
     doExportWord();
   });
 
   // ============================================================
-  // SAVE DRAFT ke localStorage
+  // SAVE DRAFT
   // ============================================================
-  function saveDraft() {
+  function saveDraft(){
     var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
 
     var drafts = getDrafts();
-    var draft  = {
+    drafts.unshift({
       id:      Date.now(),
       savedAt: new Date().toISOString(),
       org:     data.org,
@@ -1209,110 +1117,97 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
       peserta: data.peserta,
       points:  data.points,
       summary: data.summary
-    };
-
-    drafts.unshift(draft);
-    if (drafts.length > 20) drafts = drafts.slice(0, 20);
+    });
+    if(drafts.length>20) drafts=drafts.slice(0,20);
     localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
     showToast('💾 Draft berhasil disimpan!');
     renderHistory();
   }
 
-  function getDrafts() {
-    try {
-      var raw = localStorage.getItem('simontok-notulen-drafts');
-      return raw ? JSON.parse(raw) : [];
-    } catch(e) { return []; }
+  function getDrafts(){
+    try{
+      var raw=localStorage.getItem('simontok-notulen-drafts');
+      return raw?JSON.parse(raw):[];
+    }catch(e){ return []; }
   }
 
-  function deleteDraft(id) {
-    if (!confirm('Hapus draft ini?')) return;
-    var drafts = getDrafts().filter(function(d){ return d.id !== id; });
-    localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
+  function deleteDraft(id){
+    if(!confirm('Hapus draft ini?')) return;
+    var drafts=getDrafts().filter(function(d){ return d.id!==id; });
+    localStorage.setItem('simontok-notulen-drafts',JSON.stringify(drafts));
     showToast('🗑️ Draft dihapus!');
     renderHistory();
   }
 
-  function loadDraft(draft) {
-    if (!confirm('Muat draft "'+draft.judul+'"?\nForm saat ini akan tertimpa.')) return;
+  function loadDraft(draft){
+    if(!confirm('Muat draft "'+draft.judul+'"?\nForm saat ini akan tertimpa.')) return;
 
-    document.getElementById('fOrg').value     = draft.org     || '';
-    document.getElementById('fJudul').value   = draft.judul   || '';
-    document.getElementById('fTanggal').value = draft.tanggal || '';
-    document.getElementById('fWaktu').value   = draft.waktu   || '';
-    document.getElementById('fTempat').value  = draft.tempat  || '';
-    document.getElementById('fNotulis').value = draft.notulis || '';
-    document.getElementById('aiResult').value = draft.summary || '';
-    document.getElementById('aiStatus').textContent = '';
+    document.getElementById('fOrg').value     = draft.org     ||'';
+    document.getElementById('fJudul').value   = draft.judul   ||'';
+    document.getElementById('fTanggal').value = draft.tanggal ||'';
+    document.getElementById('fWaktu').value   = draft.waktu   ||'';
+    document.getElementById('fTempat').value  = draft.tempat  ||'';
+    document.getElementById('fNotulis').value = draft.notulis ||'';
+    document.getElementById('aiResult').value = draft.summary ||'';
+    document.getElementById('aiStatus').textContent='';
 
-    // Reset & isi peserta
-    document.getElementById('pesertaList').innerHTML = '';
-    pesertaCount = 0;
-    if (draft.peserta && draft.peserta.length) {
-      draft.peserta.forEach(function(p){ addPeserta(p); });
-    } else {
-      addPeserta('');
-    }
+    document.getElementById('pesertaList').innerHTML='';
+    pesertaCount=0;
+    (draft.peserta&&draft.peserta.length?draft.peserta:[''])
+      .forEach(function(p){ addPeserta(p); });
 
-    // Reset & isi points
-    document.getElementById('pointsList').innerHTML = '';
-    pointCount = 0;
-    if (draft.points && draft.points.length) {
+    document.getElementById('pointsList').innerHTML='';
+    pointCount=0;
+    if(draft.points&&draft.points.length){
       draft.points.forEach(function(p){ addPoint(p); });
     } else {
       addPoint(''); addPoint(''); addPoint('');
     }
     updatePointCount();
-
     showToast('✅ Draft "'+draft.judul+'" berhasil dimuat!');
   }
 
   // ============================================================
   // RENDER HISTORY
   // ============================================================
-  function formatSavedAt(iso) {
-    if (!iso) return '-';
-    var d   = new Date(iso);
-    var pad = function(n){ return n < 10 ? '0'+n : n; };
+  function formatSavedAt(iso){
+    if(!iso) return '-';
+    var d=new Date(iso);
+    var pad=function(n){ return n<10?'0'+n:n; };
     return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+
            ' '+pad(d.getHours())+':'+pad(d.getMinutes());
   }
 
-  function renderHistory() {
-    var drafts = getDrafts();
-    var box    = document.getElementById('historyList');
-
-    if (!drafts.length) {
-      box.innerHTML = '<div class="empty-history">📭 Belum ada draft tersimpan</div>';
+  function renderHistory(){
+    var drafts=getDrafts();
+    var box=document.getElementById('historyList');
+    if(!drafts.length){
+      box.innerHTML='<div class="empty-history">📭 Belum ada draft tersimpan</div>';
       return;
     }
-
-    box.innerHTML = drafts.map(function(d) {
+    box.innerHTML=drafts.map(function(d){
       return (
-        '<div class="history-item" data-id="'+d.id+'">' +
-          '<h4>'+esc(d.judul)+'</h4>' +
-          '<p>'+(d.org ? esc(d.org)+' &middot; ' : '')+esc(formatTanggal(d.tanggal))+'</p>' +
-          '<div class="history-item-footer">' +
-            '<span style="font-size:11px;color:var(--text4)">💾 '+formatSavedAt(d.savedAt)+'</span>' +
-            '<button class="btn-del-history" data-del="'+d.id+'" title="Hapus draft">🗑️</button>' +
-          '</div>' +
+        '<div class="history-item" data-id="'+d.id+'">'+
+          '<h4>'+esc(d.judul)+'</h4>'+
+          '<p>'+(d.org?esc(d.org)+' &middot; ':'')+esc(formatTanggal(d.tanggal))+'</p>'+
+          '<div class="history-item-footer">'+
+            '<span style="font-size:11px;color:var(--text4)">💾 '+formatSavedAt(d.savedAt)+'</span>'+
+            '<button class="btn-del-history" data-del="'+d.id+'" title="Hapus">🗑️</button>'+
+          '</div>'+
         '</div>'
       );
     }).join('');
 
-    // Bind klik load draft
-    box.querySelectorAll('.history-item').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        if (e.target.closest('[data-del]')) return;
-        var id    = parseInt(el.getAttribute('data-id'));
-        var draft = getDrafts().find(function(d){ return d.id === id; });
-        if (draft) loadDraft(draft);
+    box.querySelectorAll('.history-item').forEach(function(el){
+      el.addEventListener('click',function(e){
+        if(e.target.closest('[data-del]')) return;
+        var id=parseInt(el.getAttribute('data-id'));
+        var draft=getDrafts().find(function(d){ return d.id===id; });
+        if(draft) loadDraft(draft);
       });
     });
-
-    // Bind hapus
-    box.querySelectorAll('[data-del]').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
+    box.querySelectorAll('[data-del]').forEach(function(btn){
+      btn.addEventListener('click',function(e){
         e.stopPropagation();
         deleteDraft(parseInt(btn.getAttribute('data-del')));
       });
@@ -1322,56 +1217,48 @@ document.getElementById('btnGenAI').addEventListener('click', function(){
   document.getElementById('btnSaveDraft').addEventListener('click', saveDraft);
 
   // ============================================================
-  // NEW NOTULEN — reset semua
+  // NEW NOTULEN
   // ============================================================
-  document.getElementById('btnNewNotulen').addEventListener('click', function() {
-    if (!confirm('Buat notulen baru?\nForm saat ini akan dikosongkan.')) return;
+  document.getElementById('btnNewNotulen').addEventListener('click', function(){
+    if(!confirm('Buat notulen baru?\nForm saat ini akan dikosongkan.')) return;
 
-    document.getElementById('fOrg').value     = '';
-    document.getElementById('fJudul').value   = '';
-    document.getElementById('fTanggal').value = '';
-    document.getElementById('fWaktu').value   = '';
-    document.getElementById('fTempat').value  = '';
-    document.getElementById('fNotulis').value = '';
-    document.getElementById('aiResult').value = '';
-    document.getElementById('aiStatus').textContent = '';
+    ['fOrg','fJudul','fTanggal','fWaktu','fTempat','fNotulis'].forEach(function(id){
+      document.getElementById(id).value='';
+    });
+    document.getElementById('aiResult').value='';
+    document.getElementById('aiStatus').textContent='';
 
-    // Reset peserta
-    document.getElementById('pesertaList').innerHTML = '';
-    pesertaCount = 0;
-    addPeserta('');
+    document.getElementById('pesertaList').innerHTML='';
+    pesertaCount=0; addPeserta('');
 
-    // Reset points
-    document.getElementById('pointsList').innerHTML = '';
-    pointCount = 0;
+    document.getElementById('pointsList').innerHTML='';
+    pointCount=0;
     addPoint(''); addPoint(''); addPoint('');
     updatePointCount();
 
-    // Clear TTD
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    hasDrawn = false;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    hasDrawn=false;
     document.getElementById('canvasHint').classList.remove('hidden');
 
-    // Set tanggal & waktu hari ini
-    var now = new Date();
-    var pad = function(n){ return n < 10 ? '0'+n : n; };
-    document.getElementById('fTanggal').value =
+    var now=new Date();
+    var pad=function(n){ return n<10?'0'+n:n; };
+    document.getElementById('fTanggal').value=
       now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-    document.getElementById('fWaktu').value =
+    document.getElementById('fWaktu').value=
       pad(now.getHours())+':'+pad(now.getMinutes());
 
     showToast('✨ Form baru siap diisi!');
   });
 
   // ============================================================
-  // SET DEFAULT DATE & TIME saat pertama load
+  // DEFAULT DATE & TIME
   // ============================================================
-  (function() {
-    var now = new Date();
-    var pad = function(n){ return n < 10 ? '0'+n : n; };
-    document.getElementById('fTanggal').value =
+  (function(){
+    var now=new Date();
+    var pad=function(n){ return n<10?'0'+n:n; };
+    document.getElementById('fTanggal').value=
       now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-    document.getElementById('fWaktu').value =
+    document.getElementById('fWaktu').value=
       pad(now.getHours())+':'+pad(now.getMinutes());
   })();
 
