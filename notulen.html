@@ -459,113 +459,111 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    // ============================================================
-  // CONFIG
-  // ============================================================
-  var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
-  var SESSION_KEY = 'simontok-session';
+ // ============================================================
+// CONFIG & SESSION (HARUS SAMA DENGAN INDEX.HTML)
+// ============================================================
+var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
+var SESSION_KEY = 'simontok-session';
+var SESSION     = null; // Variabel global untuk data user
 
-  // ============================================================
-  // SESSION HELPERS
-  // ============================================================
-  function getSession() {
-    try {
-      // Coba sessionStorage dulu
-      var raw = sessionStorage.getItem(SESSION_KEY);
-      if (raw) return JSON.parse(raw);
+// ============================================================
+// SESSION HELPERS
+// ============================================================
+function getSession() {
+  try {
+    // WAJIB localStorage agar sinkron dengan index.html
+    var raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
 
-      // Fallback ke localStorage (jika dibuka di tab baru)
-      var raw2 = localStorage.getItem(SESSION_KEY);
-      if (raw2) {
-        sessionStorage.setItem(SESSION_KEY, raw2); // migrasi
-        return JSON.parse(raw2);
-      }
-      return null;
-    } catch(e) { return null; }
+function getApiKey() {
+  return (SESSION && SESSION.apiKey) ? SESSION.apiKey : null;
+}
+
+// ============================================================
+// UI RENDERER
+// ============================================================
+function renderApiKeyStatus() {
+  var dot = document.getElementById('aiKeyDot');
+  var msg = document.getElementById('aiKeyMsg');
+  if (!dot || !msg) return;
+
+  if (!SESSION) {
+    dot.className = 'ai-key-dot err';
+    msg.textContent = '⚠️ Sesi tidak ditemukan.';
+    return;
   }
 
-  function getApiKey() {
-    var s = getSession();
-    if (!s) return null;
-    return s.apiKey || null;
+  var key = getApiKey();
+  if (!key || key === 'undefined' || key === 'null') {
+    dot.className = 'ai-key-dot err';
+    msg.textContent = '⚠️ API Key tidak tersedia.';
+  } else {
+    dot.className = 'ai-key-dot ok';
+    msg.textContent = '✅ API Key aktif · ' + (SESSION.name || SESSION.username);
+  }
+}
+
+// ============================================================
+// CORE LOGIC: VALIDASI & START
+// ============================================================
+function startApp() {
+  var s = getSession();
+
+  // 1. Cek fisik session
+  if (!s || !s.token || !s.username) {
+    window.location.replace('index.html');
+    return;
   }
 
-  // ============================================================
-  // GUARD + VALIDATE TOKEN ke Apps Script
-  // ============================================================
-  function validateSessionOrRedirect() {
-    var s = getSession();
+  // 2. Validasi ke server (agar token tidak palsu/expired)
+  fetch(API_URL + '?action=validate&user=' + encodeURIComponent(s.username) + '&token=' + encodeURIComponent(s.token))
+  .then(r => r.json())
+  .then(j => {
+    if (j.ok) {
+      // 3. TOKEN VALID! Masukkan ke variabel global SESSION
+      SESSION = {
+        username:   j.user.username   || s.username,
+        name:       j.user.name       || s.name,
+        role:       j.user.role       || s.role,
+        sheet_name: j.user.sheet_name || s.sheet_name,
+        token:      s.token,
+        apiKey:     j.user.apiKey     || s.apiKey
+      };
 
-    // Tidak ada session → langsung redirect
-    if (!s || !s.token || !s.username) {
-      alert('⚠️ Sesi tidak ditemukan. Silakan login ulang.');
-      location.href = 'index.html';
-      return;
+      // 4. Jalankan fungsi inisialisasi halaman
+      initNotulen();
+    } else {
+      // Token expired
+      localStorage.removeItem(SESSION_KEY);
+      window.location.replace('index.html');
     }
+  })
+  .catch(err => {
+    console.warn("Validasi offline, menggunakan data lokal.");
+    SESSION = s;
+    initNotulen();
+  });
+}
 
-    // Validasi token ke Apps Script (background, tidak blokir UI)
-    fetch(
-      API_URL +
-      '?action=validate' +
-      '&user='  + encodeURIComponent(s.username) +
-      '&token=' + encodeURIComponent(s.token)
-    )
-    .then(function(r){ return r.json(); })
-    .then(function(j){
-      if (!j.ok) {
-        // Token tidak valid / expired
-        sessionStorage.removeItem(SESSION_KEY);
-        localStorage.removeItem(SESSION_KEY);
-        alert('⚠️ Sesi expired. Silakan login ulang.');
-        location.href = 'index.html';
-      } else {
-        // Token valid — refresh data user (nama/role bisa berubah di sheet)
-        var updated = {
-          username:   j.user.username   || s.username,
-          name:       j.user.name       || s.name,
-          role:       j.user.role       || s.role,
-          sheet_name: j.user.sheet_name || s.sheet_name,
-          token:      s.token,
-          apiKey:     s.apiKey  // apiKey tetap dari session login
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
-        localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
-        renderApiKeyStatus(); // re-render setelah validasi
-      }
-    })
-    .catch(function(err){
-      // Gagal koneksi → pakai session lokal, jangan redirect
-      console.warn('Validasi token gagal (offline?):', err.message);
-      renderApiKeyStatus();
-    });
+function initNotulen() {
+  console.log("🚀 Notulen siap.");
+  renderApiKeyStatus();
+  
+  // PANGGIL FUNGSI AMBIL DATA NOTULEN ANDA DI SINI
+  if (typeof loadNotulenData === 'function') {
+    loadNotulenData();
   }
+}
 
-  // ============================================================
-  // RENDER STATUS API KEY DI UI
-  // ============================================================
-  function renderApiKeyStatus() {
-    var dot = document.getElementById('aiKeyDot');
-    var msg = document.getElementById('aiKeyMsg');
-    var s   = getSession();
-
-    if (!s) {
-      dot.className = 'ai-key-dot err';
-      msg.innerHTML = '⚠️ Sesi tidak ditemukan. ' +
-                      '<a href="index.html" style="color:var(--blue)">Login ulang</a>';
-      return;
-    }
-
-    var key = getApiKey();
-    if (!key || key.trim() === '' || key === 'undefined' || key === 'null') {
-      dot.className   = 'ai-key-dot err';
-      msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
-      return;
-    }
-
-    dot.className   = 'ai-key-dot ok';
-    msg.textContent = '✅ API Key aktif · ' + (s.name || s.username || 'User');
-  }
-
+// ============================================================
+// AUTO-START (PENTING!)
+// ============================================================
+// Jangan panggil fungsi apapun di luar ini. 
+// Semua harus menunggu startApp() selesai.
+window.onload = startApp;
+  
   // ============================================================
   // SAVE NOTULEN KE CLOUD (Google Sheet)
   // ============================================================
