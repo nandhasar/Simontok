@@ -93,15 +93,63 @@
     .btn-move:hover{background:var(--blue-bg);color:var(--blue)}
 
     /* AI SECTION */
-    .ai-card{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1.5px solid var(--purple);border-radius:var(--radius);padding:20px;margin-bottom:20px}
-    .ai-card h2{font-size:16px;font-weight:700;color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-    .ai-config{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px}
-    .ai-config-inner{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .btn-ai{padding:10px 20px;background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none;border-radius:var(--radius3);font-weight:700;font-size:13px;transition:all .2s;white-space:nowrap;align-self:end}
-    .btn-ai:hover{opacity:.85;transform:translateY(-1px)}
-    .btn-ai:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .ai-status{font-size:12px;color:var(--purple);margin-bottom:8px;min-height:18px;font-weight:600}
-    .ai-result{width:100%;min-height:100px;border:1.5px solid var(--purple);border-radius:var(--radius3);background:var(--bg2);color:var(--text);padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none}
+    <!-- AI SECTION — ganti yang lama dengan ini -->
+<div class="ai-card">
+  <h2>✨ AI Notulen (Ollama Cloud)</h2>
+
+  <div class="form-group">
+    <label style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block">
+      🔑 API Key Ollama Cloud
+    </label>
+    <div style="display:flex;gap:8px">
+      <input
+        type="password"
+        id="ollamaApiKey"
+        placeholder="Masukkan API Key Ollama Cloud..."
+        style="flex:1;border-color:var(--purple)"
+      />
+      <button class="btn-ai" id="btnSaveKey" style="white-space:nowrap;padding:10px 14px">
+        💾 Simpan
+      </button>
+    </div>
+    <p style="font-size:11px;color:var(--text4);margin-top:4px">
+      🔒 API Key disimpan di browser (localStorage), tidak dikirim ke server lain.
+    </p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end">
+    <div class="form-group" style="margin-bottom:0">
+      <label style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block">
+        Model
+      </label>
+<div class="form-group" style="margin-bottom:0">
+  <label style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block">
+    Model
+  </label>
+  <input
+    type="text"
+    id="ollamaModel"
+    value="gpt-oss:20b-cloud"
+    readonly
+    style="border-color:var(--purple);background:var(--bg3);color:var(--text3);cursor:not-allowed"
+  />
+  <p style="font-size:11px;color:var(--text4);margin-top:4px">
+    🤖 Model otomatis: <strong style="color:var(--purple)">gpt-oss:20b-cloud</strong>
+  </p>
+</div>
+
+  <div class="ai-status" id="aiStatus" style="margin-top:10px"></div>
+
+  <label style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 6px;display:block">
+    Hasil Notulen Terstruktur (bisa diedit)
+  </label>
+  <textarea
+    class="ai-result"
+    id="aiResult"
+    placeholder="Klik '✨ Susun Notulen' untuk menghasilkan notulen terstruktur dari point-point di atas, atau ketik manual..."
+    style="min-height:140px"
+  ></textarea>
+</div>
 
     /* SIDEBAR */
     .sidebar{display:flex;flex-direction:column;gap:16px}
@@ -558,76 +606,152 @@
   addPoint(''); addPoint(''); addPoint('');
 
   // ============================================================
-  // AI SUMMARY — OLLAMA
-  // ============================================================
-  document.getElementById('btnGenAI').addEventListener('click', function(){
-    var points  = getPoints();
-    if (!points.length) { showToast('⚠️ Isi minimal 1 point dulu!'); return; }
+// AI — OLLAMA CLOUD
+// ============================================================
 
-    var url   = document.getElementById('ollamaUrl').value.trim() || 'http://localhost:11434';
-    var model = document.getElementById('ollamaModel').value.trim() || 'llama3';
-    var btn   = document.getElementById('btnGenAI');
-    var status= document.getElementById('aiStatus');
-    var result= document.getElementById('aiResult');
+// Load API key dari localStorage
+(function() {
+  var saved = localStorage.getItem('simontok-ollama-key');
+  if (saved) document.getElementById('ollamaApiKey').value = saved;
+})();
 
-    var judul   = document.getElementById('fJudul').value.trim() || 'Rapat';
-    var prompt  =
-      'Kamu adalah asisten notulen rapat profesional. Buat ringkasan singkat dan padat dalam Bahasa Indonesia dari notulen rapat berikut:\n\n' +
-      'Rapat: ' + judul + '\n' +
-      'Point-point pembahasan:\n' +
-      points.map(function(p,i){ return (i+1)+'. '+p; }).join('\n') +
-      '\n\nBuat ringkasan dalam 3-5 kalimat yang mencakup poin utama, keputusan, dan tindak lanjut (jika ada). Gunakan bahasa formal.';
+// Simpan API Key
+document.getElementById('btnSaveKey').addEventListener('click', function() {
+  var key = document.getElementById('ollamaApiKey').value.trim();
+  if (!key) { showToast('⚠️ API Key tidak boleh kosong!'); return; }
+  localStorage.setItem('simontok-ollama-key', key);
+  showToast('🔑 API Key berhasil disimpan!');
+});
 
-    btn.disabled = true;
-    btn.textContent = '⏳ Generating...';
-    status.textContent = '🔄 Menghubungi Ollama...';
-    result.value = '';
+// Generate
+document.getElementById('btnGenAI').addEventListener('click', function() {
+  var points = getPoints();
+  if (!points.length) {
+    showToast('⚠️ Isi minimal 1 point rapat dulu!');
+    return;
+  }
 
-    fetch(url + '/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: model, prompt: prompt, stream: true })
+  var apiKey = document.getElementById('ollamaApiKey').value.trim()
+    || localStorage.getItem('simontok-ollama-key') || '';
+
+  if (!apiKey) {
+    showToast('⚠️ Masukkan API Key Ollama Cloud dulu!');
+    document.getElementById('ollamaApiKey').focus();
+    return;
+  }
+
+  var model = 'gpt-oss:20b-cloud';
+  var btn     = document.getElementById('btnGenAI');
+  var status  = document.getElementById('aiStatus');
+  var result  = document.getElementById('aiResult');
+
+  // Data rapat untuk konteks
+  var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
+  var tanggal = document.getElementById('fTanggal').value;
+  var tempat  = document.getElementById('fTempat').value.trim()  || '-';
+  var notulis = document.getElementById('fNotulis').value.trim() || '-';
+  var peserta = getPeserta();
+
+  // Prompt — instruksi perbaikan & penyusunan struktur notulen formal
+  var systemPrompt =
+    'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
+    'Tugasmu adalah mengubah point-point mentah dari user menjadi notulen terstruktur yang rapi, ' +
+    'menggunakan kalimat pasif formal, memperbaiki ejaan dan tata bahasa, ' +
+    'serta mengelompokkan topik yang berkaitan. ' +
+    'Format output: gunakan penomoran (1. 2. 3. dst) untuk setiap butir hasil pembahasan. ' +
+    'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika ada informasi yang relevan. ' +
+    'Jangan tambahkan informasi yang tidak ada di input. Gunakan bahasa formal dan baku.';
+
+  var userPrompt =
+    'Berikut adalah data rapat dan point-point mentah yang perlu disusun menjadi notulen formal:\n\n' +
+    '=== DATA RAPAT ===\n' +
+    'Kegiatan : ' + judul + '\n' +
+    'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
+    'Tempat   : ' + tempat + '\n' +
+    'Notulis  : ' + notulis + '\n' +
+    (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
+    '\n=== POINT-POINT MENTAH ===\n' +
+    points.map(function(p, i) { return (i + 1) + '. ' + p; }).join('\n') +
+    '\n\n=== TUGAS ===\n' +
+    'Susun point-point di atas menjadi butir-butir notulen formal yang terstruktur, ' +
+    'perbaiki kalimat agar baku dan formal, tambahkan Kesimpulan dan Tindak Lanjut jika ada. ' +
+    'Hasilkan HANYA teks notulen saja, tanpa penjelasan tambahan.';
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Menyusun...';
+  status.textContent = '🔄 Menghubungi Ollama Cloud...';
+  status.style.color = 'var(--purple)';
+  result.value = '';
+
+  fetch('https://api.ollama.com/api/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    },
+    body: JSON.stringify({
+      model:  model,
+      stream: true,
+      messages: [
+        { role: 'system',  content: systemPrompt },
+        { role: 'user',    content: userPrompt   }
+      ]
     })
-    .then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status + ' — Pastikan Ollama berjalan di ' + url);
-      status.textContent = '✅ Menerima response...';
-      var reader = r.body.getReader();
-      var decoder = new TextDecoder();
-      var full = '';
+  })
+  .then(function(r) {
+    if (r.status === 401) throw new Error('API Key tidak valid atau expired. Cek kembali API Key Anda.');
+    if (r.status === 404) throw new Error('Model "' + model + '" tidak ditemukan di Ollama Cloud.');
+    if (!r.ok)            throw new Error('HTTP ' + r.status + ' — Gagal terhubung ke Ollama Cloud.');
 
-      function read() {
-        return reader.read().then(function(chunk) {
-          if (chunk.done) {
-            status.textContent = '✅ Selesai!';
-            btn.disabled = false;
-            btn.textContent = '✨ Generate';
-            return;
-          }
-          var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
-          lines.forEach(function(line) {
-            if (!line.trim()) return;
-            try {
-              var j = JSON.parse(line);
-              if (j.response) {
-                full += j.response;
-                result.value = full;
-                result.scrollTop = result.scrollHeight;
-              }
-            } catch(e) {}
-          });
-          return read();
+    status.textContent = '✅ Menerima response...';
+
+    var reader  = r.body.getReader();
+    var decoder = new TextDecoder();
+    var full    = '';
+
+    function read() {
+      return reader.read().then(function(chunk) {
+        if (chunk.done) {
+          status.textContent  = '✅ Notulen berhasil disusun!';
+          status.style.color  = 'var(--green)';
+          btn.disabled        = false;
+          btn.textContent     = '✨ Susun Notulen';
+          showToast('✅ Notulen berhasil disusun oleh AI!');
+          return;
+        }
+
+        // Parse setiap baris JSON dari stream
+        var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
+        lines.forEach(function(line) {
+          line = line.trim();
+          if (!line) return;
+          try {
+            var j = JSON.parse(line);
+            // Format Ollama Cloud chat: j.message.content
+            var token = (j.message && j.message.content) ? j.message.content : '';
+            if (token) {
+              full += token;
+              result.value = full;
+              result.scrollTop = result.scrollHeight;
+            }
+          } catch(e) { /* skip baris tidak valid */ }
         });
-      }
-      return read();
-    })
-    .catch(function(err) {
-      status.textContent = '❌ Gagal: ' + err.message;
-      btn.disabled = false;
-      btn.textContent = '✨ Generate';
-      showToast('❌ Gagal terhubung ke Ollama. Pastikan Ollama aktif!');
-    });
-  });
 
+        return read();
+      });
+    }
+
+    return read();
+  })
+  .catch(function(err) {
+    status.textContent = '❌ ' + err.message;
+    status.style.color = 'var(--red)';
+    btn.disabled       = false;
+    btn.textContent    = '✨ Susun Notulen';
+    showToast('❌ ' + err.message);
+  });
+});
+  
   // ============================================================
   // TTD CANVAS
   // ============================================================
