@@ -460,6 +460,155 @@
 <div class="toast" id="toast"></div>
 
 <script>
+    // ============================================================
+  // CONFIG
+  // ============================================================
+  var API_URL     = 'https://script.google.com/macros/s/AKfycbw1TLkJ-FIYL0hS8WA53h38eLEXw2ZRQnjSJ0aRVhF-cWHNjTQQDhnnIy7cWv25tT0p/exec';
+  var SESSION_KEY = 'simontok-session';
+
+  // ============================================================
+  // SESSION HELPERS
+  // ============================================================
+  function getSession() {
+    try {
+      // Coba sessionStorage dulu
+      var raw = sessionStorage.getItem(SESSION_KEY);
+      if (raw) return JSON.parse(raw);
+
+      // Fallback ke localStorage (jika dibuka di tab baru)
+      var raw2 = localStorage.getItem(SESSION_KEY);
+      if (raw2) {
+        sessionStorage.setItem(SESSION_KEY, raw2); // migrasi
+        return JSON.parse(raw2);
+      }
+      return null;
+    } catch(e) { return null; }
+  }
+
+  function getApiKey() {
+    var s = getSession();
+    if (!s) return null;
+    return s.apiKey || null;
+  }
+
+  // ============================================================
+  // GUARD + VALIDATE TOKEN ke Apps Script
+  // ============================================================
+  function validateSessionOrRedirect() {
+    var s = getSession();
+
+    // Tidak ada session → langsung redirect
+    if (!s || !s.token || !s.username) {
+      alert('⚠️ Sesi tidak ditemukan. Silakan login ulang.');
+      location.href = 'index.html';
+      return;
+    }
+
+    // Validasi token ke Apps Script (background, tidak blokir UI)
+    fetch(
+      API_URL +
+      '?action=validate' +
+      '&user='  + encodeURIComponent(s.username) +
+      '&token=' + encodeURIComponent(s.token)
+    )
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (!j.ok) {
+        // Token tidak valid / expired
+        sessionStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_KEY);
+        alert('⚠️ Sesi expired. Silakan login ulang.');
+        location.href = 'index.html';
+      } else {
+        // Token valid — refresh data user (nama/role bisa berubah di sheet)
+        var updated = {
+          username:   j.user.username   || s.username,
+          name:       j.user.name       || s.name,
+          role:       j.user.role       || s.role,
+          sheet_name: j.user.sheet_name || s.sheet_name,
+          token:      s.token,
+          apiKey:     s.apiKey  // apiKey tetap dari session login
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(updated));
+        renderApiKeyStatus(); // re-render setelah validasi
+      }
+    })
+    .catch(function(err){
+      // Gagal koneksi → pakai session lokal, jangan redirect
+      console.warn('Validasi token gagal (offline?):', err.message);
+      renderApiKeyStatus();
+    });
+  }
+
+  // ============================================================
+  // RENDER STATUS API KEY DI UI
+  // ============================================================
+  function renderApiKeyStatus() {
+    var dot = document.getElementById('aiKeyDot');
+    var msg = document.getElementById('aiKeyMsg');
+    var s   = getSession();
+
+    if (!s) {
+      dot.className = 'ai-key-dot err';
+      msg.innerHTML = '⚠️ Sesi tidak ditemukan. ' +
+                      '<a href="index.html" style="color:var(--blue)">Login ulang</a>';
+      return;
+    }
+
+    var key = getApiKey();
+    if (!key || key.trim() === '' || key === 'undefined' || key === 'null') {
+      dot.className   = 'ai-key-dot err';
+      msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
+      return;
+    }
+
+    dot.className   = 'ai-key-dot ok';
+    msg.textContent = '✅ API Key aktif · ' + (s.name || s.username || 'User');
+  }
+
+  // ============================================================
+  // SAVE NOTULEN KE CLOUD (Google Sheet)
+  // ============================================================
+  function saveNotulenToCloud(data, onSuccess, onError) {
+    var s = getSession();
+    if (!s || !s.token) {
+      if (onError) onError('Sesi tidak valid');
+      return;
+    }
+
+    fetch(
+      API_URL +
+      '?user='  + encodeURIComponent(s.username) +
+      '&token=' + encodeURIComponent(s.token), {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'add-notulen',
+        notulen: {
+          kegiatan: data.judul   || '',
+          tanggal:  data.tanggal || '',
+          waktu:    data.waktu   || '',
+          tempat:   data.tempat  || '',
+          points:   JSON.stringify(data.points  || []),
+          summary:  data.summary || '',
+          file_url: ''
+        }
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (j.ok) {
+        if (onSuccess) onSuccess(j.id);
+      } else {
+        if (onError) onError(j.error || j.message || 'Gagal simpan');
+      }
+    })
+    .catch(function(err){
+      if (onError) onError(err.message);
+    });
+  }
+
   // ============================================================
   // THEME
   // ============================================================
@@ -1102,8 +1251,9 @@
   // ============================================================
   function saveDraft(){
     var data = getFormData();
-    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
+    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
 
+    // 1. Simpan lokal dulu (cepat & offline-friendly)
     var drafts = getDrafts();
     drafts.unshift({
       id:      Date.now(),
@@ -1118,12 +1268,22 @@
       points:  data.points,
       summary: data.summary
     });
-    if(drafts.length>20) drafts=drafts.slice(0,20);
+    if (drafts.length > 20) drafts = drafts.slice(0, 20);
     localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
-    showToast('💾 Draft berhasil disimpan!');
     renderHistory();
-  }
+    showToast('💾 Tersimpan lokal, menyimpan ke cloud...');
 
+    // 2. Simpan ke cloud di background
+    saveNotulenToCloud(
+      data,
+      function(id){
+        showToast('✅ Tersimpan di cloud! ID: ' + id);
+      },
+      function(err){
+        showToast('⚠️ Cloud gagal, data aman di lokal. (' + err + ')', 4000);
+      }
+    );
+  }
   function getDrafts(){
     try{
       var raw=localStorage.getItem('simontok-notulen-drafts');
