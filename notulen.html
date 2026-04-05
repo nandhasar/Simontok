@@ -38,8 +38,6 @@
     a{text-decoration:none;color:inherit}
     button{cursor:pointer;font-family:inherit;font-size:inherit}
     .page{max-width:1100px;margin:0 auto;padding:20px 16px;min-height:100vh}
-
-    /* TOPBAR */
     .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
             gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);
             border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -60,20 +58,14 @@
               border-radius:12px;display:flex;align-items:center;justify-content:center;
               font-size:18px;transition:all .2s}
     .btn-icon:hover{background:var(--bg3)}
-
-    /* LAYOUT */
     .layout{display:grid;gap:20px}
     @media(min-width:900px){.layout{grid-template-columns:1fr 340px}}
-
-    /* CARD */
     .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
           padding:22px;box-shadow:var(--shadow)}
     .card-head{display:flex;align-items:center;justify-content:space-between;
                margin-bottom:18px;flex-wrap:wrap;gap:8px}
     .card-head h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
     .section-divider{height:1px;background:var(--border);margin:18px 0}
-
-    /* FORM */
     .form-group{margin-bottom:14px}
     .form-group label{display:block;font-size:12px;font-weight:700;color:var(--text3);
                       text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
@@ -85,8 +77,6 @@
     input:focus,textarea:focus,select:focus{border-color:var(--blue)}
     input::placeholder,textarea::placeholder{color:var(--text4)}
     input[readonly]{background:var(--bg3);color:var(--text3);cursor:not-allowed}
-
-    /* PESERTA */
     .peserta-list{display:flex;flex-direction:column;gap:8px}
     .peserta-item{display:flex;align-items:center;gap:8px}
     .peserta-num{width:24px;height:24px;border-radius:50%;background:var(--blue-bg);
@@ -101,8 +91,6 @@
              padding:9px;border-radius:var(--radius3);font-size:13px;font-weight:600;
              width:100%;margin-top:8px;transition:all .2s}
     .btn-add:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg2)}
-
-    /* POINTS */
     .points-list{display:flex;flex-direction:column;gap:10px}
     .point-item{display:flex;gap:10px;align-items:flex-start}
     .point-num{width:28px;height:28px;border-radius:50%;
@@ -115,8 +103,6 @@
               color:var(--text3);border-radius:6px;font-size:12px;display:flex;
               align-items:center;justify-content:center;transition:all .2s}
     .btn-move:hover{background:var(--blue-bg);color:var(--blue)}
-
-    /* AI SECTION */
     .ai-card{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));
              border:1.5px solid var(--purple);border-radius:var(--radius);
              padding:20px;margin-bottom:16px}
@@ -143,11 +129,7 @@
     .ai-key-dot.err{background:var(--red)}
     .model-info{font-size:11px;color:var(--text4);margin-top:4px}
     .model-info strong{color:var(--purple)}
-
-    /* SIDEBAR */
     .sidebar{display:flex;flex-direction:column;gap:16px}
-
-    /* EXPORT */
     .export-card{background:var(--bg2);border:1px solid var(--border);
                  border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
     .export-card h3{font-size:15px;font-weight:700;margin-bottom:14px;
@@ -170,8 +152,6 @@
                  font-size:13px;margin-bottom:10px;display:flex;align-items:center;
                  justify-content:center;gap:6px;transition:all .2s;cursor:pointer}
     .btn-preview:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg2)}
-
-    /* TTD */
     .ttd-card{background:var(--bg2);border:1px solid var(--border);
               border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
     .ttd-card h3{font-size:15px;font-weight:700;margin-bottom:12px;
@@ -188,8 +168,6 @@
                    color:var(--text2);padding:8px;border-radius:8px;font-size:12px;
                    font-weight:600;transition:all .2s;cursor:pointer}
     .btn-clear-ttd:hover{border-color:var(--red);color:var(--red)}
-
-    /* HISTORY */
     .history-card{background:var(--bg2);border:1px solid var(--border);
                   border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
     .history-card h3{font-size:15px;font-weight:700;margin-bottom:12px;
@@ -207,8 +185,6 @@
                      transition:all .2s;cursor:pointer}
     .btn-del-history:hover{color:var(--red);background:var(--red-bg)}
     .empty-history{text-align:center;padding:16px;color:var(--text4);font-size:13px}
-
-    /* MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);display:none;
                    align-items:center;justify-content:center;z-index:9999;padding:16px;
                    backdrop-filter:blur(4px)}
@@ -235,39 +211,14 @@
     .btn-m-secondary{background:var(--bg3);color:var(--text2)}
     .btn-m-secondary:hover{border-color:var(--blue)}
     @keyframes popIn{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
-
-    /* DOC PREVIEW */
     .doc-preview{background:#fff;color:#1e293b;border-radius:var(--radius2);padding:32px;
                  font-family:'Times New Roman',Times,serif;font-size:14px;
                  line-height:1.8;box-shadow:0 2px 16px rgba(0,0,0,.08);min-height:400px}
-    .doc-header{text-align:center;border-bottom:3px double #1e293b;
-                padding-bottom:14px;margin-bottom:20px}
-    .doc-header h2{font-size:18px;font-weight:700;text-transform:uppercase;
-                   letter-spacing:.08em;margin-bottom:4px}
-    .doc-header h3{font-size:15px;font-weight:700;margin-bottom:4px}
-    .doc-header p{font-size:12px;color:#64748b}
-    .doc-title{text-align:center;font-size:16px;font-weight:700;text-transform:uppercase;
-               letter-spacing:.05em;margin-bottom:16px;text-decoration:underline}
-    .doc-points h4{font-size:14px;font-weight:700;margin-bottom:10px}
-    .doc-points ol{padding-left:20px}
-    .doc-points li{margin-bottom:8px;font-size:13px;line-height:1.7}
-    .doc-summary{margin-top:16px;padding:12px;border:1px solid #e2e8f0;
-                 border-radius:8px;background:#f8fafc}
-    .doc-summary h4{font-size:13px;font-weight:700;margin-bottom:6px}
-    .doc-summary p{font-size:12px;line-height:1.7;color:#334155;white-space:pre-wrap}
-    .doc-ttd{margin-top:32px;display:flex;justify-content:flex-end}
-    .doc-ttd-box{text-align:center;min-width:180px}
-    .doc-ttd-box p{font-size:12px;color:#64748b}
-    .doc-ttd-box .name{font-weight:700;font-size:13px;margin-top:4px;
-                       border-top:1px solid #1e293b;padding-top:4px}
-
-    /* TOAST */
     .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);
            padding:12px 20px;border-radius:var(--radius2);font-size:13px;font-weight:600;
            z-index:99999;opacity:0;transform:translateY(20px);transition:all .3s;
            pointer-events:none;box-shadow:var(--shadow3)}
     .toast.show{opacity:1;transform:translateY(0)}
-
     @media(max-width:600px){
       .form-row{grid-template-columns:1fr}
       .export-opt{grid-template-columns:1fr}
@@ -280,8 +231,6 @@
 </head>
 <body>
 <div class="page">
-
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-brand">
       <div class="topbar-logo">📝</div>
@@ -299,11 +248,8 @@
 
   <div class="layout">
     <div>
-
-      <!-- DETAIL RAPAT -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-head"><h2>📋 Detail Rapat</h2></div>
-
         <div class="form-group">
           <label>Nama Organisasi / Instansi</label>
           <input type="text" id="fOrg" placeholder="Contoh: Organisasi Mahasiswa FT" />
@@ -341,7 +287,6 @@
         </div>
       </div>
 
-      <!-- POINT-POINT -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-head">
           <h2>📌 Point-Point Rapat</h2>
@@ -351,45 +296,28 @@
         <button class="btn-add" id="btnAddPoint" style="margin-top:12px">+ Tambah Point</button>
       </div>
 
-      <!-- AI SECTION -->
       <div class="ai-card">
         <h2>✨ AI Susun Notulen</h2>
-
-        <!-- Status API Key dari session -->
         <div class="ai-key-info" id="aiKeyInfo">
           <div class="ai-key-dot" id="aiKeyDot" style="background:var(--text4)"></div>
           <span id="aiKeyMsg" style="color:var(--text3)">Memeriksa sesi login...</span>
         </div>
-
-        <!-- Model info -->
         <div style="margin-bottom:12px">
           <div class="model-info">
             🤖 Model: <strong>google/gemma-4-31b-it</strong> &nbsp;·&nbsp; via OpenRouter
           </div>
         </div>
-
-        <!-- Generate Button -->
         <div style="margin-bottom:10px">
-          <button class="btn-ai" id="btnGenAI">
-            ✨ Susun Notulen dengan AI
-          </button>
+          <button class="btn-ai" id="btnGenAI">✨ Susun Notulen dengan AI</button>
         </div>
-
-        <!-- Status -->
         <div class="ai-status" id="aiStatus"></div>
-
-        <!-- Result -->
         <label class="ai-label">Hasil Notulen Terstruktur (bisa diedit manual)</label>
         <textarea class="ai-result" id="aiResult"
           placeholder="Klik '✨ Susun Notulen dengan AI' untuk menyusun notulen formal dari point-point di atas, atau ketik manual..."></textarea>
       </div>
-
     </div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
-
-      <!-- EXPORT -->
       <div class="export-card">
         <h3>🖨️ Export Dokumen</h3>
         <div class="export-opt">
@@ -415,7 +343,6 @@
         <button class="btn-export-main btn-word" id="btnExportWord">📘 Download Word (.doc)</button>
       </div>
 
-      <!-- TTD -->
       <div class="ttd-card">
         <h3>✍️ Tanda Tangan Notulis</h3>
         <div class="canvas-wrap">
@@ -427,18 +354,15 @@
         </div>
       </div>
 
-      <!-- HISTORY -->
       <div class="history-card">
         <h3>🗂️ Riwayat Notulen</h3>
         <div id="historyList"></div>
         <button class="btn-add" id="btnSaveDraft" style="margin-top:4px">💾 Simpan Draft</button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- PREVIEW MODAL -->
 <div class="modal-overlay" id="previewModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -459,19 +383,19 @@
 <div class="toast" id="toast"></div>
 
 <script>
- // ============================================================
-// CONFIG & SESSION (HARUS SAMA DENGAN INDEX.HTML)
-// ============================================================
+// ================================================================
+// 1. CONFIG — satu tempat, tidak ada duplikat
+// ================================================================
 var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 var SESSION_KEY = 'simontok-session';
-var SESSION     = null; // Variabel global untuk data user
+var SESSION     = null; // satu-satunya sumber kebenaran user di halaman ini
+var AI_MODEL    = 'google/gemma-4-31b-it';
 
-// ============================================================
-// SESSION HELPERS
-// ============================================================
+// ================================================================
+// 2. SESSION HELPERS — hanya localStorage, tidak ada duplikat
+// ================================================================
 function getSession() {
   try {
-    // WAJIB localStorage agar sinkron dengan index.html
     var raw = localStorage.getItem(SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch(e) { return null; }
@@ -481,48 +405,48 @@ function getApiKey() {
   return (SESSION && SESSION.apiKey) ? SESSION.apiKey : null;
 }
 
-// ============================================================
-// UI RENDERER
-// ============================================================
-function renderApiKeyStatus() {
-  var dot = document.getElementById('aiKeyDot');
-  var msg = document.getElementById('aiKeyMsg');
-  if (!dot || !msg) return;
+// ================================================================
+// 3. THEME (bisa jalan sebelum startApp, tidak butuh SESSION)
+// ================================================================
+(function(){
+  var t = localStorage.getItem('simontok-theme');
+  if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+})();
 
-  if (!SESSION) {
-    dot.className = 'ai-key-dot err';
-    msg.textContent = '⚠️ Sesi tidak ditemukan.';
-    return;
-  }
-
-  var key = getApiKey();
-  if (!key || key === 'undefined' || key === 'null') {
-    dot.className = 'ai-key-dot err';
-    msg.textContent = '⚠️ API Key tidak tersedia.';
-  } else {
-    dot.className = 'ai-key-dot ok';
-    msg.textContent = '✅ API Key aktif · ' + (SESSION.name || SESSION.username);
-  }
-}
-
-// ============================================================
-// CORE LOGIC: VALIDASI & START
-// ============================================================
+// ================================================================
+// 4. startApp — PINTU MASUK UTAMA
+//    Dipanggil oleh window.onload. 
+//    SEMUA fungsi yang butuh SESSION harus dipanggil dari sini.
+// ================================================================
 function startApp() {
-  var s = getSession();
 
-  // 1. Cek fisik session
+  // -- Inisialisasi UI yang tidak butuh SESSION ----------------
+  initThemeButton();
+  initDefaultDateTime();
+  initPeserta();
+  initPoints();
+  initCanvas();
+  initEventListeners();
+  renderHistory();
+
+  // -- Cek session lokal dulu ----------------------------------
+  var s = getSession();
   if (!s || !s.token || !s.username) {
     window.location.replace('index.html');
     return;
   }
 
-  // 2. Validasi ke server (agar token tidak palsu/expired)
-  fetch(API_URL + '?action=validate&user=' + encodeURIComponent(s.username) + '&token=' + encodeURIComponent(s.token))
-  .then(r => r.json())
-  .then(j => {
+  // -- Validasi token ke server --------------------------------
+  fetch(
+    API_URL +
+    '?action=validate' +
+    '&user='  + encodeURIComponent(s.username) +
+    '&token=' + encodeURIComponent(s.token)
+  )
+  .then(function(r){ return r.json(); })
+  .then(function(j){
     if (j.ok) {
-      // 3. TOKEN VALID! Masukkan ke variabel global SESSION
+      // Token valid: isi variabel global SESSION
       SESSION = {
         username:   j.user.username   || s.username,
         name:       j.user.name       || s.name,
@@ -531,311 +455,248 @@ function startApp() {
         token:      s.token,
         apiKey:     j.user.apiKey     || s.apiKey
       };
-
-      // 4. Jalankan fungsi inisialisasi halaman
-      initNotulen();
+      localStorage.setItem(SESSION_KEY, JSON.stringify(SESSION));
+      renderApiKeyStatus(); // render setelah SESSION pasti terisi
     } else {
-      // Token expired
       localStorage.removeItem(SESSION_KEY);
       window.location.replace('index.html');
     }
   })
-  .catch(err => {
-    console.warn("Validasi offline, menggunakan data lokal.");
+  .catch(function(err){
+    // Offline / gagal koneksi: pakai data lokal
+    console.warn('Validasi offline:', err.message);
     SESSION = s;
-    initNotulen();
+    renderApiKeyStatus();
   });
 }
 
-function initNotulen() {
-  console.log("🚀 Notulen siap.");
-  renderApiKeyStatus();
-  
-  // PANGGIL FUNGSI AMBIL DATA NOTULEN ANDA DI SINI
-  if (typeof loadNotulenData === 'function') {
-    loadNotulenData();
+// ================================================================
+// 5. RENDER API KEY STATUS — hanya dipanggil setelah SESSION terisi
+// ================================================================
+function renderApiKeyStatus() {
+  var dot = document.getElementById('aiKeyDot');
+  var msg = document.getElementById('aiKeyMsg');
+  if (!dot || !msg) return;
+
+  var key = getApiKey();
+  if (!key || key === 'undefined' || key === 'null' || key.trim() === '') {
+    dot.className   = 'ai-key-dot err';
+    msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
+  } else {
+    dot.className   = 'ai-key-dot ok';
+    msg.textContent = '✅ API Key aktif · Login sebagai ' + (SESSION.name || SESSION.username || 'User');
   }
 }
 
-// ============================================================
-// AUTO-START (PENTING!)
-// ============================================================
-// Jangan panggil fungsi apapun di luar ini. 
-// Semua harus menunggu startApp() selesai.
-window.onload = startApp;
-  
-  // ============================================================
-  // SAVE NOTULEN KE CLOUD (Google Sheet)
-  // ============================================================
-  function saveNotulenToCloud(data, onSuccess, onError) {
-    var s = getSession();
-    if (!s || !s.token) {
-      if (onError) onError('Sesi tidak valid');
-      return;
-    }
-
-    fetch(
-      API_URL +
-      '?user='  + encodeURIComponent(s.username) +
-      '&token=' + encodeURIComponent(s.token), {
-      method:  'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'add-notulen',
-        notulen: {
-          kegiatan: data.judul   || '',
-          tanggal:  data.tanggal || '',
-          waktu:    data.waktu   || '',
-          tempat:   data.tempat  || '',
-          points:   JSON.stringify(data.points  || []),
-          summary:  data.summary || '',
-          file_url: ''
-        }
-      })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(j){
-      if (j.ok) {
-        if (onSuccess) onSuccess(j.id);
-      } else {
-        if (onError) onError(j.error || j.message || 'Gagal simpan');
-      }
-    })
-    .catch(function(err){
-      if (onError) onError(err.message);
-    });
-  }
-
-  // ============================================================
-  // THEME
-  // ============================================================
-  (function(){
-    var t = localStorage.getItem('simontok-theme');
-    if (t==='dark') document.documentElement.setAttribute('data-theme','dark');
-  })();
-  document.getElementById('darkToggleBtn').addEventListener('click', function(){
-    var isDark = document.documentElement.getAttribute('data-theme')==='dark';
+// ================================================================
+// 6. THEME BUTTON
+// ================================================================
+function initThemeButton() {
+  var btn = document.getElementById('darkToggleBtn');
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  btn.textContent = isDark ? '☀️' : '🌙';
+  btn.addEventListener('click', function(){
     isDark = !isDark;
-    document.documentElement.setAttribute('data-theme', isDark?'dark':'light');
-    localStorage.setItem('simontok-theme', isDark?'dark':'light');
-    this.textContent = isDark?'☀️':'🌙';
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
+    btn.textContent = isDark ? '☀️' : '🌙';
   });
-  (function(){
-    var isDark = document.documentElement.getAttribute('data-theme')==='dark';
-    document.getElementById('darkToggleBtn').textContent = isDark?'☀️':'🌙';
-  })();
+}
 
-  // ============================================================
-  // TOAST
-  // ============================================================
-  function showToast(msg, duration){
-    var t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(function(){ t.classList.remove('show'); }, duration||2800);
-  }
+// ================================================================
+// 7. TOAST
+// ================================================================
+function showToast(msg, duration) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, duration || 2800);
+}
 
-  // ============================================================
-  // UTILS
-  // ============================================================
-  function esc(s){
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+// ================================================================
+// 8. UTILS
+// ================================================================
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
                         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function formatTanggal(val){
-    if(!val) return '-';
-    var d = new Date(val);
-    var months=['Januari','Februari','Maret','April','Mei','Juni',
+}
+function formatTanggal(val) {
+  if (!val) return '-';
+  var d = new Date(val);
+  var months = ['Januari','Februari','Maret','April','Mei','Juni',
                 'Juli','Agustus','September','Oktober','November','Desember'];
-    return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
-  }
-  function getFormData(){
-    return {
-      org:     document.getElementById('fOrg').value.trim(),
-      judul:   document.getElementById('fJudul').value.trim(),
-      tanggal: document.getElementById('fTanggal').value,
-      waktu:   document.getElementById('fWaktu').value,
-      tempat:  document.getElementById('fTempat').value.trim(),
-      notulis: document.getElementById('fNotulis').value.trim(),
-      peserta: getPeserta(),
-      points:  getPoints(),
-      summary: document.getElementById('aiResult').value.trim()
-    };
-  }
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+function getFormData() {
+  return {
+    org:     document.getElementById('fOrg').value.trim(),
+    judul:   document.getElementById('fJudul').value.trim(),
+    tanggal: document.getElementById('fTanggal').value,
+    waktu:   document.getElementById('fWaktu').value,
+    tempat:  document.getElementById('fTempat').value.trim(),
+    notulis: document.getElementById('fNotulis').value.trim(),
+    peserta: getPeserta(),
+    points:  getPoints(),
+    summary: document.getElementById('aiResult').value.trim()
+  };
+}
 
-  // ============================================================
-  // SESSION — ambil API key dari sessionStorage (diset saat login)
-  // ============================================================
-  var SESSION_KEY = 'simontok-session';
+// ================================================================
+// 9. DEFAULT DATE & TIME
+// ================================================================
+function initDefaultDateTime() {
+  var now = new Date();
+  var pad = function(n){ return n < 10 ? '0' + n : n; };
+  document.getElementById('fTanggal').value =
+    now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  document.getElementById('fWaktu').value =
+    pad(now.getHours()) + ':' + pad(now.getMinutes());
+}
 
-  function getSession(){
-    try{
-      var raw = sessionStorage.getItem(SESSION_KEY);
-      return raw ? JSON.parse(raw) : null;
-    }catch(e){ return null; }
-  }
+// ================================================================
+// 10. PESERTA
+// ================================================================
+var pesertaCount = 0;
 
-  function getApiKey(){
-    var s = getSession();
-    // API key tersimpan di session saat login, TIDAK pernah hardcode di HTML
-    return (s && s.apiKey) ? s.apiKey : null;
-  }
-
-  // Tampilkan status API key di UI
-  function renderApiKeyStatus(){
-    var dot = document.getElementById('aiKeyDot');
-    var msg = document.getElementById('aiKeyMsg');
-    var s   = getSession();
-
-    if(!s){
-      dot.className = 'ai-key-dot err';
-      msg.innerHTML = '⚠️ Sesi tidak ditemukan. <a href="index.html" style="color:var(--blue)">Login ulang</a>';
-      return;
-    }
-    if(!s.apiKey){
-      dot.className = 'ai-key-dot err';
-      msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
-      return;
-    }
-    dot.className = 'ai-key-dot ok';
-    msg.textContent = '✅ API Key aktif · Login sebagai ' + (s.name||s.username||'User');
-  }
-
-  renderApiKeyStatus();
-
-  // ============================================================
-  // PESERTA
-  // ============================================================
-  var pesertaCount = 0;
-  function addPeserta(val){
-    pesertaCount++;
-    var list = document.getElementById('pesertaList');
-    var div  = document.createElement('div');
-    div.className = 'peserta-item';
-    div.innerHTML =
-      '<div class="peserta-num">'+pesertaCount+'</div>'+
-      '<input type="text" placeholder="Nama peserta '+pesertaCount+'" value="'+esc(val||'')+'"/>'+
-      '<button class="btn-rm" title="Hapus">&times;</button>';
-    div.querySelector('.btn-rm').addEventListener('click',function(){
-      div.remove(); reindexPeserta();
-    });
-    list.appendChild(div);
-  }
-  function reindexPeserta(){
-    document.querySelectorAll('.peserta-item .peserta-num').forEach(function(el,i){
-      el.textContent=i+1;
-    });
-  }
-  function getPeserta(){
-    var r=[];
-    document.querySelectorAll('.peserta-item input').forEach(function(inp){
-      if(inp.value.trim()) r.push(inp.value.trim());
-    });
-    return r;
-  }
-  document.getElementById('btnAddPeserta').addEventListener('click',function(){ addPeserta(''); });
+function initPeserta() {
+  document.getElementById('btnAddPeserta').addEventListener('click', function(){
+    addPeserta('');
+  });
   addPeserta('');
+}
 
-  // ============================================================
-  // POINTS
-  // ============================================================
-  var pointCount = 0;
-  function addPoint(val){
-    pointCount++;
-    var list = document.getElementById('pointsList');
-    var div  = document.createElement('div');
-    div.className = 'point-item';
-    div.innerHTML =
-      '<div class="point-num">1</div>'+
-      '<textarea placeholder="Tulis point pembahasan...">'+esc(val||'')+'</textarea>'+
-      '<div class="point-actions">'+
-        '<button class="btn-move" title="Naik">▲</button>'+
-        '<button class="btn-move" title="Turun">▼</button>'+
-        '<button class="btn-rm" style="width:28px;height:28px;font-size:13px" title="Hapus">&times;</button>'+
-      '</div>';
-    var btns = div.querySelectorAll('.btn-move');
-    btns[0].addEventListener('click',function(){
-      var prev=div.previousElementSibling;
-      if(prev){ list.insertBefore(div,prev); reindexPoints(); }
-    });
-    btns[1].addEventListener('click',function(){
-      var next=div.nextElementSibling;
-      if(next){ list.insertBefore(next,div); reindexPoints(); }
-    });
-    div.querySelector('.btn-rm').addEventListener('click',function(){
-      div.remove(); reindexPoints(); updatePointCount();
-    });
-    list.appendChild(div);
-    reindexPoints();
-    updatePointCount();
-  }
-  function reindexPoints(){
-    document.querySelectorAll('.point-item .point-num').forEach(function(el,i){
-      el.textContent=i+1;
-    });
-  }
-  function getPoints(){
-    var r=[];
-    document.querySelectorAll('.point-item textarea').forEach(function(ta){
-      if(ta.value.trim()) r.push(ta.value.trim());
-    });
-    return r;
-  }
-  function updatePointCount(){
-    var n=document.querySelectorAll('.point-item').length;
-    document.getElementById('pointCount').textContent=n+' point';
-  }
-  document.getElementById('btnAddPoint').addEventListener('click',function(){ addPoint(''); });
+function addPeserta(val) {
+  pesertaCount++;
+  var list = document.getElementById('pesertaList');
+  var div  = document.createElement('div');
+  div.className = 'peserta-item';
+  div.innerHTML =
+    '<div class="peserta-num">' + pesertaCount + '</div>' +
+    '<input type="text" placeholder="Nama peserta ' + pesertaCount + '" value="' + esc(val || '') + '"/>' +
+    '<button class="btn-rm" title="Hapus">&times;</button>';
+  div.querySelector('.btn-rm').addEventListener('click', function(){
+    div.remove(); reindexPeserta();
+  });
+  list.appendChild(div);
+}
+
+function reindexPeserta() {
+  document.querySelectorAll('.peserta-item .peserta-num').forEach(function(el, i){
+    el.textContent = i + 1;
+  });
+}
+
+function getPeserta() {
+  var r = [];
+  document.querySelectorAll('.peserta-item input').forEach(function(inp){
+    if (inp.value.trim()) r.push(inp.value.trim());
+  });
+  return r;
+}
+
+// ================================================================
+// 11. POINTS
+// ================================================================
+var pointCount = 0;
+
+function initPoints() {
+  document.getElementById('btnAddPoint').addEventListener('click', function(){
+    addPoint('');
+  });
   addPoint(''); addPoint(''); addPoint('');
+}
 
-   // ============================================================
-  // AI — OpenRouter (google/gemma-4-31b-it)
-  // ============================================================
-  var AI_MODEL = 'google/gemma-4-31b-it';
+function addPoint(val) {
+  pointCount++;
+  var list = document.getElementById('pointsList');
+  var div  = document.createElement('div');
+  div.className = 'point-item';
+  div.innerHTML =
+    '<div class="point-num">1</div>' +
+    '<textarea placeholder="Tulis point pembahasan...">' + esc(val || '') + '</textarea>' +
+    '<div class="point-actions">' +
+      '<button class="btn-move" title="Naik">▲</button>' +
+      '<button class="btn-move" title="Turun">▼</button>' +
+      '<button class="btn-rm" style="width:28px;height:28px;font-size:13px" title="Hapus">&times;</button>' +
+    '</div>';
+  var btns = div.querySelectorAll('.btn-move');
+  btns[0].addEventListener('click', function(){
+    var prev = div.previousElementSibling;
+    if (prev){ list.insertBefore(div, prev); reindexPoints(); }
+  });
+  btns[1].addEventListener('click', function(){
+    var next = div.nextElementSibling;
+    if (next){ list.insertBefore(next, div); reindexPoints(); }
+  });
+  div.querySelector('.btn-rm').addEventListener('click', function(){
+    div.remove(); reindexPoints(); updatePointCount();
+  });
+  list.appendChild(div);
+  reindexPoints();
+  updatePointCount();
+}
 
-  function getSystemPrompt() {
-    return (
-      'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi ' +
-      'dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
-      'Ubah point-point mentah menjadi notulen terstruktur yang rapi, ' +
-      'gunakan kalimat pasif formal, perbaiki ejaan dan tata bahasa, ' +
-      'kelompokkan topik yang berkaitan. ' +
-      'Format: gunakan penomoran (1. 2. 3. dst) untuk setiap butir. ' +
-      'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. ' +
-      'Jangan tambah informasi yang tidak ada di input. Bahasa formal dan baku.'
-    );
-  }
+function reindexPoints() {
+  document.querySelectorAll('.point-item .point-num').forEach(function(el, i){
+    el.textContent = i + 1;
+  });
+}
 
-  function getUserPrompt() {
-    var points  = getPoints();
-    var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
-    var tanggal = document.getElementById('fTanggal').value;
-    var tempat  = document.getElementById('fTempat').value.trim()  || '-';
-    var notulis = document.getElementById('fNotulis').value.trim() || '-';
-    var peserta = getPeserta();
+function getPoints() {
+  var r = [];
+  document.querySelectorAll('.point-item textarea').forEach(function(ta){
+    if (ta.value.trim()) r.push(ta.value.trim());
+  });
+  return r;
+}
 
-    return (
-      'Data rapat dan point-point mentah:\n\n' +
-      '=== DATA RAPAT ===\n' +
-      'Kegiatan : ' + judul + '\n' +
-      'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
-      'Tempat   : ' + tempat  + '\n' +
-      'Notulis  : ' + notulis + '\n' +
-      (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
-      '\n=== POINT-POINT MENTAH ===\n' +
-      points.map(function(p, i){ return (i+1) + '. ' + p; }).join('\n') +
-      '\n\nSusun menjadi notulen formal terstruktur. ' +
-      'Hasilkan HANYA teks notulen, tanpa penjelasan tambahan.'
-    );
-  }
+function updatePointCount() {
+  var n = document.querySelectorAll('.point-item').length;
+  document.getElementById('pointCount').textContent = n + ' point';
+}
 
-  // ── Tombol Generate ─────────────────────────────────────────
-  document.getElementById('btnGenAI').addEventListener('click', function() {
+// ================================================================
+// 12. AI — OpenRouter
+// ================================================================
+function getSystemPrompt() {
+  return (
+    'Kamu adalah asisten profesional yang bertugas menyusun notulen rapat resmi ' +
+    'dalam Bahasa Indonesia yang baik, benar, dan formal. ' +
+    'Ubah point-point mentah menjadi notulen terstruktur yang rapi, ' +
+    'gunakan kalimat pasif formal, perbaiki ejaan dan tata bahasa, ' +
+    'kelompokkan topik yang berkaitan. ' +
+    'Format: gunakan penomoran (1. 2. 3. dst) untuk setiap butir. ' +
+    'Sertakan bagian "Kesimpulan" dan "Tindak Lanjut" di akhir jika relevan. ' +
+    'Jangan tambah informasi yang tidak ada di input. Bahasa formal dan baku.'
+  );
+}
+
+function getUserPrompt() {
+  var points  = getPoints();
+  var judul   = document.getElementById('fJudul').value.trim()   || 'Rapat';
+  var tanggal = document.getElementById('fTanggal').value;
+  var tempat  = document.getElementById('fTempat').value.trim()  || '-';
+  var notulis = document.getElementById('fNotulis').value.trim() || '-';
+  var peserta = getPeserta();
+  return (
+    'Data rapat dan point-point mentah:\n\n' +
+    '=== DATA RAPAT ===\n' +
+    'Kegiatan : ' + judul + '\n' +
+    'Tanggal  : ' + (tanggal ? formatTanggal(tanggal) : '-') + '\n' +
+    'Tempat   : ' + tempat  + '\n' +
+    'Notulis  : ' + notulis + '\n' +
+    (peserta.length ? 'Peserta  : ' + peserta.join(', ') + '\n' : '') +
+    '\n=== POINT-POINT MENTAH ===\n' +
+    points.map(function(p, i){ return (i + 1) + '. ' + p; }).join('\n') +
+    '\n\nSusun menjadi notulen formal terstruktur. ' +
+    'Hasilkan HANYA teks notulen, tanpa penjelasan tambahan.'
+  );
+}
+
+function initAIButton() {
+  document.getElementById('btnGenAI').addEventListener('click', function(){
     var points = getPoints();
-    if (!points.length) {
-      showToast('⚠️ Isi minimal 1 point rapat dulu!');
-      return;
-    }
+    if (!points.length) { showToast('⚠️ Isi minimal 1 point rapat dulu!'); return; }
 
     var apiKey = getApiKey();
     if (!apiKey) {
@@ -854,9 +715,6 @@ window.onload = startApp;
     status.textContent = '⚡ Menyusun notulen...';
     status.style.color = 'var(--purple)';
 
-    document.querySelector('.model-info').innerHTML =
-      '🤖 Model: <strong>' + AI_MODEL + '</strong> &nbsp;·&nbsp; via OpenRouter';
-
     fetch('https://openrouter.ai/api/v1/chat/completions', {
       method:  'POST',
       headers: {
@@ -874,30 +732,18 @@ window.onload = startApp;
         ]
       })
     })
-    .then(function(r) {
+    .then(function(r){
+      if (r.status === 401) throw new Error('API Key tidak valid. Hubungi admin.');
+      if (r.status === 402) throw new Error('Kredit OpenRouter habis. Hubungi admin.');
+      if (r.status === 429) throw new Error('Terlalu banyak permintaan. Tunggu sebentar.');
+      if (!r.ok) throw new Error('Error dari server AI (' + r.status + ').');
 
-      // ── Error handling ──────────────────────────────────────
-      if (r.status === 401) {
-        throw new Error('API Key tidak valid. Hubungi admin.');
-      }
-      if (r.status === 402) {
-        throw new Error('Kredit OpenRouter habis. Hubungi admin.');
-      }
-      if (r.status === 429) {
-        throw new Error('Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.');
-      }
-      if (!r.ok) {
-        throw new Error('Error dari server AI (' + r.status + '). Coba lagi.');
-      }
-
-      // ── Baca stream ─────────────────────────────────────────
       var reader  = r.body.getReader();
       var decoder = new TextDecoder();
 
       function read() {
-        return reader.read().then(function(chunk) {
+        return reader.read().then(function(chunk){
           if (chunk.done) {
-            // ── Selesai ───────────────────────────────────────
             btn.disabled    = false;
             btn.textContent = '✨ Susun Notulen dengan AI';
             status.textContent = '✅ Notulen berhasil disusun!';
@@ -905,10 +751,8 @@ window.onload = startApp;
             showToast('✅ Notulen berhasil disusun!');
             return;
           }
-
-          // Parse SSE chunks
           var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
-          lines.forEach(function(line) {
+          lines.forEach(function(line){
             line = line.trim();
             if (!line || !line.startsWith('data:')) return;
             var jsonStr = line.slice(5).trim();
@@ -917,20 +761,15 @@ window.onload = startApp;
               var j     = JSON.parse(jsonStr);
               var token = (j.choices && j.choices[0] && j.choices[0].delta)
                           ? (j.choices[0].delta.content || '') : '';
-              if (token) {
-                result.value += token;
-                result.scrollTop = result.scrollHeight;
-              }
+              if (token) { result.value += token; result.scrollTop = result.scrollHeight; }
             } catch(e) {}
           });
-
-          return read(); // lanjut baca chunk berikutnya
+          return read();
         });
       }
-
       return read();
     })
-    .catch(function(err) {
+    .catch(function(err){
       btn.disabled    = false;
       btn.textContent = '✨ Susun Notulen dengan AI';
       status.textContent = '❌ ' + err.message;
@@ -938,812 +777,436 @@ window.onload = startApp;
       showToast('❌ ' + err.message, 5000);
     });
   });
-  // ============================================================
-  // TTD CANVAS
-  // ============================================================
-  var canvas   = document.getElementById('ttdCanvas');
-  var ctx      = canvas.getContext('2d');
-  var drawing  = false;
-  var hasDrawn = false;
-  ctx.strokeStyle='#1e293b'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round';
+}
 
-  function getPos(e){
-    var rect=canvas.getBoundingClientRect();
-    var sx=canvas.width/rect.width, sy=canvas.height/rect.height;
-    if(e.touches) return{x:(e.touches[0].clientX-rect.left)*sx,y:(e.touches[0].clientY-rect.top)*sy};
-    return{x:(e.clientX-rect.left)*sx,y:(e.clientY-rect.top)*sy};
+// ================================================================
+// 13. TTD CANVAS
+// ================================================================
+var canvas, ctx, drawing = false, hasDrawn = false;
+
+function initCanvas() {
+  canvas = document.getElementById('ttdCanvas');
+  ctx    = canvas.getContext('2d');
+  ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var sx = canvas.width / rect.width, sy = canvas.height / rect.height;
+    if (e.touches) return { x:(e.touches[0].clientX-rect.left)*sx, y:(e.touches[0].clientY-rect.top)*sy };
+    return { x:(e.clientX-rect.left)*sx, y:(e.clientY-rect.top)*sy };
   }
-  canvas.addEventListener('mousedown', function(e){drawing=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
-  canvas.addEventListener('mousemove', function(e){if(!drawing)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true;document.getElementById('canvasHint').classList.add('hidden');});
-  canvas.addEventListener('mouseup',   function(){drawing=false;});
-  canvas.addEventListener('mouseleave',function(){drawing=false;});
-  canvas.addEventListener('touchstart',function(e){e.preventDefault();drawing=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
-  canvas.addEventListener('touchmove', function(e){e.preventDefault();if(!drawing)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();hasDrawn=true;document.getElementById('canvasHint').classList.add('hidden');},{passive:false});
-  canvas.addEventListener('touchend',  function(){drawing=false;});
-  document.getElementById('btnClearTTD').addEventListener('click',function(){
+  canvas.addEventListener('mousedown',  function(e){ drawing=true; var p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); });
+  canvas.addEventListener('mousemove',  function(e){ if(!drawing)return; var p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasDrawn=true; document.getElementById('canvasHint').classList.add('hidden'); });
+  canvas.addEventListener('mouseup',    function(){ drawing=false; });
+  canvas.addEventListener('mouseleave', function(){ drawing=false; });
+  canvas.addEventListener('touchstart', function(e){ e.preventDefault(); drawing=true; var p=getPos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); },{passive:false});
+  canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!drawing)return; var p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); hasDrawn=true; document.getElementById('canvasHint').classList.add('hidden'); },{passive:false});
+  canvas.addEventListener('touchend',   function(){ drawing=false; });
+  document.getElementById('btnClearTTD').addEventListener('click', function(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    hasDrawn=false;
+    hasDrawn = false;
     document.getElementById('canvasHint').classList.remove('hidden');
   });
-  function getTTDDataURL(){ return hasDrawn?canvas.toDataURL('image/png'):null; }
+}
 
-  // ============================================================
-  // BUILD PREVIEW HTML
-  // ============================================================
-  function buildPreviewHTML(data) {
+function getTTDDataURL() { return hasDrawn ? canvas.toDataURL('image/png') : null; }
 
-    // ── Info peserta ─────────────────────────────────────────
-    var pesertaStr = data.peserta.length
-      ? data.peserta.join(', ')
-      : '-';
+// ================================================================
+// 14. BUILD PREVIEW HTML
+// ================================================================
+function buildPreviewHTML(data) {
+  var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
+  var hariList   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  var hariStr    = '';
+  if (data.tanggal) { var d = new Date(data.tanggal); hariStr = hariList[d.getDay()] + ', '; }
 
-    // ── Hari dari tanggal ────────────────────────────────────
-    var hariList = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    var hariStr  = '';
-    if (data.tanggal) {
-      var d = new Date(data.tanggal);
-      hariStr = hariList[d.getDay()] + ', ';
-    }
+  var isiHTML = '';
+  if (data.summary && data.summary.trim() !== '') {
+    var lines = data.summary.trim().split('\n');
+    var inList = false, html = '';
+    lines.forEach(function(line){
+      line = line.trim();
+      if (!line) { if(inList){html+='</ol>';inList=false;} return; }
+      var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA RAPAT|PENUTUP)/i.test(line)
+                   || /^\*\*(.+)\*\*$/.test(line) || /^#{1,3}\s/.test(line);
+      var listMatch = line.match(/^(\d+)\.\s+(.+)/) || line.match(/^[-•o]\s+(.+)/);
+      if (isHeading) {
+        if(inList){html+='</ol>';inList=false;}
+        var ht = line.replace(/^\*\*(.+)\*\*$/,'$1').replace(/^#{1,3}\s+/,'').replace(/^(\d+\.\s+)/,'');
+        html += '<h4 style="margin:16px 0 6px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e293b">' + esc(ht) + '</h4>';
+      } else if (listMatch) {
+        if(!inList){html+='<ol style="padding-left:20px;margin:4px 0">';inList=true;}
+        html += '<li style="margin-bottom:4px;line-height:1.6">' + esc(listMatch[2]||listMatch[1]) + '</li>';
+      } else {
+        if(inList){html+='</ol>';inList=false;}
+        html += '<p style="margin:4px 0;line-height:1.7">' + esc(line) + '</p>';
+      }
+    });
+    if(inList) html+='</ol>';
+    isiHTML = html;
+  } else {
+    isiHTML = '<div style="padding:16px;background:#fef9c3;border-left:4px solid #eab308;border-radius:4px;font-size:13px;color:#713f12">⚠️ Notulen belum disusun oleh AI. Silakan klik <strong>"✨ Susun Notulen dengan AI"</strong> terlebih dahulu.</div>';
+  }
 
-    // ── Konten utama: pakai AI summary jika ada ─────────────
-    // summary = hasil generate AI (teks bebas, bisa multiline)
-    // points  = point mentah user (TIDAK diexport, hanya bahan AI)
-    var isiHTML = '';
+  var ttdURL  = getTTDDataURL();
+  var ttdHTML = ttdURL
+    ? '<img src="'+ttdURL+'" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:8px auto 0">'
+    : '<div style="width:160px;height:60px;border-bottom:2px solid #1e293b;margin:8px auto 0"></div>';
 
-    if (data.summary && data.summary.trim() !== '') {
-      // Pecah per baris, bersihkan, render
-      var lines = data.summary.trim().split('\n');
-      var inList = false;
-      var html   = '';
+  var now = new Date();
+  var bl  = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var tglExport = now.getDate() + ' ' + bl[now.getMonth()] + ' ' + now.getFullYear();
 
-      lines.forEach(function(line) {
-        line = line.trim();
-        if (!line) {
-          if (inList) { html += '</ol>'; inList = false; }
-          return;
-        }
+  return (
+    '<div class="doc-preview">' +
+      '<div class="doc-header">' +
+        (data.org ? '<h2 style="font-size:15px;font-weight:800;margin:0 0 2px">' + esc(data.org) + '</h2>' : '') +
+        '<h3 style="font-size:18px;font-weight:900;letter-spacing:1px;margin:4px 0 2px">NOTULEN RAPAT</h3>' +
+      '</div>' +
+      '<div style="text-align:center;font-size:14px;font-weight:700;margin:12px 0 16px;text-transform:uppercase;letter-spacing:.5px">' + esc(data.judul || '—') + '</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">' +
+        '<tr><td style="font-weight:700;padding:3px 8px 3px 0;white-space:nowrap;width:110px">Hari / Tanggal</td><td style="width:10px;padding:3px 8px 3px 0">:</td><td style="padding:3px 0">' + esc(hariStr + formatTanggal(data.tanggal)) + '</td></tr>' +
+        '<tr><td style="font-weight:700;padding:3px 8px 3px 0">Waktu</td><td style="padding:3px 8px 3px 0">:</td><td style="padding:3px 0">' + esc(data.waktu || '-') + '</td></tr>' +
+        '<tr><td style="font-weight:700;padding:3px 8px 3px 0">Tempat</td><td style="padding:3px 8px 3px 0">:</td><td style="padding:3px 0">' + esc(data.tempat || '-') + '</td></tr>' +
+        '<tr><td style="font-weight:700;padding:3px 8px 3px 0;vertical-align:top">Peserta</td><td style="padding:3px 8px 3px 0;vertical-align:top">:</td><td style="padding:3px 0">' + esc(pesertaStr) + '</td></tr>' +
+      '</table>' +
+      '<hr style="border:none;border-top:2px solid #1e293b;margin-bottom:4px">' +
+      '<hr style="border:none;border-top:1px solid #1e293b;margin-bottom:18px">' +
+      '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px">Agenda Rapat</h4>' +
+      '<p style="margin:0 0 16px;font-size:13px;line-height:1.7">' + esc(data.judul || '-') + '</p>' +
+      '<hr style="border:none;border-top:1px solid #cbd5e1;margin-bottom:16px">' +
+      '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:0 0 10px">Jalannya Rapat</h4>' +
+      '<div style="font-size:13px;line-height:1.8">' + isiHTML + '</div>' +
+      '<hr style="border:none;border-top:1px solid #cbd5e1;margin:20px 0 16px">' +
+      '<div style="display:flex;justify-content:flex-end;margin-top:24px">' +
+        '<div style="text-align:center;min-width:200px">' +
+          '<p style="margin:0 0 4px;font-size:13px">' + (data.tempat ? esc(data.tempat) : '___________') + ', ' + tglExport + '</p>' +
+          '<p style="margin:0 0 4px;font-size:13px">Notulis,</p>' +
+          ttdHTML +
+          '<p style="margin:8px 0 0;font-size:13px;font-weight:700;border-top:1px solid #1e293b;padding-top:4px;min-width:160px">' + esc(data.notulis || '_______________') + '</p>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
 
-        // Deteksi heading (baris yg diawali angka + titik tanpa isi panjang,
-        // atau huruf kapital semua / diawali kata kunci seksi)
-        var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA RAPAT|PENUTUP)/i.test(line)
-                     || /^\*\*(.+)\*\*$/.test(line)          // **bold**
-                     || /^#{1,3}\s/.test(line);              // markdown heading
+// ================================================================
+// 15. PREVIEW MODAL
+// ================================================================
+function openPreview() {
+  var data = getFormData();
+  if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+  document.getElementById('docPreviewArea').innerHTML = buildPreviewHTML(data);
+  document.getElementById('previewModal').classList.add('active');
+}
+function closePreviewModal() {
+  document.getElementById('previewModal').classList.remove('active');
+}
 
-        // Deteksi list item (diawali angka. atau - atau •)
-        var listMatch = line.match(/^(\d+)\.\s+(.+)/) || line.match(/^[-•o]\s+(.+)/);
+// ================================================================
+// 16. EXPORT PDF
+// ================================================================
+function doExportPDF() {
+  var data = getFormData();
+  if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+  if (!data.summary || !data.summary.trim()) { showToast('⚠️ Susun notulen dengan AI dulu!'); return; }
 
-        if (isHeading) {
-          if (inList) { html += '</ol>'; inList = false; }
-          // Bersihkan marker markdown
-          var headText = line
-            .replace(/^\*\*(.+)\*\*$/, '$1')
-            .replace(/^#{1,3}\s+/, '')
-            .replace(/^(\d+\.\s+)/, '');
-          html += '<h4 style="margin:16px 0 6px;font-size:13px;font-weight:700;' +
-                  'text-transform:uppercase;letter-spacing:.5px;color:#1e293b">' +
-                  esc(headText) + '</h4>';
+  var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  var bulanList = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
+  var hariStr   = hariList[tglObj.getDay()];
+  var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
 
-        } else if (listMatch) {
-          if (!inList) { html += '<ol style="padding-left:20px;margin:4px 0">'; inList = true; }
-          var itemText = listMatch[2] || listMatch[1];
-          html += '<li style="margin-bottom:4px;line-height:1.6">' + esc(itemText) + '</li>';
+  var jsPDF  = window.jspdf.jsPDF;
+  var size   = document.getElementById('paperSize').value;
+  var orient = document.getElementById('paperOrient').value;
+  var doc    = new jsPDF({ orientation: orient, unit: 'mm', format: size });
+  var W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  var mL=25, mR=20, mT=20, mB=20, colW=W-mL-mR, y=mT;
 
-        } else {
-          if (inList) { html += '</ol>'; inList = false; }
-          html += '<p style="margin:4px 0;line-height:1.7">' + esc(line) + '</p>';
-        }
-      });
+  function checkPage(need){ if(y+need>H-mB){ doc.addPage(); y=mT; } }
 
-      if (inList) html += '</ol>';
-      isiHTML = html;
+  if (data.org) {
+    doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
+    doc.text(data.org.toUpperCase(), W/2, y, {align:'center'}); y+=7;
+  }
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
+  doc.text('NOTULEN RAPAT', W/2, y, {align:'center'}); y+=5;
+  doc.setDrawColor(30,41,59); doc.setLineWidth(0.8); doc.line(mL,y,W-mR,y); y+=1.5;
+  doc.setLineWidth(0.3); doc.line(mL,y,W-mR,y); y+=10;
 
+  doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
+  var judulLines = doc.splitTextToSize(data.judul.toUpperCase(), colW);
+  doc.text(judulLines, W/2, y, {align:'center'}); y+=judulLines.length*6+8;
+
+  var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
+  var colKey=42, colSep=6, colVal=colW-42-6;
+  var metaRows = [
+    ['Hari / Tanggal',':',hariStr+', '+tglExport],
+    ['Waktu',         ':',data.waktu||'-'],
+    ['Tempat',        ':',data.tempat||'-'],
+    ['Peserta',       ':',pesertaStr],
+    ['Notulis',       ':',data.notulis||'-']
+  ];
+  doc.autoTable({
+    startY:y, body:metaRows, theme:'plain',
+    styles:{fontSize:10,cellPadding:{top:2,bottom:2,left:0,right:2},textColor:[30,41,59],overflow:'linebreak'},
+    columnStyles:{0:{fontStyle:'bold',cellWidth:colKey},1:{cellWidth:colSep,halign:'center'},2:{cellWidth:colVal}},
+    margin:{left:mL,right:mR}
+  });
+  y = doc.lastAutoTable.finalY + 6;
+  doc.setDrawColor(30,41,59); doc.setLineWidth(0.5); doc.line(mL,y,W-mR,y); y+=8;
+
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
+  doc.text('Agenda Rapat', mL, y); y+=6;
+  doc.setFont('helvetica','normal');
+  var agendaLines = doc.splitTextToSize(data.judul, colW);
+  doc.text(agendaLines, mL, y); y+=agendaLines.length*5.5+8;
+  doc.setDrawColor(203,213,225); doc.setLineWidth(0.3); doc.line(mL,y,W-mR,y); y+=8;
+
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(30,41,59);
+  doc.text('Jalannya Rapat', mL, y); y+=7;
+
+  var summaryLines = data.summary.trim().split('\n');
+  summaryLines.forEach(function(rawLine){
+    var line = rawLine.trim();
+    if (!line){ y+=3; return; }
+    checkPage(10);
+    var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)||/^\*\*(.+)\*\*$/.test(line)||/^#{1,3}\s/.test(line);
+    var subMatch  = line.match(/^[-•o]\s+(.+)/);
+    var numMatch  = line.match(/^(\d+)\.\s+(.+)/);
+    if (isHeading) {
+      var ht = line.replace(/^\*\*(.+)\*\*$/,'$1').replace(/^#{1,3}\s+/,'').replace(/^\d+\.\s+/,'');
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(30,41,59);
+      var hLines = doc.splitTextToSize(ht, colW-6); checkPage(hLines.length*6+4);
+      doc.text(hLines, mL, y); y+=hLines.length*6+2;
+    } else if (subMatch) {
+      var subLines = doc.splitTextToSize('o  '+subMatch[1], colW-14);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(51,65,85);
+      checkPage(subLines.length*5.5+2); doc.text(subLines, mL+10, y); y+=subLines.length*5.5+1;
+    } else if (numMatch) {
+      var numLines = doc.splitTextToSize(numMatch[1]+'. '+numMatch[2], colW-8);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(30,41,59);
+      checkPage(numLines.length*5.5+2); doc.text(numLines, mL+4, y); y+=numLines.length*5.5+1;
     } else {
-      // Belum di-generate AI → tampilkan peringatan
-      isiHTML =
-        '<div style="padding:16px;background:#fef9c3;border-left:4px solid #eab308;' +
-        'border-radius:4px;font-size:13px;color:#713f12">' +
-        '⚠️ Notulen belum disusun oleh AI. Silakan klik <strong>"✨ Susun Notulen dengan AI"</strong> ' +
-        'terlebih dahulu sebelum export.' +
-        '</div>';
+      var paraLines = doc.splitTextToSize(line, colW);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(51,65,85);
+      checkPage(paraLines.length*5.5+2); doc.text(paraLines, mL, y); y+=paraLines.length*5.5+2;
     }
+  });
+  y+=8;
 
-    // ── TTD ──────────────────────────────────────────────────
-    var ttdURL  = getTTDDataURL();
-    var ttdHTML = ttdURL
-      ? '<img src="' + ttdURL + '" alt="TTD" style="width:160px;height:60px;object-fit:contain;display:block;margin:8px auto 0">'
-      : '<div style="width:160px;height:60px;border-bottom:2px solid #1e293b;margin:8px auto 0"></div>';
+  checkPage(52);
+  var ttdX   = W-mR-60;
+  var ttdURL = getTTDDataURL();
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(30,41,59);
+  doc.text((data.tempat||'___________')+', '+tglExport, ttdX+30, y, {align:'center'}); y+=6;
+  doc.text('Notulis,', ttdX+30, y, {align:'center'}); y+=4;
+  if (ttdURL){ doc.addImage(ttdURL,'PNG',ttdX+5,y,50,20); } y+=22;
+  doc.setDrawColor(30,41,59); doc.setLineWidth(0.4); doc.line(ttdX,y,ttdX+60,y); y+=5;
+  doc.setFont('helvetica','bold'); doc.text(data.notulis||'_______________', ttdX+30, y, {align:'center'});
 
-    // ── Tanggal export ───────────────────────────────────────
-    var now        = new Date();
-    var bulanList  = ['Januari','Februari','Maret','April','Mei','Juni',
-                      'Juli','Agustus','September','Oktober','November','Desember'];
-    var tglExport  = now.getDate() + ' ' + bulanList[now.getMonth()] + ' ' + now.getFullYear();
+  var total = doc.internal.getNumberOfPages();
+  for (var p=1; p<=total; p++){
+    doc.setPage(p); doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(148,163,184);
+    doc.text('SIMONTOK — Notulen Rapat  |  Halaman '+p+' dari '+total, W/2, H-8, {align:'center'});
+  }
+  doc.save('Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.pdf');
+  showToast('✅ PDF berhasil didownload!');
+}
 
-    return (
-      '<div class="doc-preview">' +
+// ================================================================
+// 17. EXPORT WORD
+// ================================================================
+function doExportWord() {
+  var data = getFormData();
+  if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
+  if (!data.summary || !data.summary.trim()) { showToast('⚠️ Susun notulen dengan AI dulu!'); return; }
 
-        /* ── KOP / HEADER ── */
-        '<div class="doc-header">' +
-          (data.org ? '<h2 style="font-size:15px;font-weight:800;margin:0 0 2px">' + esc(data.org) + '</h2>' : '') +
-          '<h3 style="font-size:18px;font-weight:900;letter-spacing:1px;margin:4px 0 2px">NOTULEN RAPAT</h3>' +
-        '</div>' +
+  var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  var bulanList = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
+  var hariStr   = hariList[tglObj.getDay()];
+  var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
+  var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
 
-        /* ── JUDUL RAPAT ── */
-        '<div style="text-align:center;font-size:14px;font-weight:700;' +
-        'margin:12px 0 16px;text-transform:uppercase;letter-spacing:.5px">' +
-          esc(data.judul || '—') +
-        '</div>' +
-
-        /* ── INFO RAPAT ── */
-        '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">' +
-          '<tr>' +
-            '<td style="font-weight:700;padding:3px 8px 3px 0;white-space:nowrap;width:110px">Hari / Tanggal</td>' +
-            '<td style="width:10px;padding:3px 8px 3px 0">:</td>' +
-            '<td style="padding:3px 0">' + esc(hariStr + formatTanggal(data.tanggal)) + '</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td style="font-weight:700;padding:3px 8px 3px 0">Waktu</td>' +
-            '<td style="padding:3px 8px 3px 0">:</td>' +
-            '<td style="padding:3px 0">' + esc(data.waktu || '-') + '</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td style="font-weight:700;padding:3px 8px 3px 0">Tempat</td>' +
-            '<td style="padding:3px 8px 3px 0">:</td>' +
-            '<td style="padding:3px 0">' + esc(data.tempat || '-') + '</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td style="font-weight:700;padding:3px 8px 3px 0;vertical-align:top">Peserta</td>' +
-            '<td style="padding:3px 8px 3px 0;vertical-align:top">:</td>' +
-            '<td style="padding:3px 0">' + esc(pesertaStr) + '</td>' +
-          '</tr>' +
-        '</table>' +
-
-        '<hr style="border:none;border-top:2px solid #1e293b;margin-bottom:4px">' +
-        '<hr style="border:none;border-top:1px solid #1e293b;margin-bottom:18px">' +
-
-        /* ── AGENDA ── */
-        '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;' +
-        'letter-spacing:.5px;margin:0 0 8px">Agenda Rapat</h4>' +
-        '<p style="margin:0 0 16px;font-size:13px;line-height:1.7">' + esc(data.judul || '-') + '</p>' +
-
-        '<hr style="border:none;border-top:1px solid #cbd5e1;margin-bottom:16px">' +
-
-        /* ── ISI NOTULEN (dari AI) ── */
-        '<h4 style="font-size:13px;font-weight:700;text-transform:uppercase;' +
-        'letter-spacing:.5px;margin:0 0 10px">Jalannya Rapat</h4>' +
-        '<div style="font-size:13px;line-height:1.8">' + isiHTML + '</div>' +
-
-        '<hr style="border:none;border-top:1px solid #cbd5e1;margin:20px 0 16px">' +
-
-        /* ── TTD ── */
-        '<div style="display:flex;justify-content:flex-end;margin-top:24px">' +
-          '<div style="text-align:center;min-width:200px">' +
-            '<p style="margin:0 0 4px;font-size:13px">' +
-              (data.tempat ? esc(data.tempat) : '___________') +
-              ', ' + tglExport +
-            '</p>' +
-            '<p style="margin:0 0 4px;font-size:13px">Notulis,</p>' +
-            ttdHTML +
-            '<p style="margin:8px 0 0;font-size:13px;font-weight:700;' +
-            'border-top:1px solid #1e293b;padding-top:4px;min-width:160px">' +
-              esc(data.notulis || '_______________') +
-            '</p>' +
-          '</div>' +
-        '</div>' +
-
-      '</div>'
-    );
+  function summaryToWordHTML(text){
+    var lines=text.trim().split('\n'), html='', inList=false;
+    lines.forEach(function(rawLine){
+      var line=rawLine.trim();
+      if(!line){if(inList){html+='</ul>';inList=false;}html+='<p style="margin:0">&nbsp;</p>';return;}
+      var isHeading=/^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)||/^\*\*(.+)\*\*$/.test(line)||/^#{1,3}\s/.test(line);
+      var subMatch=line.match(/^[-•o]\s+(.+)/);
+      var numMatch=line.match(/^(\d+)\.\s+(.+)/);
+      if(isHeading){if(inList){html+='</ul>';inList=false;}var ht=line.replace(/^\*\*(.+)\*\*$/,'$1').replace(/^#{1,3}\s+/,'').replace(/^\d+\.\s+/,'');html+='<p style="font-weight:bold;margin:10pt 0 2pt">'+esc(ht)+'</p>';}
+      else if(subMatch){if(!inList){html+='<ul style="margin:2pt 0 2pt 20pt;padding:0">';inList=true;}html+='<li style="margin-bottom:2pt">'+esc(subMatch[1])+'</li>';}
+      else if(numMatch){if(inList){html+='</ul>';inList=false;}html+='<p style="margin:2pt 0 2pt 14pt">'+esc(numMatch[1]+'. '+numMatch[2])+'</p>';}
+      else{if(inList){html+='</ul>';inList=false;}html+='<p style="margin:3pt 0">'+esc(line)+'</p>';}
+    });
+    if(inList) html+='</ul>';
+    return html;
   }
 
-  // ============================================================
-  // PREVIEW MODAL
-  // ============================================================
-  function openPreview(){
-    var data = getFormData();
-    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
-    document.getElementById('docPreviewArea').innerHTML = buildPreviewHTML(data);
-    document.getElementById('previewModal').classList.add('active');
-  }
-  function closePreviewModal(){
-    document.getElementById('previewModal').classList.remove('active');
-  }
+  var ttdURL = getTTDDataURL();
+  var ttdImg = ttdURL
+    ? '<img src="'+ttdURL+'" width="120" height="50" style="display:block;margin:4pt 0">'
+    : '<p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p>';
 
+  var html =
+    '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+    '<style>@page{margin:2.54cm}body{font-family:"Times New Roman",serif;font-size:12pt;color:#1e293b;line-height:1.8}p,li{font-size:11pt;margin:3pt 0}h1{font-size:14pt;font-weight:bold;text-align:center;text-transform:uppercase;letter-spacing:1pt;margin:4pt 0}h3{font-size:11pt;font-weight:bold;margin:10pt 0 4pt;text-transform:uppercase}table{border-collapse:collapse;width:100%}td{padding:2pt 6pt;vertical-align:top;font-size:11pt}.key{font-weight:bold;width:110pt;white-space:nowrap}.sep{width:10pt}hr.double{border:none;border-top:3pt double #1e293b;margin:4pt 0}hr.single{border:none;border-top:1pt solid #1e293b;margin:6pt 0}hr.light{border:none;border-top:1pt solid #cbd5e1;margin:6pt 0}</style></head><body>' +
+    (data.org ? '<h1>'+esc(data.org)+'</h1>' : '') +
+    '<h1>NOTULEN RAPAT</h1><hr class="double">' +
+    '<h1 style="font-size:12pt">'+esc(data.judul)+'</h1>' +
+    '<table><tr><td class="key">Hari / Tanggal</td><td class="sep">:</td><td>'+esc(hariStr+', '+tglExport)+'</td></tr>' +
+    '<tr><td class="key">Waktu</td><td class="sep">:</td><td>'+esc(data.waktu||'-')+'</td></tr>' +
+    '<tr><td class="key">Tempat</td><td class="sep">:</td><td>'+esc(data.tempat||'-')+'</td></tr>' +
+    '<tr><td class="key">Peserta</td><td class="sep">:</td><td>'+esc(pesertaStr)+'</td></tr></table>' +
+    '<hr class="single"><h3>Agenda Rapat</h3><p>'+esc(data.judul)+'</p><hr class="light">' +
+    '<h3>Jalannya Rapat</h3>'+summaryToWordHTML(data.summary)+'<hr class="light">' +
+    '<table style="width:100%"><tr><td style="width:60%"></td><td style="text-align:center;width:40%">' +
+    '<p style="margin:0">'+esc((data.tempat||'___________')+', '+tglExport)+'</p>' +
+    '<p style="margin:0">Notulis,</p>'+ttdImg+
+    '<p style="margin:0;font-weight:bold;border-top:1pt solid #1e293b;padding-top:2pt">'+esc(data.notulis||'_______________')+'</p>' +
+    '</td></tr></table></body></html>';
+
+  var blob = new Blob([html], {type:'application/msword'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = 'Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.doc';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Word (.doc) berhasil didownload!');
+}
+
+// ================================================================
+// 18. SAVE / LOAD DRAFT
+// ================================================================
+function saveNotulenToCloud(data, onSuccess, onError) {
+  var s = getSession();
+  if (!s || !s.token) { if(onError) onError('Sesi tidak valid'); return; }
+  fetch(API_URL+'?user='+encodeURIComponent(s.username)+'&token='+encodeURIComponent(s.token), {
+    method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({action:'add-notulen', notulen:{
+      kegiatan:data.judul||'', tanggal:data.tanggal||'', waktu:data.waktu||'',
+      tempat:data.tempat||'', points:JSON.stringify(data.points||[]),
+      summary:data.summary||'', file_url:''
+    }})
+  })
+  .then(function(r){return r.json();})
+  .then(function(j){ if(j.ok){if(onSuccess)onSuccess(j.id);}else{if(onError)onError(j.error||'Gagal simpan');} })
+  .catch(function(err){if(onError)onError(err.message);});
+}
+
+function getDrafts(){
+  try{ var r=localStorage.getItem('simontok-notulen-drafts'); return r?JSON.parse(r):[]; }catch(e){return [];}
+}
+
+function saveDraft(){
+  var data = getFormData();
+  if (!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
+  var drafts = getDrafts();
+  drafts.unshift({ id:Date.now(), savedAt:new Date().toISOString(), org:data.org, judul:data.judul,
+    tanggal:data.tanggal, waktu:data.waktu, tempat:data.tempat, notulis:data.notulis,
+    peserta:data.peserta, points:data.points, summary:data.summary });
+  if(drafts.length>20) drafts=drafts.slice(0,20);
+  localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
+  renderHistory();
+  showToast('💾 Tersimpan lokal, menyimpan ke cloud...');
+  saveNotulenToCloud(data, function(id){showToast('✅ Tersimpan di cloud! ID: '+id);},
+                          function(err){showToast('⚠️ Cloud gagal, data aman di lokal. ('+err+')',4000);});
+}
+
+function deleteDraft(id){
+  if(!confirm('Hapus draft ini?')) return;
+  var drafts = getDrafts().filter(function(d){return d.id!==id;});
+  localStorage.setItem('simontok-notulen-drafts',JSON.stringify(drafts));
+  showToast('🗑️ Draft dihapus!'); renderHistory();
+}
+
+function loadDraft(draft){
+  if(!confirm('Muat draft "'+draft.judul+'"?\nForm saat ini akan tertimpa.')) return;
+  document.getElementById('fOrg').value=draft.org||'';
+  document.getElementById('fJudul').value=draft.judul||'';
+  document.getElementById('fTanggal').value=draft.tanggal||'';
+  document.getElementById('fWaktu').value=draft.waktu||'';
+  document.getElementById('fTempat').value=draft.tempat||'';
+  document.getElementById('fNotulis').value=draft.notulis||'';
+  document.getElementById('aiResult').value=draft.summary||'';
+  document.getElementById('aiStatus').textContent='';
+  document.getElementById('pesertaList').innerHTML=''; pesertaCount=0;
+  (draft.peserta&&draft.peserta.length?draft.peserta:['']).forEach(function(p){addPeserta(p);});
+  document.getElementById('pointsList').innerHTML=''; pointCount=0;
+  if(draft.points&&draft.points.length){ draft.points.forEach(function(p){addPoint(p);}); }
+  else { addPoint('');addPoint('');addPoint(''); }
+  updatePointCount();
+  showToast('✅ Draft "'+draft.judul+'" berhasil dimuat!');
+}
+
+function formatSavedAt(iso){
+  if(!iso) return '-';
+  var d=new Date(iso), pad=function(n){return n<10?'0'+n:n;};
+  return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+
+function renderHistory(){
+  var drafts=getDrafts(), box=document.getElementById('historyList');
+  if(!drafts.length){ box.innerHTML='<div class="empty-history">📭 Belum ada draft tersimpan</div>'; return; }
+  box.innerHTML=drafts.map(function(d){
+    return '<div class="history-item" data-id="'+d.id+'"><h4>'+esc(d.judul)+'</h4>'+
+           '<p>'+(d.org?esc(d.org)+' &middot; ':'')+esc(formatTanggal(d.tanggal))+'</p>'+
+           '<div class="history-item-footer"><span style="font-size:11px;color:var(--text4)">💾 '+formatSavedAt(d.savedAt)+'</span>'+
+           '<button class="btn-del-history" data-del="'+d.id+'" title="Hapus">🗑️</button></div></div>';
+  }).join('');
+  box.querySelectorAll('.history-item').forEach(function(el){
+    el.addEventListener('click',function(e){
+      if(e.target.closest('[data-del]')) return;
+      var id=parseInt(el.getAttribute('data-id'));
+      var draft=getDrafts().find(function(d){return d.id===id;});
+      if(draft) loadDraft(draft);
+    });
+  });
+  box.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation(); deleteDraft(parseInt(btn.getAttribute('data-del')));
+    });
+  });
+}
+
+// ================================================================
+// 19. SEMUA EVENT LISTENERS (dipanggil dari startApp)
+// ================================================================
+function initEventListeners() {
   document.getElementById('btnPreview').addEventListener('click', openPreview);
   document.getElementById('closePreview').addEventListener('click', closePreviewModal);
   document.getElementById('closePreview2').addEventListener('click', closePreviewModal);
-  document.getElementById('previewModal').addEventListener('click', function(e){
-    if(e.target===this) closePreviewModal();
-  });
-  document.getElementById('modalBtnPDF').addEventListener('click', function(){ closePreviewModal(); doExportPDF(); });
+  document.getElementById('previewModal').addEventListener('click', function(e){ if(e.target===this) closePreviewModal(); });
+  document.getElementById('modalBtnPDF').addEventListener('click',  function(){ closePreviewModal(); doExportPDF(); });
   document.getElementById('modalBtnWord').addEventListener('click', function(){ closePreviewModal(); doExportWord(); });
-
-    // ============================================================
-  // EXPORT PDF
-  // ============================================================
-  function doExportPDF() {
-    var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
-    if (!data.summary || !data.summary.trim()) {
-      showToast('⚠️ Susun notulen dengan AI dulu sebelum export!'); return;
-    }
-
-    var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    var bulanList = ['Januari','Februari','Maret','April','Mei','Juni',
-                     'Juli','Agustus','September','Oktober','November','Desember'];
-    var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
-    var hariStr   = hariList[tglObj.getDay()];
-    var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
-
-    var jsPDF  = window.jspdf.jsPDF;
-    var size   = document.getElementById('paperSize').value;
-    var orient = document.getElementById('paperOrient').value;
-    var doc    = new jsPDF({ orientation: orient, unit: 'mm', format: size });
-    var W      = doc.internal.pageSize.getWidth();
-    var H      = doc.internal.pageSize.getHeight();
-    var mL     = 25, mR = 20, mT = 20, mB = 20;
-    var colW   = W - mL - mR;
-    var y      = mT;
-
-    function checkPage(need) {
-      if (y + need > H - mB) { doc.addPage(); y = mT; }
-    }
-
-    // ── KOP ORGANISASI ───────────────────────────────────────
-    if (data.org) {
-      doc.setFontSize(13);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(30, 41, 59);
-      doc.text(data.org.toUpperCase(), W / 2, y, { align: 'center' });
-      y += 7;
-    }
-
-    // ── JUDUL DOKUMEN ────────────────────────────────────────
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 41, 59);
-    doc.text('NOTULEN RAPAT', W / 2, y, { align: 'center' });
-    y += 5;
-
-    // Garis double
-    doc.setDrawColor(30, 41, 59);
-    doc.setLineWidth(0.8);
-    doc.line(mL, y, W - mR, y);
-    y += 1.5;
-    doc.setLineWidth(0.3);
-    doc.line(mL, y, W - mR, y);
-    y += 10;
-
-    // ── JUDUL RAPAT ──────────────────────────────────────────
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 41, 59);
-    var judulLines = doc.splitTextToSize(data.judul.toUpperCase(), colW);
-    doc.text(judulLines, W / 2, y, { align: 'center' });
-    y += judulLines.length * 6 + 8;
-
-        // ── INFO RAPAT ───────────────────────────────────────────
-    var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
-
-    var colKey = 42;
-    var colSep = 6;
-    var colVal = colW - colKey - colSep;
-
-    var metaRows = [
-      ['Hari / Tanggal', ':', hariStr + ', ' + tglExport],
-      ['Waktu',          ':', data.waktu   || '-'],
-      ['Tempat',         ':', data.tempat  || '-'],
-      ['Peserta',        ':', pesertaStr],
-      ['Notulis',        ':', data.notulis || '-']
-    ];
-
-    doc.autoTable({
-      startY: y,
-      body:   metaRows,
-      theme:  'plain',
-      styles: {
-        fontSize:    10,
-        cellPadding: { top: 2, bottom: 2, left: 0, right: 2 },
-        textColor:   [30, 41, 59],
-        overflow:    'linebreak'
-      },
-      columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: colKey },
-        1: { cellWidth: colSep, halign: 'center' },
-        2: { cellWidth: colVal }
-      },
-      margin: { left: mL, right: mR }
-    });
-    y = doc.lastAutoTable.finalY + 6;
-    // Garis single
-    doc.setDrawColor(30, 41, 59);
-    doc.setLineWidth(0.5);
-    doc.line(mL, y, W - mR, y);
-    y += 8;
-
-    // ── AGENDA RAPAT ─────────────────────────────────────────
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 41, 59);
-    doc.text('Agenda Rapat', mL, y);
-    y += 6;
-
-    doc.setFont('helvetica', 'normal');
-    var agendaLines = doc.splitTextToSize(data.judul, colW);
-    doc.text(agendaLines, mL, y);
-    y += agendaLines.length * 5.5 + 8;
-
-    doc.setDrawColor(203, 213, 225);
-    doc.setLineWidth(0.3);
-    doc.line(mL, y, W - mR, y);
-    y += 8;
-
-    // ── JALANNYA RAPAT (dari AI) ──────────────────────────────
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 41, 59);
-    doc.text('Jalannya Rapat', mL, y);
-    y += 7;
-
-    // Parse baris summary AI
-    var summaryLines = data.summary.trim().split('\n');
-    var itemCounter  = {};   // counter per section untuk sub-numbering
-    var globalNum    = 0;    // nomor section utama
-
-    summaryLines.forEach(function(rawLine) {
-      var line = rawLine.trim();
-      if (!line) { y += 3; return; }
-
-      checkPage(10);
-
-      // Heading section
-      var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)
-                   || /^\*\*(.+)\*\*$/.test(line)
-                   || /^#{1,3}\s/.test(line)
-                   || /^\d+\.\s+[A-Z]/.test(line);
-
-      // Sub-item (diawali - atau • atau o\s)
-      var subMatch = line.match(/^[-•o]\s+(.+)/);
-
-      // Numbered item
-      var numMatch = line.match(/^(\d+)\.\s+(.+)/);
-
-      if (isHeading) {
-        var headText = line
-          .replace(/^\*\*(.+)\*\*$/, '$1')
-          .replace(/^#{1,3}\s+/, '')
-          .replace(/^\d+\.\s+/, '');
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
-        doc.setTextColor(30, 41, 59);
-        var hLines = doc.splitTextToSize(headText, colW - 6);
-        checkPage(hLines.length * 6 + 4);
-        doc.text(hLines, mL, y);
-        y += hLines.length * 6 + 2;
-
-      } else if (subMatch) {
-        var subText  = subMatch[1];
-        var subLines = doc.splitTextToSize('o  ' + subText, colW - 14);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(51, 65, 85);
-        checkPage(subLines.length * 5.5 + 2);
-        doc.text(subLines, mL + 10, y);
-        y += subLines.length * 5.5 + 1;
-
-      } else if (numMatch) {
-        var numText  = numMatch[1] + '. ' + numMatch[2];
-        var numLines = doc.splitTextToSize(numText, colW - 8);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(30, 41, 59);
-        checkPage(numLines.length * 5.5 + 2);
-        doc.text(numLines, mL + 4, y);
-        y += numLines.length * 5.5 + 1;
-
-      } else {
-        var paraLines = doc.splitTextToSize(line, colW);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(51, 65, 85);
-        checkPage(paraLines.length * 5.5 + 2);
-        doc.text(paraLines, mL, y);
-        y += paraLines.length * 5.5 + 2;
-      }
-    });
-
-    y += 8;
-
-    // ── TTD ──────────────────────────────────────────────────
-    var ttdBlockH = 52;
-    checkPage(ttdBlockH);
-
-    var ttdX    = W - mR - 60;
-    var ttdURL  = getTTDDataURL();
-
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(30, 41, 59);
-    doc.text((data.tempat || '___________') + ', ' + tglExport, ttdX + 30, y, { align: 'center' });
-    y += 6;
-    doc.text('Notulis,', ttdX + 30, y, { align: 'center' });
-    y += 4;
-
-    if (ttdURL) {
-      doc.addImage(ttdURL, 'PNG', ttdX + 5, y, 50, 20);
-      y += 22;
-    } else {
-      y += 22;
-    }
-
-    doc.setDrawColor(30, 41, 59);
-    doc.setLineWidth(0.4);
-    doc.line(ttdX, y, ttdX + 60, y);
-    y += 5;
-    doc.setFont('helvetica', 'bold');
-    doc.text(data.notulis || '_______________', ttdX + 30, y, { align: 'center' });
-
-    // ── FOOTER TIAP HALAMAN ───────────────────────────────────
-    var total = doc.internal.getNumberOfPages();
-    for (var p = 1; p <= total; p++) {
-      doc.setPage(p);
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(148, 163, 184);
-      doc.text(
-        'SIMONTOK — Notulen Rapat  |  Halaman ' + p + ' dari ' + total,
-        W / 2, H - 8, { align: 'center' }
-      );
-    }
-
-    doc.save('Notulen_' + (data.judul || 'Rapat').replace(/\s+/g, '_') + '.pdf');
-    showToast('✅ PDF berhasil didownload!');
-  }
-
-  // ============================================================
-  // EXPORT WORD
-  // ============================================================
-  function doExportWord() {
-    var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
-    if (!data.summary || !data.summary.trim()) {
-      showToast('⚠️ Susun notulen dengan AI dulu sebelum export!'); return;
-    }
-
-    var hariList  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-    var bulanList = ['Januari','Februari','Maret','April','Mei','Juni',
-                     'Juli','Agustus','September','Oktober','November','Desember'];
-    var tglObj    = data.tanggal ? new Date(data.tanggal) : new Date();
-    var hariStr   = hariList[tglObj.getDay()];
-    var tglExport = tglObj.getDate() + ' ' + bulanList[tglObj.getMonth()] + ' ' + tglObj.getFullYear();
-    var pesertaStr = data.peserta.length ? data.peserta.join(', ') : '-';
-
-    // Parse summary AI → HTML Word-friendly
-    function summaryToWordHTML(text) {
-      var lines  = text.trim().split('\n');
-      var html   = '';
-      var inList = false;
-
-      lines.forEach(function(rawLine) {
-        var line = rawLine.trim();
-        if (!line) {
-          if (inList) { html += '</ol>'; inList = false; }
-          html += '<p style="margin:0">&nbsp;</p>';
-          return;
-        }
-
-        var isHeading = /^(PEMBUKAAN|PEMAPARAN|DISKUSI|TANGGAPAN|KESIMPULAN|TINDAK LANJUT|AGENDA|JALANNYA|PENUTUP)/i.test(line)
-                     || /^\*\*(.+)\*\*$/.test(line)
-                     || /^#{1,3}\s/.test(line);
-
-        var subMatch = line.match(/^[-•o]\s+(.+)/);
-        var numMatch = line.match(/^(\d+)\.\s+(.+)/);
-
-        if (isHeading) {
-          if (inList) { html += '</ol>'; inList = false; }
-          var ht = line.replace(/^\*\*(.+)\*\*$/, '$1').replace(/^#{1,3}\s+/, '').replace(/^\d+\.\s+/, '');
-          html += '<p style="font-weight:bold;margin:10pt 0 2pt">' + esc(ht) + '</p>';
-
-        } else if (subMatch) {
-          if (!inList) { html += '<ul style="margin:2pt 0 2pt 20pt;padding:0">'; inList = true; }
-          html += '<li style="margin-bottom:2pt">' + esc(subMatch[1]) + '</li>';
-
-        } else if (numMatch) {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<p style="margin:2pt 0 2pt 14pt">' + esc(numMatch[1] + '. ' + numMatch[2]) + '</p>';
-
-        } else {
-          if (inList) { html += '</ul>'; inList = false; }
-          html += '<p style="margin:3pt 0">' + esc(line) + '</p>';
-        }
-      });
-
-      if (inList) html += '</ul>';
-      return html;
-    }
-
-    var ttdURL  = getTTDDataURL();
-    var ttdImg  = ttdURL
-      ? '<img src="' + ttdURL + '" width="120" height="50" style="display:block;margin:4pt 0">'
-      : '<p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p><p style="margin:0">&nbsp;</p>';
-
-    var html =
-      '<!DOCTYPE html>' +
-      '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-            'xmlns:w="urn:schemas-microsoft-com:office:word" ' +
-            'xmlns="http://www.w3.org/TR/REC-html40">' +
-      '<head><meta charset="UTF-8">' +
-      '<!--[if gte mso 9]><xml><w:WordDocument>' +
-        '<w:View>Print</w:View><w:Zoom>100</w:Zoom>' +
-        '<w:DoNotOptimizeForBrowser/>' +
-      '</w:WordDocument></xml><![endif]-->' +
-      '<style>' +
-        '@page { margin: 2.54cm; }' +
-        'body { font-family: "Times New Roman", serif; font-size: 12pt; ' +
-               'color: #1e293b; line-height: 1.8; }' +
-        'p, li { font-size: 11pt; margin: 3pt 0; }' +
-        'h1 { font-size: 14pt; font-weight: bold; text-align: center; ' +
-             'text-transform: uppercase; letter-spacing: 1pt; margin: 4pt 0; }' +
-        'h2 { font-size: 12pt; font-weight: bold; text-align: center; margin: 6pt 0; }' +
-        'h3 { font-size: 11pt; font-weight: bold; margin: 10pt 0 4pt; ' +
-             'text-transform: uppercase; letter-spacing: .5pt; }' +
-        'table { border-collapse: collapse; width: 100%; }' +
-        'td { padding: 2pt 6pt; vertical-align: top; font-size: 11pt; }' +
-        '.key { font-weight: bold; width: 110pt; white-space: nowrap; }' +
-        '.sep { width: 10pt; }' +
-        'hr.double { border: none; border-top: 3pt double #1e293b; margin: 4pt 0; }' +
-        'hr.single { border: none; border-top: 1pt solid #1e293b; margin: 6pt 0; }' +
-        'hr.light  { border: none; border-top: 1pt solid #cbd5e1; margin: 6pt 0; }' +
-      '</style></head><body>' +
-
-      /* KOP */
-      (data.org ? '<h1>' + esc(data.org) + '</h1>' : '') +
-      '<h1>NOTULEN RAPAT</h1>' +
-      '<hr class="double">' +
-
-      /* JUDUL */
-      '<h2>' + esc(data.judul) + '</h2>' +
-
-      /* INFO */
-      '<table>' +
-        '<tr><td class="key">Hari / Tanggal</td><td class="sep">:</td>' +
-            '<td>' + esc(hariStr + ', ' + tglExport) + '</td></tr>' +
-        '<tr><td class="key">Waktu</td><td class="sep">:</td>' +
-            '<td>' + esc(data.waktu || '-') + '</td></tr>' +
-        '<tr><td class="key">Tempat</td><td class="sep">:</td>' +
-            '<td>' + esc(data.tempat || '-') + '</td></tr>' +
-        '<tr><td class="key">Peserta</td><td class="sep">:</td>' +
-            '<td>' + esc(pesertaStr) + '</td></tr>' +
-      '</table>' +
-      '<hr class="single">' +
-
-      /* AGENDA */
-      '<h3>Agenda Rapat</h3>' +
-      '<p>' + esc(data.judul) + '</p>' +
-      '<hr class="light">' +
-
-      /* JALANNYA RAPAT — dari AI */
-      '<h3>Jalannya Rapat</h3>' +
-      summaryToWordHTML(data.summary) +
-
-      '<hr class="light">' +
-
-      /* TTD */
-      '<table style="width:100%"><tr>' +
-        '<td style="width:60%"></td>' +
-        '<td style="text-align:center;width:40%">' +
-          '<p style="margin:0">' + esc((data.tempat || '___________') + ', ' + tglExport) + '</p>' +
-          '<p style="margin:0">Notulis,</p>' +
-          ttdImg +
-          '<p style="margin:0;font-weight:bold;border-top:1pt solid #1e293b;' +
-          'padding-top:2pt">' + esc(data.notulis || '_______________') + '</p>' +
-        '</td>' +
-      '</tr></table>' +
-
-      '</body></html>';
-
-    var blob = new Blob([html], { type: 'application/msword' });
-    var url  = URL.createObjectURL(blob);
-    var a    = document.createElement('a');
-    a.href     = url;
-    a.download = 'Notulen_' + (data.judul || 'Rapat').replace(/\s+/g, '_') + '.doc';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('✅ Word (.doc) berhasil didownload!');
-  }
-  
-  // ============================================================
-  // BIND EXPORT BUTTONS
-  // ============================================================
-  document.getElementById('btnExportPDF').addEventListener('click', function(){ openPreview(); });
-  document.getElementById('btnExportWord').addEventListener('click', function(){
-    var data = getFormData();
-    if(!data.judul){ showToast('⚠️ Isi judul rapat dulu!'); return; }
-    doExportWord();
-  });
-
-  // ============================================================
-  // SAVE DRAFT
-  // ============================================================
-  function saveDraft(){
-    var data = getFormData();
-    if (!data.judul) { showToast('⚠️ Isi judul rapat dulu!'); return; }
-
-    // 1. Simpan lokal dulu (cepat & offline-friendly)
-    var drafts = getDrafts();
-    drafts.unshift({
-      id:      Date.now(),
-      savedAt: new Date().toISOString(),
-      org:     data.org,
-      judul:   data.judul,
-      tanggal: data.tanggal,
-      waktu:   data.waktu,
-      tempat:  data.tempat,
-      notulis: data.notulis,
-      peserta: data.peserta,
-      points:  data.points,
-      summary: data.summary
-    });
-    if (drafts.length > 20) drafts = drafts.slice(0, 20);
-    localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
-    renderHistory();
-    showToast('💾 Tersimpan lokal, menyimpan ke cloud...');
-
-    // 2. Simpan ke cloud di background
-    saveNotulenToCloud(
-      data,
-      function(id){
-        showToast('✅ Tersimpan di cloud! ID: ' + id);
-      },
-      function(err){
-        showToast('⚠️ Cloud gagal, data aman di lokal. (' + err + ')', 4000);
-      }
-    );
-  }
-  function getDrafts(){
-    try{
-      var raw=localStorage.getItem('simontok-notulen-drafts');
-      return raw?JSON.parse(raw):[];
-    }catch(e){ return []; }
-  }
-
-  function deleteDraft(id){
-    if(!confirm('Hapus draft ini?')) return;
-    var drafts=getDrafts().filter(function(d){ return d.id!==id; });
-    localStorage.setItem('simontok-notulen-drafts',JSON.stringify(drafts));
-    showToast('🗑️ Draft dihapus!');
-    renderHistory();
-  }
-
-  function loadDraft(draft){
-    if(!confirm('Muat draft "'+draft.judul+'"?\nForm saat ini akan tertimpa.')) return;
-
-    document.getElementById('fOrg').value     = draft.org     ||'';
-    document.getElementById('fJudul').value   = draft.judul   ||'';
-    document.getElementById('fTanggal').value = draft.tanggal ||'';
-    document.getElementById('fWaktu').value   = draft.waktu   ||'';
-    document.getElementById('fTempat').value  = draft.tempat  ||'';
-    document.getElementById('fNotulis').value = draft.notulis ||'';
-    document.getElementById('aiResult').value = draft.summary ||'';
-    document.getElementById('aiStatus').textContent='';
-
-    document.getElementById('pesertaList').innerHTML='';
-    pesertaCount=0;
-    (draft.peserta&&draft.peserta.length?draft.peserta:[''])
-      .forEach(function(p){ addPeserta(p); });
-
-    document.getElementById('pointsList').innerHTML='';
-    pointCount=0;
-    if(draft.points&&draft.points.length){
-      draft.points.forEach(function(p){ addPoint(p); });
-    } else {
-      addPoint(''); addPoint(''); addPoint('');
-    }
-    updatePointCount();
-    showToast('✅ Draft "'+draft.judul+'" berhasil dimuat!');
-  }
-
-  // ============================================================
-  // RENDER HISTORY
-  // ============================================================
-  function formatSavedAt(iso){
-    if(!iso) return '-';
-    var d=new Date(iso);
-    var pad=function(n){ return n<10?'0'+n:n; };
-    return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+
-           ' '+pad(d.getHours())+':'+pad(d.getMinutes());
-  }
-
-  function renderHistory(){
-    var drafts=getDrafts();
-    var box=document.getElementById('historyList');
-    if(!drafts.length){
-      box.innerHTML='<div class="empty-history">📭 Belum ada draft tersimpan</div>';
-      return;
-    }
-    box.innerHTML=drafts.map(function(d){
-      return (
-        '<div class="history-item" data-id="'+d.id+'">'+
-          '<h4>'+esc(d.judul)+'</h4>'+
-          '<p>'+(d.org?esc(d.org)+' &middot; ':'')+esc(formatTanggal(d.tanggal))+'</p>'+
-          '<div class="history-item-footer">'+
-            '<span style="font-size:11px;color:var(--text4)">💾 '+formatSavedAt(d.savedAt)+'</span>'+
-            '<button class="btn-del-history" data-del="'+d.id+'" title="Hapus">🗑️</button>'+
-          '</div>'+
-        '</div>'
-      );
-    }).join('');
-
-    box.querySelectorAll('.history-item').forEach(function(el){
-      el.addEventListener('click',function(e){
-        if(e.target.closest('[data-del]')) return;
-        var id=parseInt(el.getAttribute('data-id'));
-        var draft=getDrafts().find(function(d){ return d.id===id; });
-        if(draft) loadDraft(draft);
-      });
-    });
-    box.querySelectorAll('[data-del]').forEach(function(btn){
-      btn.addEventListener('click',function(e){
-        e.stopPropagation();
-        deleteDraft(parseInt(btn.getAttribute('data-del')));
-      });
-    });
-  }
-
+  document.getElementById('btnExportPDF').addEventListener('click', openPreview);
+  document.getElementById('btnExportWord').addEventListener('click', doExportWord);
   document.getElementById('btnSaveDraft').addEventListener('click', saveDraft);
-
-  // ============================================================
-  // NEW NOTULEN
-  // ============================================================
   document.getElementById('btnNewNotulen').addEventListener('click', function(){
     if(!confirm('Buat notulen baru?\nForm saat ini akan dikosongkan.')) return;
-
-    ['fOrg','fJudul','fTanggal','fWaktu','fTempat','fNotulis'].forEach(function(id){
-      document.getElementById(id).value='';
-    });
-    document.getElementById('aiResult').value='';
-    document.getElementById('aiStatus').textContent='';
-
-    document.getElementById('pesertaList').innerHTML='';
-    pesertaCount=0; addPeserta('');
-
-    document.getElementById('pointsList').innerHTML='';
-    pointCount=0;
-    addPoint(''); addPoint(''); addPoint('');
-    updatePointCount();
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    hasDrawn=false;
+    ['fOrg','fJudul','fTanggal','fWaktu','fTempat','fNotulis'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('aiResult').value=''; document.getElementById('aiStatus').textContent='';
+    document.getElementById('pesertaList').innerHTML=''; pesertaCount=0; addPeserta('');
+    document.getElementById('pointsList').innerHTML=''; pointCount=0;
+    addPoint('');addPoint('');addPoint(''); updatePointCount();
+    ctx.clearRect(0,0,canvas.width,canvas.height); hasDrawn=false;
     document.getElementById('canvasHint').classList.remove('hidden');
-
-    var now=new Date();
-    var pad=function(n){ return n<10?'0'+n:n; };
-    document.getElementById('fTanggal').value=
-      now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-    document.getElementById('fWaktu').value=
-      pad(now.getHours())+':'+pad(now.getMinutes());
-
+    initDefaultDateTime();
     showToast('✨ Form baru siap diisi!');
   });
+  initAIButton();
+}
 
-  // ============================================================
-  // DEFAULT DATE & TIME
-  // ============================================================
-  (function(){
-    var now=new Date();
-    var pad=function(n){ return n<10?'0'+n:n; };
-    document.getElementById('fTanggal').value=
-      now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-    document.getElementById('fWaktu').value=
-      pad(now.getHours())+':'+pad(now.getMinutes());
-  })();
-
-  // ============================================================
-  // INIT
-  // ============================================================
-  renderHistory();
-
+// ================================================================
+// 20. SATU-SATUNYA TITIK START
+// ================================================================
+window.onload = startApp;
 </script>
 </body>
 </html>
