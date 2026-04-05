@@ -394,36 +394,58 @@
   var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
   // ============================================================
-  // AUTH GUARD
-  // ============================================================
-  var SESSION = null;
+// AUTH GUARD (REVISED)
+// ============================================================
+var SESSION = null;
 
-  function getSession() {
-    try {
-      var s = localStorage.getItem('simontok-session');
-      if (s) SESSION = JSON.parse(s);
-    } catch(e) { SESSION = null; }
-    if (!SESSION || !SESSION.token) {
-      alert('Silakan login terlebih dahulu.');
-      window.location.href = 'index.html';
-      return false;
+function getSession() {
+  try {
+    var s = localStorage.getItem('simontok-session');
+    if (s) {
+      var parsed = JSON.parse(s);
+      // Pastikan objek hasil parse memiliki token
+      if (parsed && parsed.token) {
+        SESSION = parsed;
+        return true;
+      }
     }
-    return true;
+  } catch(e) { 
+    console.error("Error parsing session:", e);
+  }
+  return false;
+}
+
+// Jalankan pengecekan
+if (!getSession()) {
+  // Jika gagal, segera hentikan eksekusi halaman ini
+  alert('Silakan login terlebih dahulu.');
+  window.location.replace('index.html'); // Gunakan replace agar tidak bisa klik 'back' ke dashboard
+} else {
+  // Jika sukses, jalankan kode di bawah ini
+  initDashboard();
+}
+
+function initDashboard() {
+  // 1. Tampilkan info user di topbar
+  var topbar = document.getElementById('topbarUser');
+  if (topbar) {
+    topbar.textContent = '👤 ' + (SESSION.name || SESSION.username) +
+                         (SESSION.role === 'admin' ? ' — Admin' : ' — User');
   }
 
-  if (!getSession()) throw new Error('Not logged in');
-
-  // Tampilkan info user di topbar
-  document.getElementById('topbarUser').textContent =
-    '👤 ' + (SESSION.name || SESSION.username) +
-    (SESSION.role === 'admin' ? ' — Admin' : ' — User');
-
-  function authURL(action) {
-    return API_URL
-      + '?action=' + encodeURIComponent(action)
-      + '&user='   + encodeURIComponent(SESSION.username)
-      + '&token='  + encodeURIComponent(SESSION.token);
+  // 2. Panggil fungsi untuk load data (misal: loadTasks, loadNotulen, dll)
+  // Pastikan fungsi-fungsi ini sudah Anda buat di bagian bawah script dashboard
+  if (typeof loadDashboardData === 'function') {
+    loadDashboardData();
   }
+}
+
+function authURL(action) {
+  return API_URL
+    + '?action=' + encodeURIComponent(action)
+    + '&user='   + encodeURIComponent(SESSION.username)
+    + '&token='  + encodeURIComponent(SESSION.token);
+}
 
   // ============================================================
   // LOGOUT
