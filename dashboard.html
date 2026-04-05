@@ -641,23 +641,49 @@
     document.getElementById('loadingState').innerHTML = '⏳ Memuat data dari Spreadsheet...';
     document.getElementById('app').style.display = 'none';
 
-    fetch(authURL('list'), { redirect: 'follow' })
-      .then(function(r) { return r.text(); })
+    var url = authURL('list');
+    console.log("DEBUG: Mencoba mengambil data dari URL:", url);
+
+    fetch(url, { redirect: 'follow' })
+      .then(function(r) { 
+        console.log("DEBUG: HTTP Status:", r.status);
+        return r.text(); 
+      })
       .then(function(text) {
+        console.log("DEBUG: Response Mentah:", text);
         var j;
-        try { j = JSON.parse(text); } catch(e) {
-          throw new Error('Response bukan JSON. Cek URL deployment.');
+        try { 
+          j = JSON.parse(text); 
+        } catch(e) {
+          throw new Error('Gagal membaca format JSON dari server. Periksa apakah Anda sudah melakukan "New Deployment" di Apps Script.');
         }
-        if (!j.ok) throw new Error(j.message || 'Gagal memuat data');
-        DATA = Array.isArray(j.data) ? j.data : [];
+
+        if (!j.ok) {
+          console.error("DEBUG: Server mengirim pesan error:", j.message);
+          throw new Error(j.message);
+        }
+
+        // Cek apakah data ada
+        if (!j.data || j.data.length === 0) {
+          console.warn("DEBUG: Login berhasil, tapi sheet '" + SESSION.sheet_name + "' kosong atau tidak ditemukan.");
+          DATA = [];
+        } else {
+          DATA = j.data;
+          console.log("DEBUG: Berhasil mengambil " + DATA.length + " baris data.");
+        }
+
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('app').style.display = '';
         render();
       })
       .catch(function(err) {
+        console.error("DEBUG: Error Fatal:", err);
         document.getElementById('loadingState').innerHTML =
-          '<div style="color:var(--red)">⚠️ Gagal: ' + esc(err.message) +
-          '<br><button onclick="loadData()" style="margin-top:8px;color:var(--blue);background:none;border:none;cursor:pointer;font-weight:600">🔄 Coba lagi</button></div>';
+          '<div style="color:var(--red); padding:20px; text-align:center;">' +
+          '⚠️ <strong>Gagal Memuat Data</strong><br>' +
+          err.message +
+          '<br><button onclick="loadData()" style="margin-top:15px; padding:8px 16px; border-radius:8px; cursor:pointer;">🔄 Coba Lagi</button>' +
+          '</div>';
       });
   }
 
