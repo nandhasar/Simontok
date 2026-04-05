@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SIMONTOK — Sistem Monitoring Organisasi Kerja</title>
   <style>
-    :root{--bg:#f8fafc;--bg2:#fff;--bg3:#f1f5f9;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;--blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;--purple:#7c3aed;--green:#059669;--green-bg:#d1fae5;--red:#dc2626;--red-bg:#fee2e2;--border:#e2e8f0;--border2:#f1f5f9;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.12);--radius:20px;--radius2:14px}
-    [data-theme="dark"]{--bg:#0f172a;--bg2:#1e293b;--bg3:#1e293b;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;--blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;--purple:#8b5cf6;--green:#34d399;--green-bg:#064e3b;--red:#f87171;--red-bg:#450a0a;--border:#334155;--border2:#334155;--shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4)}
+    :root{--bg:#f8fafc;--bg2:#fff;--bg3:#f1f5f9;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;--blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;--purple:#7c3aed;--green:#059669;--green-bg:#d1fae5;--red:#dc2626;--red-bg:#fee2e2;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.12);--radius:20px;--radius2:14px}
+    [data-theme="dark"]{--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;--blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;--purple:#8b5cf6;--green:#34d399;--green-bg:#064e3b;--red:#f87171;--red-bg:#450a0a;--border:#334155;--shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden}
     a{text-decoration:none;color:inherit}button{cursor:pointer;font-family:inherit}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
     /* NAV */
     .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 20px;transition:all .3s}
@@ -24,6 +25,12 @@
     .nav-link.primary{background:var(--blue);color:#fff}
     .nav-link.icon{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
     .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);align-items:center;justify-content:center;font-size:20px}
+    .user-bar{display:none;align-items:center;gap:8px}
+    .user-bar.on{display:flex}
+    .user-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+    .user-name{font-size:13px;font-weight:600;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .btn-logout{padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg2);color:var(--red);transition:all .2s}
+    .btn-logout:hover{background:var(--red-bg)}
 
     /* HERO */
     .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:100px 20px 60px}
@@ -34,7 +41,6 @@
     .b3{width:300px;height:300px;background:#10b981;top:40%;left:50%}
     [data-theme="dark"] .blob{opacity:.08}
     .hero-grid{position:absolute;inset:0;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.4}
-    [data-theme="dark"] .hero-grid{opacity:.15}
     .hero-c{position:relative;text-align:center;max-width:800px}
     .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:var(--blue-bg2);border:1px solid var(--blue-bg);font-size:13px;font-weight:600;color:var(--blue);margin-bottom:24px;animation:fadeUp .6s ease}
     .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
@@ -59,8 +65,6 @@
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .feat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .3s;overflow:hidden;position:relative}
     .feat:hover{transform:translateY(-6px);box-shadow:var(--shadow3);border-color:var(--blue)}
-    .feat-glow{position:absolute;top:-60px;right:-60px;width:140px;height:140px;border-radius:50%;opacity:.06;transition:opacity .3s}
-    .feat:hover .feat-glow{opacity:.12}
     .feat-i{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
     .feat h3{font-size:18px;font-weight:700;margin-bottom:8px}
     .feat p{font-size:14px;color:var(--text3);line-height:1.7}
@@ -96,7 +100,6 @@
 
     /* CTA */
     .cta-box{max-width:700px;margin:0 auto;padding:48px 40px;background:linear-gradient(135deg,#1e3a5f,#2e1065);border-radius:28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(37,99,235,.25);text-align:center}
-    [data-theme="dark"] .cta-box{background:linear-gradient(135deg,#1e293b,#1e1b4b);border:1px solid var(--border)}
     .cta-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:#3b82f6;filter:blur(100px);opacity:.15;top:-100px;right:-50px}
     .cta-box h2{font-size:clamp(24px,4vw,34px);font-weight:800;margin-bottom:12px;position:relative}
     .cta-box p{font-size:16px;opacity:.8;margin-bottom:28px;position:relative}
@@ -106,17 +109,8 @@
     .btn-cw:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,255,255,.2)}
     .btn-ct{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
     .btn-ct:hover{background:rgba(255,255,255,.2);transform:translateY(-3px)}
-
     .footer{padding:30px 20px;text-align:center;border-top:1px solid var(--border);margin-top:40px}
     .footer p{font-size:13px;color:var(--text4)}
-
-    /* USER BAR (setelah login) */
-    .user-bar{display:none;align-items:center;gap:8px}
-    .user-bar.on{display:flex}
-    .user-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
-    .user-name{font-size:13px;font-weight:600;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .btn-logout{padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg2);color:var(--red);transition:all .2s}
-    .btn-logout:hover{background:var(--red-bg)}
 
     /* MOBILE MENU */
     .mob{position:fixed;inset:0;background:var(--bg2);z-index:10001;display:none;flex-direction:column;padding:80px 24px 24px;gap:8px}
@@ -125,14 +119,9 @@
     .mob .mp{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none}
     .mob-x{position:absolute;top:16px;right:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
 
-    .anim{opacity:0;transform:translateY(30px);transition:all .6s ease}
-    .anim.vis{opacity:1;transform:translateY(0)}
-
     @media(max-width:1024px){.features{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(2,1fr)}.step-l{display:none}}
     @media(max-width:768px){.nav-links .nav-link:not(.icon){display:none}.hamburger{display:flex}.user-name{display:none}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section{padding:50px 16px}}
     @media(max-width:480px){.hero-btns{flex-direction:column;align-items:center}.btn{width:100%;justify-content:center}}
-
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
   </style>
 </head>
 <body>
@@ -142,10 +131,9 @@
     <div class="nav-inner">
       <a href="#" class="nav-brand"><div class="nav-logo">S</div><h1>SIMONTOK</h1></a>
       <div class="nav-links">
-        <a href="#features" class="nav-link" id="navFeat">Fitur</a>
-        <a href="#how" class="nav-link" id="navHow">Cara Kerja</a>
+        <a href="#features" class="nav-link">Fitur</a>
+        <a href="#how" class="nav-link">Cara Kerja</a>
         <button class="nav-link primary" id="navLogin">🔐 Login</button>
-        <!-- Muncul setelah login -->
         <a href="dashboard.html" class="nav-link" id="navDash" style="display:none">📊 Dashboard</a>
         <a href="entri.html" class="nav-link primary" id="navEntri" style="display:none">+ Entri</a>
         <div class="user-bar" id="userBar">
@@ -165,8 +153,8 @@
     <a href="#features" onclick="closeMob()">✨ Fitur</a>
     <a href="#how" onclick="closeMob()">📋 Cara Kerja</a>
     <button id="mobLogin" class="mp">🔐 Login</button>
-    <a href="dashboard.html" id="mobDash" style="display:none">📊 Dashboard</a>
-    <a href="entri.html" id="mobEntri" class="mp" style="display:none">+ Entri Task</a>
+    <a href="dashboard.html" id="mobDash2" style="display:none">📊 Dashboard</a>
+    <a href="entri.html" id="mobEntri2" class="mp" style="display:none">+ Entri Task</a>
     <button id="mobLogout" style="display:none;color:var(--red)">Logout</button>
     <button id="themeBtn2">🌙 Ganti Tema</button>
   </div>
@@ -188,7 +176,7 @@
           <label>🔑 Password</label>
           <input type="password" id="inPass" placeholder="Masukkan password" required autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn-login" id="btnLogin">🚀 Masuk</button>
+        <button type="submit" class="btn-login" id="btnLoginSubmit">🚀 Masuk</button>
       </form>
     </div>
   </div>
@@ -214,171 +202,232 @@
 
   <!-- FEATURES -->
   <section class="section" id="features">
-    <div class="sh anim">
+    <div class="sh">
       <div class="sl">✨ Fitur</div>
       <h2 class="st">Semua yang Anda Butuhkan</h2>
       <p class="sd">Fitur lengkap untuk monitoring task organisasi.</p>
     </div>
     <div class="features">
-      <div class="feat anim"><div class="feat-glow" style="background:#3b82f6"></div><div class="feat-i" style="background:var(--blue-bg)">📝</div><h3>Input Task Cepat</h3><p>Form input simpel. Tambah task dengan judul, status, prioritas, deadline, dan catatan.</p></div>
-      <div class="feat anim"><div class="feat-glow" style="background:#7c3aed"></div><div class="feat-i" style="background:#ede9fe">📊</div><h3>Dashboard Interaktif</h3><p>Chart donut, bar chart, statistik real-time, dan kalender bulanan interaktif.</p></div>
-      <div class="feat anim"><div class="feat-glow" style="background:#10b981"></div><div class="feat-i" style="background:var(--green-bg)">📅</div><h3>Kalender Visual</h3><p>Lihat semua task dalam tampilan kalender. Klik tanggal untuk lihat detail.</p></div>
-      <div class="feat anim"><div class="feat-glow" style="background:#f59e0b"></div><div class="feat-i" style="background:var(--yellow-bg)">🔍</div><h3>Filter & Pencarian</h3><p>Filter berdasarkan bulan, tahun, status, dan prioritas secara real-time.</p></div>
-      <div class="feat anim"><div class="feat-glow" style="background:#ef4444"></div><div class="feat-i" style="background:var(--red-bg)">📄</div><h3>Export PDF & Excel</h3><p>Download laporan PDF atau Excel per bulan atau rentang waktu tertentu.</p></div>
-      <div class="feat anim"><div class="feat-glow" style="background:#06b6d4"></div><div class="feat-i" style="background:#cffafe">🔐</div><h3>Multi-User Login</h3><p>Setiap user punya akun & data sendiri.</p></div>
+      <div class="feat">
+        <div class="feat-i" style="background:var(--blue-bg2)">📋</div>
+        <h3>Manajemen Task</h3>
+        <p>Tambah, edit, dan hapus task dengan mudah. Kelola status, prioritas, dan deadline dalam satu tempat.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-i" style="background:var(--green-bg)">📊</div>
+        <h3>Dashboard Real-time</h3>
+        <p>Pantau progres tim secara langsung. Visualisasi data yang jelas dan mudah dipahami.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-i" style="background:rgba(139,92,246,.15)">📝</div>
+        <h3>Tools Notulen</h3>
+        <p>Buat notulen rapat dengan poin-poin diskusi. Tersedia AI summary untuk ringkasan otomatis.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-i" style="background:var(--red-bg)">📱</div>
+        <h3>Responsif</h3>
+        <p>Akses dari desktop, tablet, maupun smartphone. Desain modern yang nyaman di mata.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-i" style="background:rgba(234,179,8,.15)">🔐</div>
+        <h3>Multi User</h3>
+        <p>Sistem multi-user dengan role admin dan user. Data terpisah per-user dengan keamanan tinggi.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-i" style="background:rgba(20,184,166,.15)">🌙</div>
+        <h3>Dark Mode</h3>
+        <p>Mode gelap untuk kenyamanan mata saat bekerja di malam hari.</p>
+      </div>
     </div>
   </section>
 
   <!-- HOW -->
   <section class="section" id="how">
-    <div class="sh anim">
+    <div class="sh">
       <div class="sl">📋 Cara Kerja</div>
-      <h2 class="st">Mudah & Cepat</h2>
-      <p class="sd">4 langkah untuk mulai monitoring task organisasi.</p>
+      <h2 class="st">Mulai dalam 4 Langkah</h2>
+      <p class="sd">Proses yang simpel dan langsung bisa digunakan.</p>
     </div>
     <div class="steps">
-      <div class="step anim"><div class="step-l"></div><div class="step-n">1</div><h3>Login</h3><p>Masuk dengan username & password yang diberikan admin.</p></div>
-      <div class="step anim"><div class="step-l"></div><div class="step-n">2</div><h3>Input Task</h3><p>Isi form task dengan detail lengkap di halaman Entri.</p></div>
-      <div class="step anim"><div class="step-l"></div><div class="step-n">3</div><h3>Pantau Dashboard</h3><p>Lihat statistik, chart, dan kalender di dashboard.</p></div>
-      <div class="step anim"><div class="step-n">4</div><h3>Export Laporan</h3><p>Download PDF/Excel kapan saja untuk dokumentasi.</p></div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section style="padding:60px 20px">
-    <div class="cta-box anim">
-      <div class="cta-glow"></div>
-      <h2>Mulai Monitoring Sekarang! 🚀</h2>
-      <p>Login dengan akun yang diberikan admin dan mulai kelola task organisasi Anda.</p>
-      <div class="cta-btns">
-        <button class="btn-c btn-cw" id="ctaLogin">🔐 Login Sekarang</button>
-        <a href="#features" class="btn-c btn-ct">✨ Lihat Fitur</a>
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Login</h3>
+        <p>Masukkan username dan password yang sudah diberikan admin.</p>
+        <div class="step-l"></div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>Entri Task</h3>
+        <p>Tambahkan task baru dengan title, status, prioritas, dan deadline.</p>
+        <div class="step-l"></div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Monitor</h3>
+        <p>Pantau progres dan update status task dari dashboard.</p>
+        <div class="step-l"></div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <h3>Selesai</h3>
+        <p>Tandai task sebagai selesai dan download rekapan kapan saja.</p>
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
+  <section class="section">
+    <div class="cta-box">
+      <div class="cta-glow"></div>
+      <h2>Siap Memulai?</h2>
+      <p>Login sekarang dan kelola task organisasi Anda dengan lebih efisien.</p>
+      <div class="cta-btns">
+        <button class="btn-c btn-cw" id="ctaLogin">🔐 Login Sekarang</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="footer">
-    <p><strong>SIMONTOK</strong> — Sistem Monitoring Organisasi Kerja &copy; 2026</p>
-    <p style="margin-top:6px">Google Apps Script + HTML</p>
+    <p>© 2024 SIMONTOK — Sistem Monitoring Organisasi Kerja</p>
   </footer>
 
-  <!-- ============================================ -->
-  <!-- BAGIAN 2: JAVASCRIPT — paste langsung di bawah -->
-  <!-- ============================================ -->
-    <script>
-    // ⚠️ GANTI DENGAN URL DEPLOY ANDA
-    var API = 'https://script.google.com/macros/s/AKfycbz2svbhNEThqP_fRpOHzLJVUF5pxhTxdPQcMr9cIa_3kUq9Gs9qHLAj-DhDP9jBDYs/exec';
+  <script>
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    var API = 'https://script.google.com/macros/s/AKfycbw1TLkJ-FIYL0hS8WA53h38eLEXw2ZRQnjSJ0aRVhF-cWHNjTQQDhnnIy7cWv25tT0p/exec';
 
     // ============================================================
-    // HELPERS
+    // SESSION
     // ============================================================
-    var $ = function(id){ return document.getElementById(id); };
     var session = null;
 
-    function saveSession(user) {
-      session = user;
-      localStorage.setItem('simontok-session', JSON.stringify(user));
-    }
     function loadSession() {
       try {
         var s = localStorage.getItem('simontok-session');
         if (s) session = JSON.parse(s);
-      } catch(e) { session = null; }
+      } catch (e) {
+        session = null;
+      }
     }
+
+    function saveSession(u) {
+      session = u;
+      localStorage.setItem('simontok-session', JSON.stringify(u));
+    }
+
     function clearSession() {
       session = null;
       localStorage.removeItem('simontok-session');
     }
 
+    loadSession();
+
     // ============================================================
     // THEME
     // ============================================================
-    var isDark = localStorage.getItem('simontok-dark') === 'true';
-    function applyTheme() {
-      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      var ic = isDark ? '☀️' : '🌙';
-      $('themeBtn').textContent = ic;
-      $('themeBtn2').textContent = ic + ' Ganti Tema';
+    function initTheme() {
+      var t = localStorage.getItem('simontok-theme');
+      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      updateThemeBtn();
     }
-    applyTheme();
-    function toggleTheme() { isDark = !isDark; localStorage.setItem('simontok-dark', isDark); applyTheme(); }
-    $('themeBtn').onclick = toggleTheme;
-    $('themeBtn2').onclick = function(){ toggleTheme(); closeMob(); };
 
-    // ============================================================
-    // NAV SCROLL
-    // ============================================================
-    window.addEventListener('scroll', function() {
-      $('navbar').classList.toggle('scrolled', window.scrollY > 40);
-    });
-
-    // ============================================================
-    // MOBILE MENU
-    // ============================================================
-    $('hamBtn').onclick = function(){ $('mobMenu').classList.add('on'); };
-    $('mobClose').onclick = closeMob;
-    function closeMob() { $('mobMenu').classList.remove('on'); }
-
-    // ============================================================
-    // SMOOTH SCROLL
-    // ============================================================
-    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var t = document.querySelector(this.getAttribute('href'));
-        if (t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth' }); }
-      });
-    });
-
-    // ============================================================
-    // SCROLL ANIMATION
-    // ============================================================
-    function animScroll() {
-      document.querySelectorAll('.anim').forEach(function(el) {
-        if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('vis');
-      });
+    function toggleTheme() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('simontok-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('simontok-theme', 'dark');
+      }
+      updateThemeBtn();
     }
-    window.addEventListener('scroll', animScroll);
-    animScroll();
+
+    function updateThemeBtn() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var moon = '🌙';
+      var sun = '☀️';
+      document.getElementById('themeBtn').textContent = isDark ? sun : moon;
+      var btn2 = document.getElementById('themeBtn2');
+      if (btn2) btn2.textContent = isDark ? sun + ' Mode Terang' : moon + ' Mode Gelap';
+    }
 
     // ============================================================
-    // LOGIN MODAL
+    // UI UPDATE
+    // ============================================================
+    function updateUI() {
+      var isLoggedIn = session && session.token;
+
+      // Nav links
+      document.getElementById('navLogin').style.display = isLoggedIn ? 'none' : '';
+      document.getElementById('navDash').style.display = isLoggedIn ? '' : 'none';
+      document.getElementById('navEntri').style.display = isLoggedIn ? '' : 'none';
+
+      // User bar
+      var userBar = document.getElementById('userBar');
+      if (isLoggedIn) {
+        userBar.classList.add('on');
+        document.getElementById('userAvatar').textContent = (session.name || session.username || '?').charAt(0).toUpperCase();
+        document.getElementById('userName').textContent = session.name || session.username;
+      } else {
+        userBar.classList.remove('on');
+      }
+
+      // Mobile
+      document.getElementById('mobLogin').style.display = isLoggedIn ? 'none' : '';
+      document.getElementById('mobDash2').style.display = isLoggedIn ? '' : 'none';
+      document.getElementById('mobEntri2').style.display = isLoggedIn ? '' : 'none';
+      document.getElementById('mobLogout').style.display = isLoggedIn ? '' : 'none';
+      document.getElementById('mobLogout').style.display = isLoggedIn ? '' : 'none';
+
+      // Hero btn
+      document.getElementById('heroLogin').textContent = isLoggedIn ? '📊 Buka Dashboard' : '🔐 Login untuk Mulai';
+      document.getElementById('heroLogin').onclick = isLoggedIn ? function() { location.href = 'dashboard.html'; } : openLogin;
+    }
+
+    // ============================================================
+    // LOGIN
     // ============================================================
     function openLogin() {
-      $('loginModal').classList.add('on');
-      $('inUser').value = '';
-      $('inPass').value = '';
-      $('loginErr').classList.remove('show');
-      setTimeout(function(){ $('inUser').focus(); }, 200);
+      document.getElementById('loginModal').classList.add('on');
+      document.getElementById('inUser').focus();
     }
-    function closeLogin() { $('loginModal').classList.remove('on'); }
 
-    $('navLogin').onclick = openLogin;
-    $('heroLogin').onclick = openLogin;
-    $('ctaLogin').onclick = openLogin;
-    $('mobLogin').onclick = function(){ closeMob(); openLogin(); };
-    $('loginClose').onclick = closeLogin;
-    $('loginModal').addEventListener('click', function(e){ if(e.target === this) closeLogin(); });
+    function closeLogin() {
+      document.getElementById('loginModal').classList.remove('on');
+      document.getElementById('loginErr').classList.remove('show');
+      document.getElementById('inUser').value = '';
+      document.getElementById('inPass').value = '';
+    }
 
-    // ============================================================
-    // LOGIN SUBMIT
-    // ============================================================
-    $('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('loginClose').onclick = closeLogin;
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+      if (e.target === this) closeLogin();
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      var user = $('inUser').value.trim();
-      var pass = $('inPass').value.trim();
-      if (!user || !pass) return;
+      var usr = document.getElementById('inUser').value.trim();
+      var pwd = document.getElementById('inPass').value;
+      var btn = document.getElementById('btnLoginSubmit');
 
-      var btn = $('btnLogin');
+      if (!usr || !pwd) {
+        showErr('Username dan password wajib diisi');
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = '⏳ Memproses...';
-      $('loginErr').classList.remove('show');
+      hideErr();
 
-      fetch(API + '?action=login', {
+      fetch(API, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'login', username: user, password: pass })
+        body: JSON.stringify({ action: 'login', username: usr, password: pwd })
       })
-      .then(function(r){ return r.json(); })
+      .then(function(r) { return r.json(); })
       .then(function(j) {
         btn.disabled = false;
         btn.textContent = '🚀 Masuk';
@@ -387,102 +436,80 @@
           saveSession(j.user);
           closeLogin();
           updateUI();
-          // Redirect ke dashboard
-          setTimeout(function() {
-            window.location.href = 'dashboard.html';
-          }, 500);
+          location.href = 'dashboard.html';
         } else {
-          $('loginErr').textContent = '❌ ' + (j.message || 'Login gagal');
-          $('loginErr').classList.add('show');
+          showErr(j.message || 'Login gagal');
         }
       })
       .catch(function(err) {
         btn.disabled = false;
         btn.textContent = '🚀 Masuk';
-        $('loginErr').textContent = '❌ Koneksi gagal: ' + err.message;
-        $('loginErr').classList.add('show');
+        showErr('Error: ' + err.message);
       });
     });
+
+    function showErr(msg) {
+      var box = document.getElementById('loginErr');
+      box.textContent = '❌ ' + msg;
+      box.classList.add('show');
+    }
+
+    function hideErr() {
+      document.getElementById('loginErr').classList.remove('show');
+    }
 
     // ============================================================
     // LOGOUT
     // ============================================================
-    function doLogout() {
+    document.getElementById('btnLogout').onclick = function() {
       clearSession();
       updateUI();
-      closeMob();
+      location.href = 'index.html';
+    };
+
+    document.getElementById('mobLogout').onclick = function() {
+      clearSession();
+      updateUI();
+      location.href = 'index.html';
+    };
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    document.getElementById('hamBtn').onclick = function() {
+      document.getElementById('mobMenu').classList.add('on');
+    };
+
+    document.getElementById('mobClose').onclick = closeMob;
+
+    function closeMob() {
+      document.getElementById('mobMenu').classList.remove('on');
     }
-    $('btnLogout').onclick = doLogout;
-    $('mobLogout').onclick = function(){ doLogout(); closeMob(); };
 
     // ============================================================
-    // UPDATE UI BASED ON SESSION
+    // NAV SCROLL
     // ============================================================
-    function updateUI() {
-      if (session && session.token) {
-        // Logged in
-        $('navLogin').style.display = 'none';
-        $('heroLogin').textContent = '📊 Buka Dashboard';
-        $('heroLogin').onclick = function(){ window.location.href = 'dashboard.html'; };
-        $('ctaLogin').textContent = '📊 Buka Dashboard';
-        $('ctaLogin').onclick = function(){ window.location.href = 'dashboard.html'; };
-
-        $('navDash').style.display = '';
-        $('navEntri').style.display = '';
-        $('userBar').classList.add('on');
-        $('userAvatar').textContent = (session.name || session.username || '?').charAt(0).toUpperCase();
-        $('userName').textContent = session.name || session.username;
-
-        // Mobile
-        $('mobLogin').style.display = 'none';
-        $('mobDash').style.display = '';
-        $('mobEntri').style.display = '';
-        $('mobLogout').style.display = '';
+    window.addEventListener('scroll', function() {
+      var nav = document.getElementById('navbar');
+      if (window.scrollY > 20) {
+        nav.classList.add('scrolled');
       } else {
-        // Logged out
-        $('navLogin').style.display = '';
-        $('heroLogin').textContent = '🔐 Login untuk Mulai';
-        $('heroLogin').onclick = openLogin;
-        $('ctaLogin').textContent = '🔐 Login Sekarang';
-        $('ctaLogin').onclick = openLogin;
-
-        $('navDash').style.display = 'none';
-        $('navEntri').style.display = 'none';
-        $('userBar').classList.remove('on');
-
-        // Mobile
-        $('mobLogin').style.display = '';
-        $('mobDash').style.display = 'none';
-        $('mobEntri').style.display = 'none';
-        $('mobLogout').style.display = 'none';
+        nav.classList.remove('scrolled');
       }
-    }
-
-    // ============================================================
-    // VALIDATE SESSION ON LOAD
-    // ============================================================
-    function validateSession() {
-      loadSession();
-      if (!session || !session.token) { updateUI(); return; }
-
-      fetch(API + '?action=validate&user=' + encodeURIComponent(session.username) + '&token=' + encodeURIComponent(session.token))
-        .then(function(r){ return r.json(); })
-        .then(function(j) {
-          if (!j.ok) { clearSession(); }
-          updateUI();
-        })
-        .catch(function() {
-          // Offline — keep session
-          updateUI();
-        });
-    }
+    });
 
     // ============================================================
     // INIT
     // ============================================================
-    window.addEventListener('DOMContentLoaded', function() {
-      validateSession();
-    });
+    document.getElementById('navLogin').onclick = openLogin;
+    document.getElementById('heroLogin').onclick = openLogin;
+    document.getElementById('ctaLogin').onclick = openLogin;
+    document.getElementById('mobLogin').onclick = openLogin;
+    document.getElementById('themeBtn').onclick = toggleTheme;
+    document.getElementById('themeBtn2').onclick = toggleTheme;
+
+    initTheme();
+    updateUI();
   </script>
 </body>
 </html>
