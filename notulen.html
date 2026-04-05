@@ -364,8 +364,7 @@
         <!-- Model info -->
         <div style="margin-bottom:12px">
           <div class="model-info">
-            🤖 Model: <strong>meta-llama/llama-3.2-3b-instruct:free</strong>
-            &nbsp;·&nbsp; via OpenRouter
+            🤖 Model: <strong>google/gemma-4-31b-it</strong> &nbsp;·&nbsp; via OpenRouter
           </div>
         </div>
 
@@ -801,21 +800,10 @@
   document.getElementById('btnAddPoint').addEventListener('click',function(){ addPoint(''); });
   addPoint(''); addPoint(''); addPoint('');
 
-    // ============================================================
-  // AI — OpenRouter dengan Auto Fallback Model
+   // ============================================================
+  // AI — OpenRouter (google/gemma-4-31b-it)
   // ============================================================
-
-  // Urutan model: coba satu per satu jika rate limit / error
-  var AI_MODELS = [
-    'meta-llama/llama-3.2-3b-instruct:free',
-    'meta-llama/llama-3.1-8b-instruct:free',
-    'mistralai/mistral-7b-instruct:free',
-    'google/gemma-3-1b-it:free',
-    'qwen/qwen-2.5-7b-instruct:free',
-    'microsoft/phi-3-mini-128k-instruct:free'
-  ];
-
-  var currentModelIndex = 0; // index model yang sedang dipakai
+  var AI_MODEL = 'google/gemma-4-31b-it';
 
   function getSystemPrompt() {
     return (
@@ -853,108 +841,6 @@
     );
   }
 
-  // Fungsi utama — coba model satu per satu
-  function tryGenerateWithModel(modelIndex, apiKey, onToken, onDone, onError) {
-    if (modelIndex >= AI_MODELS.length) {
-      onError('ALL_LIMIT', 'Semua model sedang rate limit. Coba lagi dalam beberapa menit.');
-      return;
-    }
-
-    var model   = AI_MODELS[modelIndex];
-    var status  = document.getElementById('aiStatus');
-    status.textContent = '🔄 Mencoba model: ' + model.split('/')[1] + '...';
-    status.style.color = 'var(--purple)';
-
-    fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-        'HTTP-Referer':  'https://nandhasar.github.io',
-        'X-Title':       'SIMONTOK Notulen'
-      },
-      body: JSON.stringify({
-        model:    model,
-        stream:   true,
-        messages: [
-          { role: 'system', content: getSystemPrompt() },
-          { role: 'user',   content: getUserPrompt()   }
-        ]
-      })
-    })
-    .then(function(r) {
-      // Rate limit → coba model berikutnya
-      if (r.status === 429) {
-        status.textContent = '⏭️ ' + model.split('/')[1] + ' rate limit, ganti model...';
-        setTimeout(function() {
-          tryGenerateWithModel(modelIndex + 1, apiKey, onToken, onDone, onError);
-        }, 800);
-        return;
-      }
-
-      // Auth error → stop, jangan coba model lain
-      if (r.status === 401) {
-        onError('AUTH', 'API Key tidak valid. Hubungi admin.');
-        return;
-      }
-
-      // Credit habis → stop
-      if (r.status === 402) {
-        onError('CREDIT', 'Kredit OpenRouter habis. Hubungi admin.');
-        return;
-      }
-
-      // Error lain → coba model berikutnya
-      if (!r.ok) {
-        status.textContent = '⏭️ ' + model.split('/')[1] + ' error (' + r.status + '), ganti model...';
-        setTimeout(function() {
-          tryGenerateWithModel(modelIndex + 1, apiKey, onToken, onDone, onError);
-        }, 800);
-        return;
-      }
-
-      // Sukses → simpan index model yang berhasil
-      currentModelIndex = modelIndex;
-      status.textContent = '⚡ Menggunakan: ' + model.split('/')[1];
-
-      // Baca stream
-      var reader  = r.body.getReader();
-      var decoder = new TextDecoder();
-      var full    = '';
-
-      function read() {
-        return reader.read().then(function(chunk) {
-          if (chunk.done) {
-            onDone(model, full);
-            return;
-          }
-          var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
-          lines.forEach(function(line) {
-            line = line.trim();
-            if (!line || !line.startsWith('data:')) return;
-            var jsonStr = line.slice(5).trim();
-            if (jsonStr === '[DONE]') return;
-            try {
-              var j     = JSON.parse(jsonStr);
-              var token = (j.choices && j.choices[0] && j.choices[0].delta)
-                          ? (j.choices[0].delta.content || '') : '';
-              if (token) onToken(token);
-            } catch(e) {}
-          });
-          return read();
-        });
-      }
-      return read();
-    })
-    .catch(function(err) {
-      // Network error → coba model berikutnya
-      status.textContent = '⏭️ ' + model.split('/')[1] + ' network error, ganti model...';
-      setTimeout(function() {
-        tryGenerateWithModel(modelIndex + 1, apiKey, onToken, onDone, onError);
-      }, 800);
-    });
-  }
-
   // ── Tombol Generate ─────────────────────────────────────────
   document.getElementById('btnGenAI').addEventListener('click', function() {
     var points = getPoints();
@@ -965,7 +851,7 @@
 
     var apiKey = getApiKey();
     if (!apiKey) {
-      showToast('⚠️ API Key tidak tersedia. Hubungi admin atau login ulang.');
+      showToast('⚠️ Fitur AI tidak aktif untuk akun Anda. Hubungi admin.');
       renderApiKeyStatus();
       return;
     }
@@ -976,51 +862,93 @@
 
     btn.disabled    = true;
     btn.textContent = '⏳ Menyusun Notulen...';
-    status.style.color = 'var(--purple)';
     result.value    = '';
+    status.textContent = '⚡ Menyusun notulen...';
+    status.style.color = 'var(--purple)';
 
-    // Update info model di UI
     document.querySelector('.model-info').innerHTML =
-      '🤖 Mencoba model free OpenRouter... &nbsp;·&nbsp; via <strong>OpenRouter</strong>';
+      '🤖 Model: <strong>' + AI_MODEL + '</strong> &nbsp;·&nbsp; via OpenRouter';
 
-    tryGenerateWithModel(
-      0,       // mulai dari model pertama
-      apiKey,
-
-      // onToken — stream masuk
-      function(token) {
-        result.value += token;
-        result.scrollTop = result.scrollHeight;
+    fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + apiKey,
+        'HTTP-Referer':  'https://nandhasar.github.io',
+        'X-Title':       'SIMONTOK Notulen'
       },
+      body: JSON.stringify({
+        model:    AI_MODEL,
+        stream:   true,
+        messages: [
+          { role: 'system', content: getSystemPrompt() },
+          { role: 'user',   content: getUserPrompt()   }
+        ]
+      })
+    })
+    .then(function(r) {
 
-      // onDone — selesai
-      function(modelUsed, fullText) {
-        btn.disabled    = false;
-        btn.textContent = '✨ Susun Notulen dengan AI';
-        status.textContent = '✅ Notulen berhasil disusun!';
-        status.style.color = 'var(--green)';
-
-        // Tampilkan model yang akhirnya berhasil
-        document.querySelector('.model-info').innerHTML =
-          '🤖 Model: <strong>' + modelUsed + '</strong>' +
-          ' &nbsp;·&nbsp; via OpenRouter';
-
-        showToast('✅ Notulen berhasil disusun dengan ' + modelUsed.split('/')[1] + '!');
-      },
-
-      // onError — semua model gagal
-      function(code, msg) {
-        btn.disabled    = false;
-        btn.textContent = '✨ Susun Notulen dengan AI';
-        status.textContent = '❌ ' + msg;
-        status.style.color = 'var(--red)';
-
-        document.querySelector('.model-info').innerHTML =
-          '🤖 Model free &nbsp;·&nbsp; via <strong>OpenRouter</strong>';
-
-        showToast('❌ ' + msg, 5000);
+      // ── Error handling ──────────────────────────────────────
+      if (r.status === 401) {
+        throw new Error('API Key tidak valid. Hubungi admin.');
       }
-    );
+      if (r.status === 402) {
+        throw new Error('Kredit OpenRouter habis. Hubungi admin.');
+      }
+      if (r.status === 429) {
+        throw new Error('Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.');
+      }
+      if (!r.ok) {
+        throw new Error('Error dari server AI (' + r.status + '). Coba lagi.');
+      }
+
+      // ── Baca stream ─────────────────────────────────────────
+      var reader  = r.body.getReader();
+      var decoder = new TextDecoder();
+
+      function read() {
+        return reader.read().then(function(chunk) {
+          if (chunk.done) {
+            // ── Selesai ───────────────────────────────────────
+            btn.disabled    = false;
+            btn.textContent = '✨ Susun Notulen dengan AI';
+            status.textContent = '✅ Notulen berhasil disusun!';
+            status.style.color = 'var(--green)';
+            showToast('✅ Notulen berhasil disusun!');
+            return;
+          }
+
+          // Parse SSE chunks
+          var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
+          lines.forEach(function(line) {
+            line = line.trim();
+            if (!line || !line.startsWith('data:')) return;
+            var jsonStr = line.slice(5).trim();
+            if (jsonStr === '[DONE]') return;
+            try {
+              var j     = JSON.parse(jsonStr);
+              var token = (j.choices && j.choices[0] && j.choices[0].delta)
+                          ? (j.choices[0].delta.content || '') : '';
+              if (token) {
+                result.value += token;
+                result.scrollTop = result.scrollHeight;
+              }
+            } catch(e) {}
+          });
+
+          return read(); // lanjut baca chunk berikutnya
+        });
+      }
+
+      return read();
+    })
+    .catch(function(err) {
+      btn.disabled    = false;
+      btn.textContent = '✨ Susun Notulen dengan AI';
+      status.textContent = '❌ ' + err.message;
+      status.style.color = 'var(--red)';
+      showToast('❌ ' + err.message, 5000);
+    });
   });
   // ============================================================
   // TTD CANVAS
