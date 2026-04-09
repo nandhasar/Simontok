@@ -125,7 +125,9 @@ function onSessionReady() {
       (SESSION.name || SESSION.username) +
       (SESSION.role === 'admin' ? ' — Admin' : '');
   }
-
+if (window.AI_CLIENT && typeof AI_CLIENT.setApiKey === 'function') {
+  AI_CLIENT.setApiKey(SESSION.apiKey || '');
+}
   var wt = document.getElementById('welcomeTitle');
   if (wt) wt.textContent = 'Halo, ' + (SESSION.name || SESSION.username) + '! Ada yang bisa saya bantu?';
 
@@ -541,6 +543,19 @@ function scrollToBottom() {
   if (area) setTimeout(function () { area.scrollTop = area.scrollHeight; }, 60);
 }
 
+function sendToAI(messagesForAI) {
+  // Pakai AI_CLIENT jika tersedia
+  if (window.AI_CLIENT && typeof AI_CLIENT.sendChat === 'function') {
+    return AI_CLIENT.sendChat(messagesForAI, {
+      apiKey: (SESSION && SESSION.apiKey) || '',
+      model: AI_MODEL
+    });
+  }
+
+  // Fallback ke fungsi lama kalau ai-client.js belum termuat
+  var key = getApiKey();
+  return callOpenRouter(key, messagesForAI);
+}
 // ================================================================
 // 12) SEND MESSAGE (wait context first)
 // ================================================================
@@ -549,11 +564,14 @@ function sendMessage(textOverride) {
   var content = textOverride || (input.value || '').trim();
   if (!content || IS_THINKING) return;
 
-  var apiKey = getApiKey();
-  if (!apiKey) {
-    alert('API Key tidak tersedia. Hubungi admin.');
-    return;
-  }
+var apiKey = (window.AI_CLIENT && AI_CLIENT.getApiKey)
+  ? AI_CLIENT.getApiKey()
+  : getApiKey();
+
+if (!apiKey) {
+  alert('API Key tidak tersedia. Hubungi admin.');
+  return;
+}
 
   if (!ACTIVE_SESSION) startNewSession();
 
@@ -580,7 +598,7 @@ function sendMessage(textOverride) {
         return { role: m.role, content: m.content };
       }));
 
-    callOpenRouter(apiKey, messagesForAI)
+    sendToAI(messagesForAI)
       .then(function (result) {
         hideTyping();
         IS_THINKING = false;
