@@ -1021,7 +1021,7 @@ function submitTaskModal() {
   btn.disabled = true;
   btn.textContent = '⏳ Menyimpan...';
 
-  postAction('ai-add-task', { task: task })
+  postAction('add-task', { task: task })
     .then(function () {
       btn.disabled = false;
       btn.textContent = '✅ Simpan Task';
