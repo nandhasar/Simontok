@@ -1,8 +1,8 @@
 // ================================================================
 // SIMONTOK - Assistant JS
 // File   : js/assistant.js
-// Versi  : 1.2 (stable context-aware)
-// Depends: js/ai-client.js (opsional; file ini tidak bergantung langsung)
+// Versi  : 1.3 (stable context-aware + AI_CLIENT compatible)
+// Depends: js/ai-client.js (opsional; ada fallback callOpenRouter)
 // ================================================================
 
 // ================================================================
@@ -40,7 +40,7 @@ function authURL(action, extra) {
 }
 
 // ================================================================
-// 3) THEME PRELOAD (boleh jalan sebelum startApp)
+// 3) THEME PRELOAD
 // ================================================================
 (function () {
   var t = localStorage.getItem('simontok-theme');
@@ -63,7 +63,7 @@ var CONTEXT_STATE = {
 };
 
 // ================================================================
-// 5) START APP (pola notulen: validate dulu)
+// 5) START APP
 // ================================================================
 function startApp() {
   initThemeButton();
@@ -99,17 +99,14 @@ function startApp() {
       };
 
       localStorage.setItem(SESSION_KEY, JSON.stringify(SESSION));
-
-      // Sinkronkan juga ke sessionStorage agar kompatibel dengan modul lain (jika dipakai)
       try { sessionStorage.setItem('simontok-apikey', SESSION.apiKey || ''); } catch (e) {}
 
       onSessionReady();
     })
     .catch(function (err) {
       console.warn('[SIMONTOK] Validasi offline:', err.message);
-      SESSION = s;
+      SESSION = s || {};
 
-      // Sinkronkan juga local/session storage semampunya
       localStorage.setItem(SESSION_KEY, JSON.stringify(SESSION));
       try { sessionStorage.setItem('simontok-apikey', SESSION.apiKey || ''); } catch (e) {}
 
@@ -125,9 +122,11 @@ function onSessionReady() {
       (SESSION.name || SESSION.username) +
       (SESSION.role === 'admin' ? ' — Admin' : '');
   }
-if (window.AI_CLIENT && typeof AI_CLIENT.setApiKey === 'function') {
-  AI_CLIENT.setApiKey(SESSION.apiKey || '');
-}
+
+  if (window.AI_CLIENT && typeof AI_CLIENT.setApiKey === 'function') {
+    AI_CLIENT.setApiKey(SESSION.apiKey || '');
+  }
+
   var wt = document.getElementById('welcomeTitle');
   if (wt) wt.textContent = 'Halo, ' + (SESSION.name || SESSION.username) + '! Ada yang bisa saya bantu?';
 
@@ -135,7 +134,7 @@ if (window.AI_CLIENT && typeof AI_CLIENT.setApiKey === 'function') {
   document.getElementById('app').style.display = '';
 
   renderApiKeyStatus();
-  loadContext(true); // preload awal
+  loadContext(true);
   loadSessions();
 }
 
@@ -147,7 +146,7 @@ function renderApiKeyStatus() {
   var msg = document.getElementById('aiKeyMsg');
   if (!dot || !msg) return;
 
-  var key = getApiKey();
+  var key = (window.AI_CLIENT && AI_CLIENT.getApiKey) ? AI_CLIENT.getApiKey() : getApiKey();
   if (!key) {
     dot.className = 'ai-key-dot err';
     msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
@@ -177,7 +176,33 @@ function applyTheme(isDark) {
 }
 
 // ================================================================
-// 8) CONTEXT LOADER (promise-aware)
+// 8) CONTEXT HELPERS
+// ================================================================
+function calcTaskStats(tasks) {
+  var st = { total: 0, todo: 0, doing: 0, done: 0, blocked: 0 };
+  (tasks || []).forEach(function (t) {
+    st.total++;
+    if (t.status === 'To Do') st.todo++;
+    else if (t.status === 'Doing') st.doing++;
+    else if (t.status === 'Done') st.done++;
+    else if (t.status === 'Blocked') st.blocked++;
+  });
+  return st;
+}
+
+function normalizeContextFromList(taskRows) {
+  var tasks = Array.isArray(taskRows) ? taskRows : [];
+  return {
+    ok: true,
+    tasks: tasks,
+    notulen: [],
+    task_stats: calcTaskStats(tasks),
+    source: 'list-fallback'
+  };
+}
+
+// ================================================================
+// 9) CONTEXT LOADER
 // ================================================================
 function loadContext(force) {
   force = !!force;
@@ -191,14 +216,12 @@ function loadContext(force) {
   CONTEXT_STATE.promise = fetch(authURL('get-context'), { redirect: 'follow' })
     .then(function (r) { return r.json(); })
     .then(function (j) {
-      // sukses normal get-context
       if (j && j.ok && Array.isArray(j.tasks)) {
         USER_CONTEXT = j;
         CONTEXT_STATE.loaded = true;
         return USER_CONTEXT;
       }
 
-      // fallback ke list jika format/context tidak siap
       return fetch(authURL('list'), { redirect: 'follow' })
         .then(function (r2) { return r2.json(); })
         .then(function (j2) {
@@ -209,7 +232,6 @@ function loadContext(force) {
         });
     })
     .catch(function (err) {
-      // fallback terakhir: context kosong tapi "siap"
       console.warn('[SIMONTOK] Context fallback empty:', err.message);
       USER_CONTEXT = normalizeContextFromList([]);
       USER_CONTEXT.source = 'empty-fallback';
@@ -223,8 +245,26 @@ function loadContext(force) {
 
   return CONTEXT_STATE.promise;
 }
+
+function ensureContextLoaded(timeoutMs) {
+  timeoutMs = timeoutMs || 8000;
+
+  if (typeof loadContext !== 'function') {
+    return Promise.resolve(null);
+  }
+
+  var timeoutPromise = new Promise(function (resolve) {
+    setTimeout(function () { resolve(null); }, timeoutMs);
+  });
+
+  return Promise.race([
+    loadContext(false).catch(function () { return null; }),
+    timeoutPromise
+  ]);
+}
+
 // ================================================================
-// 9) SYSTEM PROMPT
+// 10) SYSTEM PROMPT
 // ================================================================
 function buildSystemPrompt() {
   var now = new Date();
@@ -278,18 +318,19 @@ function buildSystemPrompt() {
       });
       p += '\n';
     }
-} else {
-  prompt +=
-    '=== DATA TASK USER ===\n' +
-    'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
-    'Catatan: Jika tidak ada task, sampaikan secara natural bahwa belum ada task tercatat.\n\n';
-}
+  } else {
+    p +=
+      '=== DATA TASK USER ===\n' +
+      'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
+      'Catatan: Jika tidak ada task, sampaikan secara natural bahwa belum ada task tercatat.\n\n';
+  }
+
   p += 'Gunakan bullet points jika menjawab daftar.';
   return p;
 }
 
 // ================================================================
-// 10) SESSION CHAT CRUD
+// 11) SESSION CHAT CRUD
 // ================================================================
 function loadSessions() {
   var el = document.getElementById('sessionsList');
@@ -443,7 +484,7 @@ function confirmDeleteSession(sessionId) {
 }
 
 // ================================================================
-// 11) RENDER CHAT
+// 12) RENDER CHAT
 // ================================================================
 function renderMessages() {
   var area = document.getElementById('chatMessages');
@@ -500,14 +541,10 @@ function renderMarkdown(text) {
   t = t.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
   t = t.replace(/^---+$/gm, '<hr>');
 
-  // hide task JSON block
   t = t.replace(/%%TASK_JSON%%[\s\S]*?%%END_TASK%%/g, '');
-
-  // list item sederhana
   t = t.replace(/^\s*[-•]\s(.+)$/gm, '<li>$1</li>');
   t = t.replace(/(<li>[\s\S]*?<\/li>(\n|$))+/g, function (m) { return '<ul>' + m + '</ul>'; });
 
-  // paragraph split
   t = t.split(/\n{2,}/).map(function (p) {
     p = p.trim();
     if (!p) return '';
@@ -544,7 +581,6 @@ function scrollToBottom() {
 }
 
 function sendToAI(messagesForAI) {
-  // Pakai AI_CLIENT jika tersedia
   if (window.AI_CLIENT && typeof AI_CLIENT.sendChat === 'function') {
     return AI_CLIENT.sendChat(messagesForAI, {
       apiKey: (SESSION && SESSION.apiKey) || '',
@@ -552,26 +588,26 @@ function sendToAI(messagesForAI) {
     });
   }
 
-  // Fallback ke fungsi lama kalau ai-client.js belum termuat
   var key = getApiKey();
   return callOpenRouter(key, messagesForAI);
 }
+
 // ================================================================
-// 12) SEND MESSAGE (wait context first)
+// 13) SEND MESSAGE
 // ================================================================
 function sendMessage(textOverride) {
   var input = document.getElementById('chatInput');
   var content = textOverride || (input.value || '').trim();
   if (!content || IS_THINKING) return;
 
-var apiKey = (window.AI_CLIENT && AI_CLIENT.getApiKey)
-  ? AI_CLIENT.getApiKey()
-  : getApiKey();
+  var apiKey = (window.AI_CLIENT && AI_CLIENT.getApiKey)
+    ? AI_CLIENT.getApiKey()
+    : getApiKey();
 
-if (!apiKey) {
-  alert('API Key tidak tersedia. Hubungi admin.');
-  return;
-}
+  if (!apiKey) {
+    alert('API Key tidak tersedia. Hubungi admin.');
+    return;
+  }
 
   if (!ACTIVE_SESSION) startNewSession();
 
@@ -591,7 +627,6 @@ if (!apiKey) {
   document.getElementById('btnSend').disabled = true;
   showTyping();
 
-  // Tunggu context (max 8 detik), lalu kirim
   ensureContextLoaded(8000).finally(function () {
     var messagesForAI = [{ role: 'system', content: buildSystemPrompt() }]
       .concat((ACTIVE_SESSION.messages || []).map(function (m) {
@@ -637,7 +672,7 @@ if (!apiKey) {
 }
 
 // ================================================================
-// 13) OPENROUTER CALL
+// 14) OPENROUTER FALLBACK
 // ================================================================
 function callOpenRouter(apiKey, messages) {
   var start = Date.now();
@@ -712,7 +747,7 @@ function friendlyError(code, msg) {
 }
 
 // ================================================================
-// 14) TASK JSON HANDLER + MODAL
+// 15) TASK JSON HANDLER + MODAL
 // ================================================================
 var PENDING_TASK = null;
 
@@ -796,7 +831,7 @@ function submitTaskModal() {
 
       renderMessages();
       saveSessionToSheet();
-      loadContext(true); // refresh context setelah add task
+      loadContext(true);
     })
     .catch(function (err) {
       btn.disabled = false;
@@ -805,30 +840,8 @@ function submitTaskModal() {
     });
 }
 
-function calcTaskStats(tasks) {
-  var st = { total: 0, todo: 0, doing: 0, done: 0, blocked: 0 };
-  (tasks || []).forEach(function (t) {
-    st.total++;
-    if (t.status === 'To Do') st.todo++;
-    else if (t.status === 'Doing') st.doing++;
-    else if (t.status === 'Done') st.done++;
-    else if (t.status === 'Blocked') st.blocked++;
-  });
-  return st;
-}
-
-function normalizeContextFromList(taskRows) {
-  var tasks = Array.isArray(taskRows) ? taskRows : [];
-  return {
-    ok: true,
-    tasks: tasks,
-    notulen: [],
-    task_stats: calcTaskStats(tasks),
-    source: 'list-fallback'
-  };
-}
 // ================================================================
-// 15) UTIL
+// 16) UTIL
 // ================================================================
 function autoResizeInput() {
   var el = document.getElementById('chatInput');
@@ -846,22 +859,21 @@ function esc(s) {
 }
 
 // ================================================================
-// 16) EVENTS
+// 17) EVENTS
 // ================================================================
 function initEventListeners() {
-  // dark toggle
   document.getElementById('darkToggle').addEventListener('click', function () {
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     applyTheme(!isDark);
   });
 
-  // settings dropdown
   var settingsOpen = false;
   document.getElementById('settingsBtn').addEventListener('click', function (e) {
     e.stopPropagation();
     settingsOpen = !settingsOpen;
     document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
   });
+
   document.addEventListener('click', function (e) {
     if (!settingsOpen) return;
     var dd = document.getElementById('settingsDropdown');
@@ -870,11 +882,11 @@ function initEventListeners() {
       dd.classList.remove('open');
     }
   });
+
   document.getElementById('settingsDropdown').addEventListener('click', function (e) {
     e.stopPropagation();
   });
 
-  // logout
   document.getElementById('logoutBtn').addEventListener('click', function () {
     if (!confirm('Yakin ingin logout?')) return;
     localStorage.removeItem(SESSION_KEY);
@@ -882,12 +894,10 @@ function initEventListeners() {
     window.location.href = 'index.html';
   });
 
-  // new chat
   document.getElementById('btnNewChat').addEventListener('click', function () {
     startNewSession();
   });
 
-  // refresh context
   document.getElementById('btnRefreshCtx').addEventListener('click', function () {
     var btn = this;
     btn.disabled = true;
@@ -899,25 +909,21 @@ function initEventListeners() {
     });
   });
 
-  // quick actions
   document.querySelectorAll('.qa-btn[data-prompt]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       sendMessage(btn.getAttribute('data-prompt'));
     });
   });
 
-  // tip click delegation
   document.getElementById('chatMessages').addEventListener('click', function (e) {
     var tip = e.target.closest('.tip-item[data-prompt]');
     if (tip) sendMessage(tip.getAttribute('data-prompt'));
   });
 
-  // send button
   document.getElementById('btnSend').addEventListener('click', function () {
     sendMessage();
   });
 
-  // textarea key
   document.getElementById('chatInput').addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -927,7 +933,6 @@ function initEventListeners() {
 
   document.getElementById('chatInput').addEventListener('input', autoResizeInput);
 
-  // modal
   document.getElementById('taskModalClose').addEventListener('click', closeTaskModal);
   document.getElementById('taskModalCancel').addEventListener('click', closeTaskModal);
   document.getElementById('taskModal').addEventListener('click', function (e) {
@@ -937,6 +942,6 @@ function initEventListeners() {
 }
 
 // ================================================================
-// 17) ENTRY
+// 18) ENTRY
 // ================================================================
 window.onload = startApp;
