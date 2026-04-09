@@ -913,7 +913,7 @@ function initEventListeners() {
   document.getElementById('taskModalClose').addEventListener('click', closeTaskModal);
   document.getElementById('taskModalCancel').addEventListener('click', closeTaskModal);
   document.getElementById('taskModal').addEventListener('click', function (e) {
-    if (e.target === this) closeTaskModal;
+    if (e.target === this) closeTaskModal();
   });
   document.getElementById('taskModalConfirm').addEventListener('click', submitTaskModal);
 }
