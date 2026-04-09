@@ -1003,12 +1003,16 @@ function closeTaskModal() {
   PENDING_TASK = null;
 }
 
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function submitTaskModal() {
   var task = {
     title   : document.getElementById('mTaskTitle').value.trim(),
-    status  : document.getElementById('mTaskStatus').value,
-    priority: document.getElementById('mTaskPriority').value,
-    due_date: document.getElementById('mTaskDueDate').value,
+    status  : document.getElementById('mTaskStatus').value || 'To Do',
+    priority: document.getElementById('mTaskPriority').value || 'Medium',
+    due_date: document.getElementById('mTaskDueDate').value || '',
     note    : document.getElementById('mTaskNote').value.trim()
   };
 
@@ -1017,15 +1021,20 @@ function submitTaskModal() {
     return;
   }
 
+  // Samakan format dengan entri.html
+  task.id = String(Date.now());
+  task.created_at = todayISO();
+  task.updated_at = todayISO();
+
   var btn = document.getElementById('taskModalConfirm');
   btn.disabled = true;
   btn.textContent = '⏳ Menyimpan...';
 
-  postAction('add-task', { task: task })
+  // PENTING: action = 'add' dan body = { task: task }
+  postAction('add', { task: task })
     .then(function () {
       btn.disabled = false;
       btn.textContent = '✅ Simpan Task';
-
       closeTaskModal();
 
       ACTIVE_SESSION.messages.push({
