@@ -189,16 +189,31 @@ function loadContext(force) {
   CONTEXT_STATE.promise = fetch(authURL('get-context'), { redirect: 'follow' })
     .then(function (r) { return r.json(); })
     .then(function (j) {
-      if (!j.ok) throw new Error(j.message || j.error || 'get-context gagal');
-      USER_CONTEXT = j;
-      CONTEXT_STATE.loaded = true;
-      console.info('[SIMONTOK] Context loaded');
-      return j;
+      // sukses normal get-context
+      if (j && j.ok && Array.isArray(j.tasks)) {
+        USER_CONTEXT = j;
+        CONTEXT_STATE.loaded = true;
+        return USER_CONTEXT;
+      }
+
+      // fallback ke list jika format/context tidak siap
+      return fetch(authURL('list'), { redirect: 'follow' })
+        .then(function (r2) { return r2.json(); })
+        .then(function (j2) {
+          if (!j2 || !j2.ok) throw new Error((j2 && j2.message) || 'list gagal');
+          USER_CONTEXT = normalizeContextFromList(j2.data || []);
+          CONTEXT_STATE.loaded = true;
+          return USER_CONTEXT;
+        });
     })
     .catch(function (err) {
+      // fallback terakhir: context kosong tapi "siap"
+      console.warn('[SIMONTOK] Context fallback empty:', err.message);
+      USER_CONTEXT = normalizeContextFromList([]);
+      USER_CONTEXT.source = 'empty-fallback';
       CONTEXT_STATE.error = err;
-      console.warn('[SIMONTOK] Context error:', err.message);
-      throw err;
+      CONTEXT_STATE.loaded = true;
+      return USER_CONTEXT;
     })
     .finally(function () {
       CONTEXT_STATE.loading = false;
@@ -206,20 +221,6 @@ function loadContext(force) {
 
   return CONTEXT_STATE.promise;
 }
-
-function ensureContextLoaded(timeoutMs) {
-  timeoutMs = timeoutMs || 8000;
-
-  var timeoutPromise = new Promise(function (resolve) {
-    setTimeout(function () { resolve(null); }, timeoutMs);
-  });
-
-  return Promise.race([
-    loadContext(false).catch(function () { return null; }),
-    timeoutPromise
-  ]);
-}
-
 // ================================================================
 // 9) SYSTEM PROMPT
 // ================================================================
@@ -275,11 +276,12 @@ function buildSystemPrompt() {
       });
       p += '\n';
     }
-  } else {
-    p += '=== DATA CONTEXT BELUM TERSEDIA ===\n';
-    p += 'Jika user tanya jadwal, jawab jujur bahwa data belum termuat dan sarankan refresh.\n\n';
-  }
-
+} else {
+  prompt +=
+    '=== DATA TASK USER ===\n' +
+    'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
+    'Catatan: Jika tidak ada task, sampaikan secara natural bahwa belum ada task tercatat.\n\n';
+}
   p += 'Gunakan bullet points jika menjawab daftar.';
   return p;
 }
@@ -785,6 +787,28 @@ function submitTaskModal() {
     });
 }
 
+function calcTaskStats(tasks) {
+  var st = { total: 0, todo: 0, doing: 0, done: 0, blocked: 0 };
+  (tasks || []).forEach(function (t) {
+    st.total++;
+    if (t.status === 'To Do') st.todo++;
+    else if (t.status === 'Doing') st.doing++;
+    else if (t.status === 'Done') st.done++;
+    else if (t.status === 'Blocked') st.blocked++;
+  });
+  return st;
+}
+
+function normalizeContextFromList(taskRows) {
+  var tasks = Array.isArray(taskRows) ? taskRows : [];
+  return {
+    ok: true,
+    tasks: tasks,
+    notulen: [],
+    task_stats: calcTaskStats(tasks),
+    source: 'list-fallback'
+  };
+}
 // ================================================================
 // 15) UTIL
 // ================================================================
