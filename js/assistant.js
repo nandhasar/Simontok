@@ -11,7 +11,7 @@
 var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 var SESSION_KEY = 'simontok-session';
 var SESSION     = null;
-var AI_MODEL    = 'google/gemma-4-31b-it';
+var AI_MODEL    = 'openai/gpt-4o-mini';
 
 // Penyimpanan chat: 'local' atau 'remote'
 var CHAT_STORAGE_MODE = 'local';
