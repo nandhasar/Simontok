@@ -6,7 +6,7 @@
   <title>SIMONTOK - AI Assistant</title>
   <style>
     /* ============================================================
-       CSS VARIABLES — sama persis dengan dashboard.html
+       CSS VARIABLES
     ============================================================ */
     :root {
       --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;
@@ -36,21 +36,25 @@
       --shadow3:0 20px 60px rgba(0,0,0,.4);
     }
 
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
     *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      transition: background .3s, color .3s;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      background:var(--bg); color:var(--text);
+      line-height:1.6; transition:background .3s,color .3s;
     }
-    a { text-decoration:none; color:inherit }
+    a    { text-decoration:none; color:inherit }
     button { cursor:pointer; font-family:inherit; font-size:inherit }
 
-    .page { max-width:1400px; margin:0 auto; padding:20px 16px; min-height:100vh }
+    .page {
+      max-width:1400px; margin:0 auto;
+      padding:20px 16px; min-height:100vh;
+    }
 
     /* ============================================================
-       TOPBAR — identik dengan dashboard
+       TOPBAR
     ============================================================ */
     .topbar {
       display:flex; align-items:center; justify-content:space-between;
@@ -59,7 +63,7 @@
       border:1px solid var(--border); border-radius:var(--radius);
       box-shadow:var(--shadow);
     }
-    .topbar-brand { display:flex; align-items:center; gap:12px }
+    .topbar-brand  { display:flex; align-items:center; gap:12px }
     .topbar-logo {
       width:44px; height:44px;
       background:linear-gradient(135deg,#2563eb,#7c3aed);
@@ -70,22 +74,26 @@
     .topbar-info h1 { font-size:22px; font-weight:800; line-height:1.2 }
     .topbar-info p  { font-size:12px; color:var(--text3); letter-spacing:.05em }
     .topbar-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+
+    /* ============================================================
+       BUTTONS NAV
+    ============================================================ */
     .btn-nav {
       border:1px solid var(--border); background:var(--bg2);
       padding:10px 16px; border-radius:var(--radius2);
       font-size:13px; font-weight:600; color:var(--text2);
       transition:all .2s; display:inline-flex; align-items:center; gap:6px;
     }
-    .btn-nav:hover { background:var(--bg3); transform:translateY(-1px) }
-    .btn-nav.primary { background:var(--blue); color:#fff; border-color:var(--blue) }
-    .btn-nav.primary:hover { background:var(--blue2) }
+    .btn-nav:hover        { background:var(--bg3); transform:translateY(-1px) }
+    .btn-nav.primary      { background:var(--blue); color:#fff; border-color:var(--blue) }
+    .btn-nav.primary:hover{ background:var(--blue2) }
     .btn-nav.purple {
       background:linear-gradient(135deg,#7c3aed,#2563eb);
       color:#fff; border:none;
     }
-    .btn-nav.purple:hover { opacity:.9; transform:translateY(-1px) }
-    .btn-nav.danger { background:#fff1f2; color:var(--red2); border-color:#fecdd3 }
-    .btn-nav.danger:hover { background:#ffe4e6 }
+    .btn-nav.purple:hover  { opacity:.9; transform:translateY(-1px) }
+    .btn-nav.danger        { background:#fff1f2; color:var(--red2); border-color:#fecdd3 }
+    .btn-nav.danger:hover  { background:var(--red-bg) }
     .btn-nav.active-nav {
       background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));
       border-color:var(--purple); color:var(--purple);
@@ -94,19 +102,19 @@
       width:40px; height:40px; border:1px solid var(--border);
       background:var(--bg2); border-radius:12px;
       display:flex; align-items:center; justify-content:center;
-      font-size:18px; transition:all .2s; position:relative;
+      font-size:18px; transition:all .2s;
     }
     .btn-icon:hover { background:var(--bg3); transform:translateY(-1px) }
 
     /* ============================================================
        SETTINGS DROPDOWN
     ============================================================ */
-    .settings-wrap { position:relative }
+    .settings-wrap      { position:relative }
     .settings-dropdown {
       position:absolute; top:calc(100% + 10px); right:0;
       width:280px; background:var(--bg2);
       border:1px solid var(--border); border-radius:var(--radius);
-      box-shadow:var(--shadow3); z-index:9999; overflow:hidden;
+      box-shadow:var(--shadow3); z-index:9999;
       display:none; animation:dropIn .2s ease;
     }
     .settings-dropdown.open { display:block }
@@ -120,7 +128,7 @@
     }
     .sd-header h3 { font-size:15px; font-weight:800; color:#fff }
     .sd-header p  { font-size:11px; color:rgba(255,255,255,.7); margin-top:2px }
-    .sd-section { padding:12px 18px; border-bottom:1px solid var(--border) }
+    .sd-section   { padding:12px 18px; border-bottom:1px solid var(--border) }
     .sd-section:last-child { border-bottom:none }
     .sd-label {
       font-size:10px; font-weight:700; text-transform:uppercase;
@@ -139,9 +147,8 @@
     }
     .toggle.on { background:var(--blue) }
     .toggle::after {
-      content:''; position:absolute;
-      width:18px; height:18px; border-radius:50%;
-      background:#fff; top:3px; left:3px;
+      content:''; position:absolute; width:18px; height:18px;
+      border-radius:50%; background:#fff; top:3px; left:3px;
       transition:left .2s; box-shadow:0 1px 3px rgba(0,0,0,.2);
     }
     .toggle.on::after { left:23px }
@@ -156,20 +163,17 @@
       margin-bottom:16px; font-size:12px; color:var(--text3);
       box-shadow:var(--shadow);
     }
-    .ai-key-dot {
-      width:8px; height:8px; border-radius:50%; flex-shrink:0;
-    }
-    .ai-key-dot.ok  { background:var(--green) }
-    .ai-key-dot.err { background:var(--red) }
+    .ai-key-dot        { width:8px; height:8px; border-radius:50%; flex-shrink:0 }
+    .ai-key-dot.ok     { background:var(--green) }
+    .ai-key-dot.err    { background:var(--red) }
 
     /* ============================================================
-       LAYOUT UTAMA — sidebar sesi + area chat
+       LAYOUT UTAMA
     ============================================================ */
     .assistant-layout {
       display:grid;
       grid-template-columns:280px 1fr;
-      gap:16px;
-      align-items:start;
+      gap:16px; align-items:start;
     }
 
     /* ============================================================
@@ -181,8 +185,7 @@
       overflow:hidden; position:sticky; top:20px;
     }
     .sessions-header {
-      padding:16px 16px 12px;
-      border-bottom:1px solid var(--border);
+      padding:16px 16px 12px; border-bottom:1px solid var(--border);
       background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));
     }
     .sessions-header h3 {
@@ -192,36 +195,28 @@
       width:100%; padding:9px 14px;
       background:linear-gradient(135deg,#7c3aed,#2563eb);
       color:#fff; border:none; border-radius:var(--radius2);
-      font-size:13px; font-weight:700; display:flex;
-      align-items:center; justify-content:center; gap:6px;
+      font-size:13px; font-weight:700;
+      display:flex; align-items:center; justify-content:center; gap:6px;
       transition:all .2s;
     }
     .btn-new-chat:hover { opacity:.9; transform:translateY(-1px) }
-
     .sessions-list {
-      max-height: calc(100vh - 280px);
-      overflow-y:auto;
-      padding:8px;
+      max-height:calc(100vh - 280px);
+      overflow-y:auto; padding:8px;
     }
     .session-item {
       padding:10px 12px; border-radius:var(--radius2);
       cursor:pointer; transition:all .15s;
-      border:1px solid transparent; margin-bottom:4px;
-      position:relative;
+      border:1px solid transparent; margin-bottom:4px; position:relative;
     }
-    .session-item:hover { background:var(--bg3); border-color:var(--border) }
-    .session-item.active {
-      background:var(--blue-bg2); border-color:var(--blue);
-    }
+    .session-item:hover            { background:var(--bg3); border-color:var(--border) }
+    .session-item.active           { background:var(--blue-bg2); border-color:var(--blue) }
     .session-item-title {
       font-size:13px; font-weight:600; color:var(--text);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-      padding-right:24px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:24px;
     }
     .session-item.active .session-item-title { color:var(--blue) }
-    .session-item-meta {
-      font-size:11px; color:var(--text4); margin-top:2px;
-    }
+    .session-item-meta { font-size:11px; color:var(--text4); margin-top:2px }
     .session-del-btn {
       position:absolute; top:50%; right:8px; transform:translateY(-50%);
       width:22px; height:22px; border-radius:6px;
@@ -262,13 +257,9 @@
       display:flex; align-items:center; justify-content:center;
       font-size:20px; flex-shrink:0;
     }
-    .chat-header-info h3 {
-      font-size:15px; font-weight:800; color:var(--purple);
-    }
-    .chat-header-info p {
-      font-size:11px; color:var(--text3);
-    }
-    .chat-header-actions { margin-left:auto; display:flex; gap:8px }
+    .chat-header-info h3  { font-size:15px; font-weight:800; color:var(--purple) }
+    .chat-header-info p   { font-size:11px; color:var(--text3) }
+    .chat-header-actions  { margin-left:auto; display:flex; gap:8px }
     .btn-chat-action {
       padding:7px 12px; border-radius:10px;
       border:1px solid var(--border); background:var(--bg2);
@@ -283,22 +274,23 @@
       display:flex; flex-direction:column; gap:16px;
     }
 
-    /* Welcome screen */
+    /* Welcome Screen */
     .chat-welcome {
       display:flex; flex-direction:column;
       align-items:center; justify-content:center;
-      height:100%; text-align:center; padding:32px;
-      color:var(--text3);
+      height:100%; text-align:center; padding:32px; color:var(--text3);
     }
     .chat-welcome-icon {
       font-size:56px; margin-bottom:16px;
-      animation: floatIcon 3s ease-in-out infinite;
+      animation:floatIcon 3s ease-in-out infinite;
     }
     @keyframes floatIcon {
       0%,100% { transform:translateY(0) }
       50%      { transform:translateY(-8px) }
     }
-    .chat-welcome h3 { font-size:20px; font-weight:800; color:var(--text); margin-bottom:8px }
+    .chat-welcome h3 {
+      font-size:20px; font-weight:800; color:var(--text); margin-bottom:8px;
+    }
     .chat-welcome p  { font-size:14px; max-width:360px; line-height:1.7 }
     .chat-welcome-tips {
       display:grid; grid-template-columns:1fr 1fr;
@@ -310,27 +302,24 @@
       font-size:12px; color:var(--text2); text-align:left;
       cursor:pointer; transition:all .2s; line-height:1.5;
     }
-    .tip-item:hover { background:var(--blue-bg2); border-color:var(--blue); color:var(--blue) }
+    .tip-item:hover {
+      background:var(--blue-bg2); border-color:var(--blue); color:var(--blue);
+    }
     .tip-item strong { display:block; margin-bottom:2px; font-size:13px }
 
-    /* Bubble */
-    .msg-row {
-      display:flex; gap:10px; align-items:flex-end;
-    }
-    .msg-row.user { flex-direction:row-reverse }
-
+    /* Message Bubbles */
+    .msg-row          { display:flex; gap:10px; align-items:flex-end }
+    .msg-row.user     { flex-direction:row-reverse }
     .msg-avatar {
       width:32px; height:32px; border-radius:10px;
       display:flex; align-items:center; justify-content:center;
       font-size:14px; flex-shrink:0; font-weight:700;
     }
-    .msg-avatar.ai   { background:linear-gradient(135deg,#7c3aed,#2563eb); color:#fff }
-    .msg-avatar.user { background:linear-gradient(135deg,#2563eb,#06b6d4); color:#fff }
-
+    .msg-avatar.ai    { background:linear-gradient(135deg,#7c3aed,#2563eb); color:#fff }
+    .msg-avatar.user  { background:linear-gradient(135deg,#2563eb,#06b6d4); color:#fff }
     .msg-bubble {
       max-width:75%; padding:12px 16px;
-      border-radius:18px; font-size:14px; line-height:1.7;
-      word-break:break-word;
+      border-radius:18px; font-size:14px; line-height:1.7; word-break:break-word;
     }
     .msg-bubble.ai {
       background:var(--bg3); border:1px solid var(--border);
@@ -340,100 +329,56 @@
       background:linear-gradient(135deg,#2563eb,#7c3aed);
       color:#fff; border-bottom-right-radius:4px;
     }
+    .msg-col  { display:flex; flex-direction:column; max-width:75% }
     .msg-time {
-      font-size:10px; color:var(--text4); margin-top:4px;
-      text-align:right;
+      font-size:10px; color:var(--text4); margin-top:4px; text-align:right;
     }
     .msg-row.user .msg-time { text-align:left }
-    .msg-col { display:flex; flex-direction:column; max-width:75% }
 
-    /* Markdown-like rendering di bubble AI */
-    .msg-bubble.ai strong { font-weight:700; color:var(--text) }
+    /* Markdown dalam bubble AI */
+    .msg-bubble.ai strong { font-weight:700 }
     .msg-bubble.ai em     { font-style:italic }
-    .msg-bubble.ai ul, .msg-bubble.ai ol {
-      padding-left:18px; margin:6px 0;
-    }
-    .msg-bubble.ai li { margin:3px 0 }
+    .msg-bubble.ai ul,
+    .msg-bubble.ai ol     { padding-left:18px; margin:6px 0 }
+    .msg-bubble.ai li     { margin:3px 0 }
     .msg-bubble.ai code {
       background:var(--border); padding:1px 6px;
       border-radius:6px; font-size:12px; font-family:monospace;
     }
     .msg-bubble.ai pre {
       background:var(--border); padding:10px 12px;
-      border-radius:10px; overflow-x:auto; margin:8px 0;
-      font-size:12px; font-family:monospace;
+      border-radius:10px; overflow-x:auto;
+      margin:8px 0; font-size:12px; font-family:monospace;
     }
     .msg-bubble.ai table {
       border-collapse:collapse; width:100%; margin:8px 0; font-size:12px;
     }
-    .msg-bubble.ai th, .msg-bubble.ai td {
-      border:1px solid var(--border); padding:6px 10px; text-align:left;
-    }
-    .msg-bubble.ai th { background:var(--blue-bg); color:var(--blue); font-weight:700 }
+    .msg-bubble.ai th,
+    .msg-bubble.ai td     { border:1px solid var(--border); padding:6px 10px; text-align:left }
+    .msg-bubble.ai th     { background:var(--blue-bg); color:var(--blue); font-weight:700 }
     .msg-bubble.ai tr:nth-child(even) td { background:var(--bg2) }
-    .msg-bubble.ai h3 { font-size:14px; font-weight:700; margin:8px 0 4px }
-    .msg-bubble.ai h4 { font-size:13px; font-weight:700; margin:6px 0 3px }
-    .msg-bubble.ai p  { margin:4px 0 }
-    .msg-bubble.ai a  { color:var(--blue); text-decoration:underline }
-    .msg-bubble.ai hr {
-      border:none; border-top:1px solid var(--border); margin:10px 0;
-    }
+    .msg-bubble.ai h3     { font-size:14px; font-weight:700; margin:8px 0 4px }
+    .msg-bubble.ai h4     { font-size:13px; font-weight:700; margin:6px 0 3px }
+    .msg-bubble.ai p      { margin:4px 0 }
+    .msg-bubble.ai a      { color:var(--blue); text-decoration:underline }
+    .msg-bubble.ai hr     { border:none; border-top:1px solid var(--border); margin:10px 0 }
 
-    /* Task card dalam bubble AI */
-    .ai-task-card {
-      background:var(--bg2); border:1px solid var(--blue);
-      border-radius:var(--radius2); padding:12px 14px;
-      margin:10px 0; font-size:13px;
-    }
-    .ai-task-card-title {
-      font-weight:700; color:var(--text); margin-bottom:6px;
-    }
-    .ai-task-meta {
-      display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;
-    }
-    .ai-badge {
-      padding:2px 10px; border-radius:999px;
-      font-size:11px; font-weight:600;
-    }
-    .ai-badge.todo     { background:var(--bg3); color:var(--text3) }
-    .ai-badge.doing    { background:var(--blue-bg); color:var(--blue) }
-    .ai-badge.done     { background:var(--green-bg); color:var(--green) }
-    .ai-badge.blocked  { background:var(--red-bg); color:var(--red) }
-    .ai-badge.high     { background:var(--red-bg); color:var(--red) }
-    .ai-badge.medium   { background:var(--yellow-bg); color:var(--yellow) }
-    .ai-badge.low      { background:var(--green-bg); color:var(--green) }
-    .ai-task-note      { font-size:12px; color:var(--text3); line-height:1.6 }
-    .ai-task-actions   { display:flex; gap:6px; margin-top:8px }
-    .ai-task-btn {
-      padding:5px 12px; border-radius:8px; font-size:12px;
-      font-weight:600; border:1px solid var(--border);
-      background:var(--bg3); color:var(--text2); transition:all .2s;
-    }
-    .ai-task-btn:hover { background:var(--blue-bg2); border-color:var(--blue); color:var(--blue) }
-    .ai-task-btn.confirm {
-      background:var(--blue); color:#fff; border-color:var(--blue);
-    }
-    .ai-task-btn.confirm:hover { background:var(--blue2) }
-
-    /* Typing indicator */
-    .typing-row {
-      display:flex; gap:10px; align-items:flex-end;
-    }
+    /* Typing Indicator */
+    .typing-row    { display:flex; gap:10px; align-items:flex-end }
     .typing-bubble {
       background:var(--bg3); border:1px solid var(--border);
       border-radius:18px; border-bottom-left-radius:4px;
       padding:12px 16px; display:flex; align-items:center; gap:4px;
     }
     .typing-dot {
-      width:7px; height:7px; border-radius:50%;
-      background:var(--text4);
+      width:7px; height:7px; border-radius:50%; background:var(--text4);
       animation:typingAnim 1.4s infinite;
     }
     .typing-dot:nth-child(2) { animation-delay:.2s }
     .typing-dot:nth-child(3) { animation-delay:.4s }
     @keyframes typingAnim {
       0%,80%,100% { transform:scale(.8); opacity:.5 }
-      40%          { transform:scale(1);  opacity:1 }
+      40%          { transform:scale(1);  opacity:1  }
     }
 
     /* Quick Actions */
@@ -454,8 +399,8 @@
       transition:all .2s; display:flex; align-items:center; gap:5px;
     }
     .qa-btn:hover {
-      background:var(--blue-bg2); border-color:var(--blue); color:var(--blue);
-      transform:translateY(-1px);
+      background:var(--blue-bg2); border-color:var(--blue);
+      color:var(--blue); transform:translateY(-1px);
     }
 
     /* Input Area */
@@ -463,19 +408,16 @@
       padding:14px 20px; border-top:1px solid var(--border);
       background:var(--bg2); flex-shrink:0;
     }
-    .chat-input-wrap {
-      display:flex; gap:10px; align-items:flex-end;
-    }
+    .chat-input-wrap { display:flex; gap:10px; align-items:flex-end }
     .chat-input {
       flex:1; border:1px solid var(--border); background:var(--bg3);
       color:var(--text); border-radius:var(--radius2);
       padding:11px 16px; font-size:14px; outline:none;
       resize:none; line-height:1.5; max-height:120px;
-      font-family:inherit; transition:border-color .2s;
-      overflow-y:auto;
+      font-family:inherit; transition:border-color .2s; overflow-y:auto;
     }
-    .chat-input:focus { border-color:var(--blue) }
-    .chat-input::placeholder { color:var(--text4) }
+    .chat-input:focus       { border-color:var(--blue) }
+    .chat-input::placeholder{ color:var(--text4) }
     .btn-send {
       width:44px; height:44px; border-radius:var(--radius2);
       background:linear-gradient(135deg,#2563eb,#7c3aed);
@@ -483,7 +425,7 @@
       display:flex; align-items:center; justify-content:center;
       transition:all .2s; flex-shrink:0;
     }
-    .btn-send:hover { opacity:.9; transform:translateY(-1px) }
+    .btn-send:hover    { opacity:.9; transform:translateY(-1px) }
     .btn-send:disabled { opacity:.4; cursor:not-allowed; transform:none }
     .input-hint {
       font-size:11px; color:var(--text4); margin-top:6px; text-align:right;
@@ -498,7 +440,7 @@
     }
 
     /* ============================================================
-       CONFIRM TASK MODAL
+       MODAL — Konfirmasi Buat Task
     ============================================================ */
     .modal-overlay {
       position:fixed; inset:0; background:rgba(15,23,42,.5);
@@ -509,8 +451,11 @@
     .modal-box {
       width:min(500px,100%); background:var(--bg2); color:var(--text);
       border-radius:var(--radius); padding:24px;
-      box-shadow:var(--shadow3); position:relative;
-      animation:popIn .25s ease;
+      box-shadow:var(--shadow3); position:relative; animation:popIn .25s ease;
+    }
+    @keyframes popIn {
+      from { transform:scale(.93); opacity:0 }
+      to   { transform:scale(1);   opacity:1 }
     }
     .modal-close {
       position:absolute; top:10px; right:14px;
@@ -518,8 +463,11 @@
       font-size:32px; cursor:pointer; color:var(--text3); line-height:1;
     }
     .modal-close:hover { color:var(--text) }
-    .modal-box h3 { font-size:18px; font-weight:700; margin-bottom:16px }
-    .modal-field { margin-bottom:14px }
+    .modal-box h3    { font-size:18px; font-weight:700; margin-bottom:4px }
+    .modal-box .modal-desc {
+      font-size:13px; color:var(--text3); margin-bottom:16px;
+    }
+    .modal-field     { margin-bottom:14px }
     .modal-field label {
       display:block; font-size:12px; font-weight:700;
       color:var(--text3); margin-bottom:5px;
@@ -538,52 +486,41 @@
     .modal-field select:focus,
     .modal-field textarea:focus { border-color:var(--blue) }
     .modal-field textarea { resize:vertical; min-height:80px }
-    .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+    .modal-grid   { display:grid; grid-template-columns:1fr 1fr; gap:10px }
     .modal-footer {
       display:flex; justify-content:flex-end; gap:8px; margin-top:20px;
     }
-    .btn-m {
-      padding:10px 18px; border-radius:12px;
-      font-weight:600; font-size:13px;
-      border:1px solid var(--border); transition:all .2s;
-    }
-    .btn-m-primary {
-      background:linear-gradient(135deg,#2563eb,#7c3aed);
-      color:#fff; border:none;
-    }
-    .btn-m-primary:hover { opacity:.9 }
-    .btn-m-secondary {
-      background:var(--bg2); color:var(--text2);
-    }
+    .btn-m          { padding:10px 18px; border-radius:12px; font-weight:600; font-size:13px; border:1px solid var(--border); transition:all .2s }
+    .btn-m-primary  { background:linear-gradient(135deg,#2563eb,#7c3aed); color:#fff; border:none }
+    .btn-m-primary:hover   { opacity:.9 }
+    .btn-m-secondary       { background:var(--bg2); color:var(--text2) }
     .btn-m-secondary:hover { background:var(--bg3) }
-    @keyframes popIn {
-      from { transform:scale(.93); opacity:0 }
-      to   { transform:scale(1);   opacity:1 }
-    }
 
     /* ============================================================
        RESPONSIVE
     ============================================================ */
     @media (max-width:900px) {
-      .assistant-layout { grid-template-columns:1fr }
-      .sessions-panel { position:static }
-      .sessions-list { max-height:200px }
-      .chat-panel { height:calc(100vh - 300px) }
-      .chat-welcome-tips { grid-template-columns:1fr }
+      .assistant-layout        { grid-template-columns:1fr }
+      .sessions-panel          { position:static }
+      .sessions-list           { max-height:200px }
+      .chat-panel              { height:calc(100vh - 300px) }
+      .chat-welcome-tips       { grid-template-columns:1fr }
     }
     @media (max-width:768px) {
-      .topbar { padding:12px 14px }
-      .topbar-info h1 { font-size:18px }
+      .topbar                  { padding:12px 14px }
+      .topbar-info h1          { font-size:18px }
       .topbar-actions .btn-nav span { display:none }
-      .msg-bubble { max-width:90% }
-      .msg-col    { max-width:90% }
+      .msg-bubble,.msg-col     { max-width:90% }
     }
     @media (max-width:480px) {
-      .topbar-logo { width:36px; height:36px; font-size:16px; border-radius:10px }
-      .chat-panel { height:calc(100vh - 260px) }
+      .topbar-logo             { width:36px; height:36px; font-size:16px; border-radius:10px }
+      .chat-panel              { height:calc(100vh - 260px) }
     }
 
-    ::-webkit-scrollbar { width:6px }
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar       { width:6px }
     ::-webkit-scrollbar-track { background:transparent }
     ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px }
   </style>
@@ -629,10 +566,12 @@
           </div>
           <div class="sd-section">
             <div class="sd-label">Navigasi</div>
-            <a href="dashboard.html" class="btn-nav" style="width:100%;margin-bottom:8px;display:flex">
+            <a href="dashboard.html" class="btn-nav"
+               style="width:100%;margin-bottom:8px;display:flex">
               📊 Dashboard
             </a>
-            <a href="notulen.html" class="btn-nav purple" style="width:100%;display:flex">
+            <a href="notulen.html" class="btn-nav purple"
+               style="width:100%;display:flex">
               📝 Tools Notulen
             </a>
           </div>
@@ -641,10 +580,14 @@
     </div>
   </div>
 
-  <!-- LOADING -->
+  <!-- ============================================================
+       LOADING
+  ============================================================ -->
   <div id="loadingState">⏳ Memuat data...</div>
 
-  <!-- APP -->
+  <!-- ============================================================
+       APP CONTAINER
+  ============================================================ -->
   <div id="app" style="display:none">
 
     <!-- AI KEY STATUS BAR -->
@@ -653,11 +596,11 @@
       <span id="aiKeyMsg">Memeriksa API Key...</span>
     </div>
 
-    <!-- LAYOUT -->
+    <!-- MAIN LAYOUT -->
     <div class="assistant-layout">
 
       <!-- ======================================================
-           SIDEBAR: DAFTAR SESI
+           SIDEBAR — Riwayat Sesi
       ====================================================== -->
       <div class="sessions-panel">
         <div class="sessions-header">
@@ -676,96 +619,119 @@
       ====================================================== -->
       <div class="chat-panel">
 
-        <!-- Header -->
+        <!-- Chat Header -->
         <div class="chat-header">
           <div class="chat-header-avatar">🤖</div>
           <div class="chat-header-info">
             <h3 id="chatTitle">AI Assistant SIMONTOK</h3>
-            <p id="chatSubtitle">Tanyakan jadwal, buat task, atau minta bantuan apapun</p>
+            <p  id="chatSubtitle">Tanyakan jadwal, buat task, atau minta bantuan apapun</p>
           </div>
           <div class="chat-header-actions">
-            <button class="btn-chat-action" id="btnRefreshCtx" title="Refresh data dari spreadsheet">
+            <button class="btn-chat-action" id="btnRefreshCtx">
               🔄 Refresh Data
             </button>
           </div>
         </div>
 
-        <!-- Messages -->
+        <!-- Messages Area -->
         <div class="chat-messages" id="chatMessages">
-          <!-- Welcome screen -->
+
+          <!-- Welcome Screen — disembunyikan saat ada pesan -->
           <div class="chat-welcome" id="chatWelcome">
             <div class="chat-welcome-icon">🤖</div>
             <h3 id="welcomeTitle">Halo! Ada yang bisa saya bantu?</h3>
-            <p>Saya adalah AI Assistant SIMONTOK. Saya bisa melihat jadwal task kamu, membuat task baru, dan menjawab pertanyaan seputar pekerjaan.</p>
+            <p>Saya bisa melihat jadwal task kamu, membuat task baru, dan menjawab pertanyaan seputar pekerjaan.</p>
             <div class="chat-welcome-tips">
-              <div class="tip-item" data-prompt="Apa saja task saya hari ini?">
+              <div class="tip-item"
+                   data-prompt="Apa saja task saya hari ini?">
                 <strong>📅 Jadwal Hari Ini</strong>
-                Lihat semua task yang jatuh tempo hari ini
+                Lihat task yang jatuh tempo hari ini
               </div>
-              <div class="tip-item" data-prompt="Apa jadwal saya besok?">
+              <div class="tip-item"
+                   data-prompt="Apa jadwal saya besok?">
                 <strong>📆 Jadwal Besok</strong>
                 Cek task yang perlu diselesaikan besok
               </div>
-              <div class="tip-item" data-prompt="Tampilkan semua task saya yang belum selesai">
+              <div class="tip-item"
+                   data-prompt="Tampilkan semua task saya yang belum selesai">
                 <strong>📋 Task Pending</strong>
                 Lihat semua task To Do dan Doing
               </div>
-              <div class="tip-item" data-prompt="Buatkan task: meeting evaluasi kinerja besok jam 9 pagi, prioritas tinggi">
+              <div class="tip-item"
+                   data-prompt="Buatkan task: meeting evaluasi kinerja besok jam 9 pagi, prioritas tinggi">
                 <strong>➕ Buat Task Baru</strong>
                 Tambahkan task lewat percakapan
               </div>
-              <div class="tip-item" data-prompt="Berikan ringkasan progress kerja saya bulan ini">
+              <div class="tip-item"
+                   data-prompt="Berikan ringkasan progress kerja saya bulan ini">
                 <strong>📊 Ringkasan Progress</strong>
                 Lihat statistik penyelesaian task
               </div>
-              <div class="tip-item" data-prompt="Task mana yang sudah melewati deadline?">
+              <div class="tip-item"
+                   data-prompt="Task mana yang sudah melewati deadline?">
                 <strong>⚠️ Task Overdue</strong>
                 Cek task yang sudah melewati batas waktu
               </div>
             </div>
           </div>
+          <!-- /Welcome Screen -->
+
         </div>
+        <!-- /Messages Area -->
 
         <!-- Quick Actions -->
         <div class="quick-actions">
           <div class="quick-actions-label">Pintasan Cepat</div>
-          <button class="qa-btn" data-prompt="Apa saja task saya hari ini?">📅 Hari Ini</button>
-          <button class="qa-btn" data-prompt="Apa jadwal saya besok?">📆 Besok</button>
-          <button class="qa-btn" data-prompt="Tampilkan semua task yang belum selesai">📋 Pending</button>
-          <button class="qa-btn" data-prompt="Task mana yang overdue atau melewati deadline?">⚠️ Overdue</button>
-          <button class="qa-btn" data-prompt="Berikan ringkasan progress kerja saya bulan ini">📊 Progress</button>
-          <button class="qa-btn" data-prompt="Tampilkan task dengan prioritas tinggi yang belum selesai">🔥 Prioritas Tinggi</button>
+          <button class="qa-btn"
+            data-prompt="Apa saja task saya hari ini?">📅 Hari Ini</button>
+          <button class="qa-btn"
+            data-prompt="Apa jadwal saya besok?">📆 Besok</button>
+          <button class="qa-btn"
+            data-prompt="Tampilkan semua task yang belum selesai">📋 Pending</button>
+          <button class="qa-btn"
+            data-prompt="Task mana yang overdue atau melewati deadline?">⚠️ Overdue</button>
+          <button class="qa-btn"
+            data-prompt="Berikan ringkasan progress kerja saya bulan ini">📊 Progress</button>
+          <button class="qa-btn"
+            data-prompt="Tampilkan task dengan prioritas tinggi yang belum selesai">🔥 Prioritas</button>
         </div>
 
         <!-- Input Area -->
         <div class="chat-input-area">
           <div class="chat-input-wrap">
             <textarea
-              class="chat-input"
               id="chatInput"
-              placeholder="Ketik pesan... (Enter untuk kirim, Shift+Enter untuk baris baru)"
+              class="chat-input"
               rows="1"
+              placeholder="Ketik pesan... (Enter kirim · Shift+Enter baris baru)"
             ></textarea>
-            <button class="btn-send" id="btnSend" title="Kirim">▶</button>
+            <button class="btn-send" id="btnSend" title="Kirim (Enter)">▶</button>
           </div>
           <div class="input-hint">Enter untuk kirim · Shift+Enter untuk baris baru</div>
         </div>
 
-      </div><!-- end chat-panel -->
-    </div><!-- end assistant-layout -->
-  </div><!-- end app -->
+      </div>
+      <!-- /Chat Panel -->
 
-</div><!-- end page -->
+    </div>
+    <!-- /assistant-layout -->
+
+  </div>
+  <!-- /app -->
+
+</div>
+<!-- /page -->
 
 <!-- ============================================================
-     CONFIRM TASK MODAL
+     MODAL — Konfirmasi Buat Task dari AI
 ============================================================ -->
 <div class="modal-overlay" id="taskModal">
   <div class="modal-box">
     <button class="modal-close" id="taskModalClose">&times;</button>
     <h3>➕ Konfirmasi Buat Task</h3>
-    <p style="font-size:13px;color:var(--text3);margin-bottom:16px">
-      AI akan membuat task berikut ke spreadsheet kamu. Silakan periksa dan edit jika perlu.
+    <p class="modal-desc">
+      AI akan membuat task berikut ke spreadsheet kamu.
+      Periksa dan edit jika perlu sebelum menyimpan.
     </p>
     <div class="modal-field">
       <label>Judul Task *</label>
@@ -805,830 +771,13 @@
   </div>
 </div>
 
-<script>
-// ============================================================
-// CONFIG
-// ============================================================
-var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
+<!-- ============================================================
+     SCRIPTS — urutan PENTING:
+     1. ai-client.js   → AI_CLIENT (sendChat, getApiKey, dll)
+     2. assistant.js   → logic utama (pakai AI_CLIENT & DOM di atas)
+============================================================ -->
+<script src="js/ai-client.js"></script>
+<script src="js/assistant.js"></script>
 
-// ============================================================
-// SESSION & AUTH
-// ============================================================
-var SESSION = null;
-
-function getSession() {
-  try {
-    var s = localStorage.getItem('simontok-session');
-    if (s) {
-      var parsed = JSON.parse(s);
-      if (parsed && parsed.token) { SESSION = parsed; return true; }
-    }
-  } catch(e) {}
-  return false;
-}
-
-function getApiKey() {
-  try {
-    var k = sessionStorage.getItem('simontok-apikey');
-    if (k && k !== 'undefined' && k !== 'null') return k.trim();
-  } catch(e) {}
-  return '';
-}
-
-if (!getSession()) {
-  alert('Silakan login terlebih dahulu.');
-  window.location.replace('index.html');
-} else {
-  initApp();
-}
-
-function authURL(action, extra) {
-  var url = API_URL
-    + '?action=' + encodeURIComponent(action)
-    + '&user='   + encodeURIComponent(SESSION.username)
-    + '&token='  + encodeURIComponent(SESSION.token);
-  if (extra) url += extra;
-  return url;
-}
-
-// ============================================================
-// THEME
-// ============================================================
-function initTheme() {
-  var t = localStorage.getItem('simontok-theme');
-  applyTheme(t === 'dark');
-}
-function applyTheme(isDark) {
-  if (isDark) {
-    document.documentElement.setAttribute('data-theme','dark');
-    document.getElementById('darkToggle').classList.add('on');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
-    document.getElementById('darkToggle').classList.remove('on');
-  }
-}
-document.getElementById('darkToggle').addEventListener('click', function() {
-  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  isDark = !isDark;
-  localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
-  applyTheme(isDark);
-});
-initTheme();
-
-// ============================================================
-// SETTINGS DROPDOWN
-// ============================================================
-var settingsOpen = false;
-document.getElementById('settingsBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  settingsOpen = !settingsOpen;
-  document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
-});
-document.addEventListener('click', function(e) {
-  if (settingsOpen
-    && !document.getElementById('settingsDropdown').contains(e.target)
-    && e.target !== document.getElementById('settingsBtn')) {
-    settingsOpen = false;
-    document.getElementById('settingsDropdown').classList.remove('open');
-  }
-});
-document.getElementById('settingsDropdown').addEventListener('click', function(e) {
-  e.stopPropagation();
-});
-
-// ============================================================
-// LOGOUT
-// ============================================================
-document.getElementById('logoutBtn').addEventListener('click', function() {
-  if (!confirm('Yakin ingin logout?')) return;
-  localStorage.removeItem('simontok-session');
-  sessionStorage.removeItem('simontok-apikey');
-  window.location.href = 'index.html';
-});
-
-// ============================================================
-// API KEY STATUS
-// ============================================================
-function renderApiKeyStatus() {
-  var dot = document.getElementById('aiKeyDot');
-  var msg = document.getElementById('aiKeyMsg');
-  if (!dot || !msg) return;
-  var key = getApiKey();
-  if (!key || key === 'undefined' || key === 'null' || key.trim() === '') {
-    dot.className   = 'ai-key-dot err';
-    msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
-  } else {
-    dot.className   = 'ai-key-dot ok';
-    msg.textContent = '✅ API Key aktif · Login sebagai ' + (SESSION.name || SESSION.username || 'User');
-  }
-}
-
-// ============================================================
-// STATE
-// ============================================================
-var USER_CONTEXT    = null;   // data task + notulen dari spreadsheet
-var SESSIONS_LIST   = [];     // daftar sesi dari sheet _sessions
-var ACTIVE_SESSION  = null;   // { session_id, title, messages:[] }
-var IS_AI_THINKING  = false;
-
-// ============================================================
-// INIT APP
-// ============================================================
-function initApp() {
-  // Topbar user info
-  var topbar = document.getElementById('topbarUser');
-  if (topbar) {
-    topbar.textContent = '🤖 AI Assistant · '
-      + (SESSION.name || SESSION.username)
-      + (SESSION.role === 'admin' ? ' — Admin' : '');
-  }
-
-  // Welcome title
-  var wt = document.getElementById('welcomeTitle');
-  if (wt) wt.textContent = 'Halo, ' + (SESSION.name || SESSION.username) + '! Ada yang bisa saya bantu?';
-
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('app').style.display = '';
-
-  renderApiKeyStatus();
-  loadContext();      // ambil data user dari spreadsheet
-  loadSessions();     // ambil riwayat chat
-  bindEvents();
-}
-
-// ============================================================
-// LOAD CONTEXT (task + notulen + stats) dari GAS
-// ============================================================
-function loadContext() {
-  fetch(authURL('get-context'), { redirect:'follow' })
-    .then(function(r) { return r.json(); })
-    .then(function(j) {
-      if (j.ok) {
-        USER_CONTEXT = j;
-        console.log('[SIMONTOK] Context loaded:', j.task_stats);
-      } else {
-        console.warn('[SIMONTOK] Context error:', j.error || j.message);
-      }
-    })
-    .catch(function(err) {
-      console.warn('[SIMONTOK] Context fetch error:', err.message);
-    });
-}
-
-// ============================================================
-// LOAD SESSIONS dari sheet _sessions
-// ============================================================
-function loadSessions() {
-  var list = document.getElementById('sessionsList');
-  list.innerHTML = '<div class="sessions-loading">⏳ Memuat sesi...</div>';
-
-  fetch(authURL('list-sessions'), { redirect:'follow' })
-    .then(function(r) { return r.json(); })
-    .then(function(j) {
-      SESSIONS_LIST = j.ok ? (j.data || []) : [];
-      renderSessionsList();
-    })
-    .catch(function() {
-      SESSIONS_LIST = [];
-      renderSessionsList();
-    });
-}
-
-// ============================================================
-// RENDER SESSIONS LIST
-// ============================================================
-function renderSessionsList() {
-  var list = document.getElementById('sessionsList');
-  if (!SESSIONS_LIST.length) {
-    list.innerHTML = '<div class="sessions-empty">💬 Belum ada riwayat chat.<br>Mulai percakapan baru!</div>';
-    return;
-  }
-
-  var html = '';
-  SESSIONS_LIST.forEach(function(s) {
-    var isActive = ACTIVE_SESSION && ACTIVE_SESSION.session_id === s.session_id;
-    var title    = esc(s.title || 'Percakapan Baru');
-    var updated  = s.updated_at ? s.updated_at.substring(0,16) : '';
-    var count    = s.msg_count  || 0;
-
-    html +=
-      '<div class="session-item' + (isActive ? ' active' : '') + '" data-sid="' + esc(s.session_id) + '">' +
-      '<div class="session-item-title">' + title + '</div>' +
-      '<div class="session-item-meta">💬 ' + count + ' pesan · ' + updated + '</div>' +
-      '<button class="session-del-btn" data-del="' + esc(s.session_id) + '" title="Hapus sesi">🗑</button>' +
-      '</div>';
-  });
-  list.innerHTML = html;
-
-  // Bind click sesi
-  list.querySelectorAll('.session-item[data-sid]').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-      if (e.target.closest('[data-del]')) return; // jangan trigger jika klik hapus
-      openSession(el.getAttribute('data-sid'));
-    });
-  });
-
-  // Bind hapus sesi
-  list.querySelectorAll('[data-del]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      confirmDeleteSession(btn.getAttribute('data-del'));
-    });
-  });
-}
-
-// ============================================================
-// OPEN SESSION — ambil detail sesi dari GAS
-// ============================================================
-function openSession(sessionId) {
-  var sid = document.getElementById('sessionsList');
-  sid.querySelectorAll('.session-item').forEach(function(el) {
-    el.classList.toggle('active', el.getAttribute('data-sid') === sessionId);
-  });
-
-  fetch(authURL('get-session', '&session_id=' + encodeURIComponent(sessionId)), { redirect:'follow' })
-    .then(function(r) { return r.json(); })
-    .then(function(j) {
-      if (!j.ok) { alert('Gagal memuat sesi: ' + (j.message||'')); return; }
-      ACTIVE_SESSION = j.data;
-      document.getElementById('chatTitle').textContent = ACTIVE_SESSION.title || 'Percakapan';
-      document.getElementById('chatSubtitle').textContent =
-        ACTIVE_SESSION.messages.length + ' pesan · ' + (ACTIVE_SESSION.updated_at || '').substring(0,16);
-      renderMessages();
-    })
-    .catch(function(err) { alert('Error: ' + err.message); });
-}
-
-// ============================================================
-// START NEW SESSION — hanya lokal, belum disimpan sampai ada pesan
-// ============================================================
-function startNewSession() {
-  ACTIVE_SESSION = {
-    session_id: '',             // kosong = belum tersimpan
-    title:      'Percakapan Baru',
-    messages:   []
-  };
-  document.getElementById('chatTitle').textContent    = 'Percakapan Baru';
-  document.getElementById('chatSubtitle').textContent = 'Tanyakan apa saja tentang jadwal & task kamu';
-
-  // Clear active di sidebar
-  document.querySelectorAll('.session-item').forEach(function(el) {
-    el.classList.remove('active');
-  });
-
-  renderMessages();
-  document.getElementById('chatInput').focus();
-}
-
-// ============================================================
-// RENDER MESSAGES
-// ============================================================
-function renderMessages() {
-  var area = document.getElementById('chatMessages');
-
-  if (!ACTIVE_SESSION || !ACTIVE_SESSION.messages || !ACTIVE_SESSION.messages.length) {
-    // tampilkan welcome
-    area.innerHTML = document.getElementById('chatWelcome')
-      ? document.getElementById('chatWelcome').outerHTML
-      : '<div class="chat-welcome"><div class="chat-welcome-icon">🤖</div><h3>Mulai percakapan!</h3></div>';
-
-    // Rebind tip clicks setelah re-render
-    area.querySelectorAll('.tip-item[data-prompt]').forEach(function(el) {
-      el.addEventListener('click', function() {
-        sendMessage(el.getAttribute('data-prompt'));
-      });
-    });
-    return;
-  }
-
-  var html = '';
-  ACTIVE_SESSION.messages.forEach(function(msg) {
-    html += renderBubble(msg);
-  });
-  area.innerHTML = html;
-  scrollToBottom();
-}
-
-// ============================================================
-// RENDER BUBBLE — satu pesan
-// ============================================================
-function renderBubble(msg) {
-  var isUser   = msg.role === 'user';
-  var avatar   = isUser ? (SESSION.name||SESSION.username||'U').charAt(0).toUpperCase() : '🤖';
-  var bubbleCls = isUser ? 'user' : 'ai';
-  var time     = msg.timestamp ? String(msg.timestamp).substring(11,16) : '';
-  var content  = isUser ? esc(msg.content) : renderMarkdown(msg.content);
-
-  return (
-    '<div class="msg-row ' + bubbleCls + '">' +
-    '<div class="msg-avatar ' + bubbleCls + '">' + avatar + '</div>' +
-    '<div class="msg-col">' +
-    '<div class="msg-bubble ' + bubbleCls + '">' + content + '</div>' +
-    (time ? '<div class="msg-time">' + time + '</div>' : '') +
-    '</div>' +
-    '</div>'
-  );
-}
-
-// ============================================================
-// RENDER MARKDOWN — konversi teks AI ke HTML
-// ============================================================
-function renderMarkdown(text) {
-  if (!text) return '';
-  var t = esc(text);
-
-  // Code block ```...```
-  t = t.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-  // Inline code `...`
-  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Bold **...**
-  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // Italic *...*
-  t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  // HR ---
-  t = t.replace(/^---+$/gm, '<hr>');
-  // H3 ###
-  t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  // H4 ####
-  t = t.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
-  // Unordered list
-  t = t.replace(/^\s*[-•]\s(.+)$/gm, '<li>$1</li>');
-  t = t.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
-  // Ordered list
-  t = t.replace(/^\s*\d+\.\s(.+)$/gm, '<li>$1</li>');
-  // Paragraphs — pisahkan per baris kosong
-  t = t.split(/\n{2,}/).map(function(para) {
-    para = para.trim();
-    if (!para) return '';
-    if (/^<(h[1-6]|ul|ol|pre|hr|table)/.test(para)) return para;
-    return '<p>' + para.replace(/\n/g, '<br>') + '</p>';
-  }).join('');
-
-  return t;
-}
-
-// ============================================================
-// SCROLL TO BOTTOM
-// ============================================================
-function scrollToBottom() {
-  var area = document.getElementById('chatMessages');
-  if (area) setTimeout(function() { area.scrollTop = area.scrollHeight; }, 50);
-}
-
-// ============================================================
-// SHOW / HIDE TYPING
-// ============================================================
-function showTyping() {
-  var area = document.getElementById('chatMessages');
-  var el   = document.createElement('div');
-  el.id    = 'typingIndicator';
-  el.className = 'typing-row';
-  el.innerHTML =
-    '<div class="msg-avatar ai">🤖</div>' +
-    '<div class="typing-bubble">' +
-    '<div class="typing-dot"></div>' +
-    '<div class="typing-dot"></div>' +
-    '<div class="typing-dot"></div>' +
-    '</div>';
-  area.appendChild(el);
-  scrollToBottom();
-}
-function hideTyping() {
-  var el = document.getElementById('typingIndicator');
-  if (el) el.remove();
-}
-
-// ============================================================
-// BUILD SYSTEM PROMPT — context lengkap untuk AI
-// ============================================================
-function buildSystemPrompt() {
-  var today = new Date();
-  var todayStr = today.toLocaleDateString('id-ID', {
-    weekday:'long', year:'numeric', month:'long', day:'numeric'
-  });
-
-  var prompt =
-    'Kamu adalah AI Assistant bernama SIMONTOK Assistant, milik sistem monitoring kerja BAPENDA Lombok Tengah.\n' +
-    'Kamu berbicara dengan: ' + (SESSION.name || SESSION.username) + ' (role: ' + SESSION.role + ').\n' +
-    'Tanggal hari ini: ' + todayStr + '.\n\n' +
-
-    'TUGASMU:\n' +
-    '1. Menjawab pertanyaan tentang jadwal dan task user berdasarkan DATA NYATA di bawah ini.\n' +
-    '2. Membantu membuat task baru jika diminta — WAJIB tulis JSON task dengan format yang ditentukan.\n' +
-    '3. Memberikan ringkasan progress, analisis deadline, dan saran prioritas.\n' +
-    '4. Menjawab dengan Bahasa Indonesia yang profesional dan ramah.\n\n' +
-
-    'INSTRUKSI PENTING:\n' +
-    '- Selalu gunakan DATA NYATA di bawah, JANGAN mengarang data.\n' +
-    '- Jika user meminta buat task, WAJIB balas dengan JSON khusus format: %%TASK_JSON%%{...}%%END_TASK%%\n' +
-    '- Format JSON task: {"title":"...","status":"To Do","priority":"High/Medium/Low","due_date":"YYYY-MM-DD","note":"..."}\n' +
-    '- Jika tidak ada task yang relevan, katakan dengan jelas.\n' +
-    '- Untuk tanggal "besok", hitung dari hari ini: ' + todayStr + '\n\n';
-
-  if (USER_CONTEXT && USER_CONTEXT.ok) {
-    var stats = USER_CONTEXT.task_stats || {};
-    prompt += '=== DATA TASK USER (' + (USER_CONTEXT.tasks||[]).length + ' task total) ===\n';
-    prompt += 'Statistik: Total=' + stats.total + ', To Do=' + stats.todo +
-              ', Doing=' + stats.doing + ', Done=' + stats.done +
-              ', Blocked=' + stats.blocked + '\n\n';
-
-    var tasks = USER_CONTEXT.tasks || [];
-    if (tasks.length) {
-      prompt += 'DAFTAR TASK:\n';
-      tasks.forEach(function(t, i) {
-        prompt += (i+1) + '. [' + t.status + '] ' + t.title +
-          ' | Due: ' + (t.due_date||'(tidak ada)') +
-          ' | Prioritas: ' + (t.priority||'-') +
-          (t.note ? ' | Catatan: ' + t.note.substring(0,80) : '') + '\n';
-      });
-      prompt += '\n';
-    }
-
-    var notulen = USER_CONTEXT.notulen || [];
-    if (notulen.length) {
-      prompt += 'NOTULEN TERBARU (' + notulen.length + ' item):\n';
-      notulen.forEach(function(n, i) {
-        prompt += (i+1) + '. ' + n.kegiatan +
-          ' | Tanggal: ' + (n.tanggal||'-') +
-          ' | Tempat: ' + (n.tempat||'-') + '\n';
-      });
-      prompt += '\n';
-    }
-  } else {
-    prompt += '=== DATA TASK: Belum tersedia (sedang dimuat atau gagal) ===\n\n';
-  }
-
-  prompt += 'Jawab dengan ringkas, terstruktur, dan gunakan emoji jika perlu agar mudah dibaca.';
-  return prompt;
-}
-
-// ============================================================
-// SEND MESSAGE — entry point
-// ============================================================
-function sendMessage(textOverride) {
-  var input   = document.getElementById('chatInput');
-  var content = textOverride || input.value.trim();
-  if (!content || IS_AI_THINKING) return;
-
-  var apiKey = getApiKey();
-  if (!apiKey) {
-    alert('API Key tidak tersedia. Hubungi admin untuk mengisi API Key di akun kamu.');
-    return;
-  }
-
-  // Pastikan ada sesi aktif
-  if (!ACTIVE_SESSION) startNewSession();
-
-  // Tambah pesan user
-  var userMsg = {
-    role:      'user',
-    content:   content,
-    timestamp: new Date().toISOString()
-  };
-  ACTIVE_SESSION.messages.push(userMsg);
-
-  // Clear input
-  if (!textOverride) { input.value = ''; autoResizeInput(); }
-
-  // Sembunyikan welcome, render messages
-  renderMessages();
-  IS_AI_THINKING = true;
-  document.getElementById('btnSend').disabled = true;
-  showTyping();
-
-  // Panggil AI
-  callAI(apiKey, ACTIVE_SESSION.messages)
-    .then(function(aiText) {
-      hideTyping();
-      IS_AI_THINKING = false;
-      document.getElementById('btnSend').disabled = false;
-
-      // Cek apakah ada task JSON di response
-      var processedText = processAIResponse(aiText);
-
-      var aiMsg = {
-        role:      'assistant',
-        content:   aiText,   // simpan teks asli
-        timestamp: new Date().toISOString()
-      };
-      ACTIVE_SESSION.messages.push(aiMsg);
-
-      // Auto-generate title dari pesan pertama
-      if (ACTIVE_SESSION.messages.length === 2 && !ACTIVE_SESSION.session_id) {
-        ACTIVE_SESSION.title = content.length > 40
-          ? content.substring(0,40) + '...'
-          : content;
-        document.getElementById('chatTitle').textContent = ACTIVE_SESSION.title;
-      }
-
-      renderMessages();
-      saveSessionToSheet();
-    })
-    .catch(function(err) {
-      hideTyping();
-      IS_AI_THINKING = false;
-      document.getElementById('btnSend').disabled = false;
-
-      var errMsg = {
-        role:      'assistant',
-        content:   '❌ Maaf, terjadi kesalahan: ' + err.message + '\n\nSilakan coba lagi.',
-        timestamp: new Date().toISOString()
-      };
-      ACTIVE_SESSION.messages.push(errMsg);
-      renderMessages();
-    });
-}
-
-// ============================================================
-// CALL AI — OpenRouter API
-// ============================================================
-function callAI(apiKey, messages) {
-  // Siapkan messages untuk API (tanpa timestamp, hanya role+content)
-  var apiMessages = [
-    { role: 'system', content: buildSystemPrompt() }
-  ].concat(messages.map(function(m) {
-    return { role: m.role, content: m.content };
-  }));
-
-  return fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + apiKey,
-      'Content-Type':  'application/json',
-      'HTTP-Referer':  window.location.origin,
-      'X-Title':       'SIMONTOK Assistant'
-    },
-    body: JSON.stringify({
-      model:       'google/gemini-2.0-flash-001',
-      messages:    apiMessages,
-      max_tokens:  2048,
-      temperature: 0.7
-    })
-  })
-  .then(function(r) {
-    if (!r.ok) return r.json().then(function(e) {
-      throw new Error('API Error ' + r.status + ': ' + (e.error && e.error.message ? e.error.message : JSON.stringify(e)));
-    });
-    return r.json();
-  })
-  .then(function(data) {
-    if (!data.choices || !data.choices.length) throw new Error('Response kosong dari AI');
-    return data.choices[0].message.content || '';
-  });
-}
-
-// ============================================================
-// PROCESS AI RESPONSE — deteksi & handle task JSON
-// ============================================================
-function processAIResponse(text) {
-  // Cek pola %%TASK_JSON%%{...}%%END_TASK%%
-  var re    = /%%TASK_JSON%%([\s\S]*?)%%END_TASK%%/;
-  var match = text.match(re);
-
-  if (match) {
-    try {
-      var taskData = JSON.parse(match[1].trim());
-      // Tampilkan modal konfirmasi
-      setTimeout(function() {
-        openTaskModal(taskData);
-      }, 500);
-    } catch(e) {
-      console.warn('[SIMONTOK] Gagal parse task JSON:', e.message);
-    }
-  }
-
-  // Kembalikan teks tanpa tag task JSON untuk ditampilkan ke user
-  return text.replace(re, '').trim();
-}
-
-// ============================================================
-// SAVE SESSION ke sheet _sessions
-// ============================================================
-function saveSessionToSheet() {
-  var payload = {
-    action:     'save-session',
-    user:        SESSION.username,
-    token:       SESSION.token,
-    session_id:  ACTIVE_SESSION.session_id || '',
-    title:       ACTIVE_SESSION.title || 'Percakapan Baru',
-    messages:    ACTIVE_SESSION.messages
-  };
-
-  fetch(API_URL, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(payload),
-    redirect:'follow'
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(j) {
-    if (j.ok) {
-      // Kalau sesi baru, update session_id
-      if (!ACTIVE_SESSION.session_id && j.session_id) {
-        ACTIVE_SESSION.session_id = j.session_id;
-      }
-      // Refresh sidebar
-      loadSessions();
-    }
-  })
-  .catch(function(err) {
-    console.warn('[SIMONTOK] Save session error:', err.message);
-  });
-}
-
-// ============================================================
-// DELETE SESSION
-// ============================================================
-function confirmDeleteSession(sessionId) {
-  if (!confirm('Hapus sesi chat ini?')) return;
-
-  fetch(API_URL, {
-    method:  'POST',
-    headers: { 'Content-Type':'application/json' },
-    body:    JSON.stringify({
-      action:     'delete-session',
-      user:        SESSION.username,
-      token:       SESSION.token,
-      session_id:  sessionId
-    }),
-    redirect:'follow'
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(j) {
-    if (j.ok) {
-      // Jika sesi yang dihapus adalah yang aktif, buat baru
-      if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
-        ACTIVE_SESSION = null;
-        document.getElementById('chatTitle').textContent    = 'AI Assistant SIMONTOK';
-        document.getElementById('chatSubtitle').textContent = 'Tanyakan jadwal, buat task, atau minta bantuan apapun';
-        renderMessages();
-      }
-      loadSessions();
-    } else {
-      alert('Gagal hapus: ' + (j.message || j.error || ''));
-    }
-  })
-  .catch(function(err) { alert('Error: ' + err.message); });
-}
-
-// ============================================================
-// TASK MODAL — konfirmasi buat task dari AI
-// ============================================================
-var PENDING_TASK = null;
-
-function openTaskModal(taskData) {
-  PENDING_TASK = taskData;
-  document.getElementById('mTaskTitle').value    = taskData.title    || '';
-  document.getElementById('mTaskStatus').value   = taskData.status   || 'To Do';
-  document.getElementById('mTaskPriority').value = taskData.priority || 'Medium';
-  document.getElementById('mTaskDueDate').value  = taskData.due_date || '';
-  document.getElementById('mTaskNote').value     = taskData.note     || '';
-  document.getElementById('taskModal').classList.add('active');
-}
-function closeTaskModal() {
-  document.getElementById('taskModal').classList.remove('active');
-  PENDING_TASK = null;
-}
-
-document.getElementById('taskModalClose').addEventListener('click',  closeTaskModal);
-document.getElementById('taskModalCancel').addEventListener('click', closeTaskModal);
-document.getElementById('taskModal').addEventListener('click', function(e) {
-  if (e.target === this) closeTaskModal();
-});
-
-document.getElementById('taskModalConfirm').addEventListener('click', function() {
-  var task = {
-    title:    document.getElementById('mTaskTitle').value.trim(),
-    status:   document.getElementById('mTaskStatus').value,
-    priority: document.getElementById('mTaskPriority').value,
-    due_date: document.getElementById('mTaskDueDate').value,
-    note:     document.getElementById('mTaskNote').value.trim()
-  };
-  if (!task.title) { alert('Judul task wajib diisi!'); return; }
-
-  var btn = document.getElementById('taskModalConfirm');
-  btn.disabled = true;
-  btn.textContent = '⏳ Menyimpan...';
-
-  fetch(API_URL, {
-    method:  'POST',
-    headers: { 'Content-Type':'application/json' },
-    body:    JSON.stringify({
-      action: 'ai-add-task',
-      user:    SESSION.username,
-      token:   SESSION.token,
-      task:    task
-    }),
-    redirect:'follow'
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(j) {
-    btn.disabled    = false;
-    btn.textContent = '✅ Simpan Task';
-
-    if (j.ok) {
-      closeTaskModal();
-      // Konfirmasi ke chat
-      var confirmMsg = {
-        role:      'assistant',
-        content:   '✅ Task berhasil ditambahkan ke spreadsheet!\n\n' +
-                   '**' + task.title + '**\n' +
-                   '• Status: ' + task.status + '\n' +
-                   '• Prioritas: ' + task.priority + '\n' +
-                   '• Due Date: ' + (task.due_date || '(tidak ada)') + '\n\n' +
-                   'Kamu bisa cek di halaman [Dashboard](dashboard.html) atau [Entri](entri.html).',
-        timestamp: new Date().toISOString()
-      };
-      ACTIVE_SESSION.messages.push(confirmMsg);
-      renderMessages();
-      saveSessionToSheet();
-
-      // Refresh context agar data terbaru
-      loadContext();
-    } else {
-      alert('Gagal menyimpan task: ' + (j.message || ''));
-    }
-  })
-  .catch(function(err) {
-    btn.disabled    = false;
-    btn.textContent = '✅ Simpan Task';
-    alert('Error: ' + err.message);
-  });
-});
-
-// ============================================================
-// BIND EVENTS
-// ============================================================
-function bindEvents() {
-  // Tombol new chat
-  document.getElementById('btnNewChat').addEventListener('click', startNewSession);
-
-  // Tombol refresh context
-  document.getElementById('btnRefreshCtx').addEventListener('click', function() {
-    this.textContent = '⏳ Memuat...';
-    var self = this;
-    loadContext();
-    setTimeout(function() { self.textContent = '🔄 Refresh Data'; }, 1500);
-  });
-
-  // Quick action buttons
-  document.querySelectorAll('.qa-btn[data-prompt]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      sendMessage(btn.getAttribute('data-prompt'));
-    });
-  });
-
-  // Tips di welcome screen (delegasi ke chatMessages karena re-render)
-  document.getElementById('chatMessages').addEventListener('click', function(e) {
-    var tip = e.target.closest('.tip-item[data-prompt]');
-    if (tip) sendMessage(tip.getAttribute('data-prompt'));
-  });
-
-  // Tombol send
-  document.getElementById('btnSend').addEventListener('click', function() {
-    sendMessage();
-  });
-
-  // Enter untuk send, Shift+Enter untuk newline
-  document.getElementById('chatInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  // Auto-resize textarea
-  document.getElementById('chatInput').addEventListener('input', autoResizeInput);
-}
-
-// ============================================================
-// AUTO RESIZE TEXTAREA
-// ============================================================
-function autoResizeInput() {
-  var el  = document.getElementById('chatInput');
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
-
-// ============================================================
-// UTILS
-// ============================================================
-function esc(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
-
-// ============================================================
-// INIT
-// ============================================================
-window.addEventListener('DOMContentLoaded', function() {
-  // Welcome screen sudah ada di HTML, cache dulu
-  var wc = document.getElementById('chatWelcome');
-  if (wc) window._welcomeHTML = wc.outerHTML;
-});
-</script>
 </body>
 </html>
