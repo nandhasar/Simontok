@@ -453,21 +453,11 @@ function startNewSession() {
 function saveSessionToSheet() {
   if (!ACTIVE_SESSION) return;
 
-postAction('save-session', {
-  session_id: ACTIVE_SESSION.session_id || '',
-  title: ACTIVE_SESSION.title || 'Percakapan Baru',
-  messages: ACTIVE_SESSION.messages || []
-})
-  .then(function (j) {
-    if (j.ok && !ACTIVE_SESSION.session_id && j.session_id) {
-      ACTIVE_SESSION.session_id = j.session_id;
-    }
-    loadSessions();
+  postAction('save-session', {
+    session_id: ACTIVE_SESSION.session_id || '',
+    title: ACTIVE_SESSION.title || 'Percakapan Baru',
+    messages: ACTIVE_SESSION.messages || []
   })
-  .catch(function (err) {
-    console.warn('[SIMONTOK] save-session error:', err.message);
-  });
-    .then(function (r) { return r.json(); })
     .then(function (j) {
       if (j.ok && !ACTIVE_SESSION.session_id && j.session_id) {
         ACTIVE_SESSION.session_id = j.session_id;
@@ -482,25 +472,12 @@ postAction('save-session', {
 function confirmDeleteSession(sessionId) {
   if (!confirm('Hapus sesi chat ini?')) return;
 
-postAction('delete-session', { session_id: sessionId })
-  .then(function (j) {
-    if (!j.ok) { alert('Gagal menghapus sesi.'); return; }
-
-    if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
-      ACTIVE_SESSION = null;
-      document.getElementById('chatTitle').textContent = 'AI Assistant SIMONTOK';
-      document.getElementById('chatSubtitle').textContent = 'Tanyakan jadwal, buat task, atau minta bantuan apapun';
-      renderMessages();
-    }
-
-    loadSessions();
-  })
-  .catch(function (err) {
-    alert('Error: ' + err.message);
-  });
-    .then(function (r) { return r.json(); })
+  postAction('delete-session', { session_id: sessionId })
     .then(function (j) {
-      if (!j.ok) { alert('Gagal menghapus sesi.'); return; }
+      if (!j.ok) {
+        alert('Gagal menghapus sesi.');
+        return;
+      }
 
       if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
         ACTIVE_SESSION = null;
