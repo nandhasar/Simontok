@@ -1,7 +1,7 @@
 // ================================================================
 // SIMONTOK - Assistant JS
 // File   : js/assistant.js
-// Versi  : 1.4 (stable context-aware + AI_CLIENT + GAS POST safe)
+// Versi  : 1.5 (local chat storage + auto prune + AI context cap)
 // Depends: js/ai-client.js (opsional; ada fallback callOpenRouter)
 // ================================================================
 
@@ -12,6 +12,19 @@ var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-
 var SESSION_KEY = 'simontok-session';
 var SESSION     = null;
 var AI_MODEL    = 'google/gemma-4-31b-it';
+
+// Penyimpanan chat: 'local' atau 'remote'
+var CHAT_STORAGE_MODE = 'local';
+
+// Limit local storage chat
+var MAX_LOCAL_SESSIONS = 40;
+var MAX_MSG_PER_SESSION_STORE = 120;
+var MAX_CHARS_PER_MSG_STORE = 2000;
+var MAX_LOCAL_BYTES_SOFT = 4 * 1024 * 1024; // target aman 4MB
+
+// Limit history ke AI (hindari konteks terlalu panjang)
+var MAX_AI_CONTEXT_MESSAGES = 24;
+var MAX_AI_CONTEXT_CHARS = 18000;
 
 // ================================================================
 // 2) SESSION HELPERS
@@ -46,7 +59,6 @@ function authBody(obj) {
   return obj;
 }
 
-// POST helper gaya entri.html (aman untuk GAS)
 function postAction(action, bodyData) {
   var url = authURL(action);
   var payload = authBody(Object.assign({}, bodyData || {}));
@@ -70,7 +82,111 @@ function postAction(action, bodyData) {
 }
 
 // ================================================================
-// 3) THEME PRELOAD
+// 3) LOCAL CHAT STORAGE HELPERS
+// ================================================================
+function chatStoreKey() {
+  var u = (SESSION && SESSION.username) ? SESSION.username : 'guest';
+  return 'simontok-chat-sessions:' + u;
+}
+
+function readLocalSessions() {
+  try {
+    var raw = localStorage.getItem(chatStoreKey());
+    var arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function approxBytes(str) {
+  try { return new Blob([str]).size; }
+  catch (e) { return (str || '').length * 2; }
+}
+
+function safeText(s, maxChars) {
+  s = String(s || '');
+  if (s.length <= maxChars) return s;
+  return s.slice(0, maxChars) + '…';
+}
+
+function compactSessionForStore(s) {
+  var msgs = Array.isArray(s.messages) ? s.messages : [];
+
+  if (msgs.length > MAX_MSG_PER_SESSION_STORE) {
+    msgs = msgs.slice(msgs.length - MAX_MSG_PER_SESSION_STORE);
+  }
+
+  msgs = msgs.map(function (m) {
+    return {
+      role: m.role || 'user',
+      content: safeText(m.content || '', MAX_CHARS_PER_MSG_STORE),
+      timestamp: m.timestamp || ''
+    };
+  });
+
+  return {
+    session_id: s.session_id,
+    title: safeText(s.title || 'Percakapan Baru', 120),
+    messages: msgs,
+    updated_at: s.updated_at || new Date().toISOString()
+  };
+}
+
+function sortByUpdatedDesc(list) {
+  return (list || []).sort(function (a, b) {
+    return String(b.updated_at || '').localeCompare(String(a.updated_at || ''));
+  });
+}
+
+function writeLocalSessionsSafe(list) {
+  var key = chatStoreKey();
+  var work = sortByUpdatedDesc((list || []).map(compactSessionForStore));
+
+  if (work.length > MAX_LOCAL_SESSIONS) {
+    work = work.slice(0, MAX_LOCAL_SESSIONS);
+  }
+
+  while (work.length > 0) {
+    var raw = JSON.stringify(work);
+
+    while (approxBytes(raw) > MAX_LOCAL_BYTES_SOFT && work.length > 1) {
+      work.pop();
+      raw = JSON.stringify(work);
+    }
+
+    try {
+      localStorage.setItem(key, raw);
+      return true;
+    } catch (e) {
+      work.pop();
+    }
+  }
+
+  try {
+    localStorage.setItem(key, JSON.stringify([]));
+  } catch (e2) {}
+  return false;
+}
+
+function writeLocalSessions(list) {
+  try {
+    writeLocalSessionsSafe(list || []);
+  } catch (e) {
+    console.warn('[SIMONTOK] writeLocalSessions error:', e.message);
+  }
+}
+
+function ensureLocalSessionId() {
+  if (!ACTIVE_SESSION) return '';
+  if (!ACTIVE_SESSION.session_id) {
+    ACTIVE_SESSION.session_id = 'sid_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  }
+  return ACTIVE_SESSION.session_id;
+}
+
+// ================================================================
+// 4) THEME PRELOAD
 // ================================================================
 (function () {
   var t = localStorage.getItem('simontok-theme');
@@ -78,7 +194,7 @@ function postAction(action, bodyData) {
 })();
 
 // ================================================================
-// 4) STATE
+// 5) STATE
 // ================================================================
 var USER_CONTEXT   = null;
 var SESSIONS_LIST  = [];
@@ -93,7 +209,7 @@ var CONTEXT_STATE = {
 };
 
 // ================================================================
-// 5) START APP
+// 6) START APP
 // ================================================================
 function startApp() {
   initThemeButton();
@@ -169,7 +285,7 @@ function onSessionReady() {
 }
 
 // ================================================================
-// 6) API KEY STATUS
+// 7) API KEY STATUS
 // ================================================================
 function renderApiKeyStatus() {
   var dot = document.getElementById('aiKeyDot');
@@ -187,7 +303,7 @@ function renderApiKeyStatus() {
 }
 
 // ================================================================
-// 7) THEME
+// 8) THEME
 // ================================================================
 function initThemeButton() {
   var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -206,7 +322,7 @@ function applyTheme(isDark) {
 }
 
 // ================================================================
-// 8) CONTEXT HELPERS
+// 9) CONTEXT HELPERS
 // ================================================================
 function calcTaskStats(tasks) {
   var st = { total: 0, todo: 0, doing: 0, done: 0, blocked: 0 };
@@ -232,7 +348,7 @@ function normalizeContextFromList(taskRows) {
 }
 
 // ================================================================
-// 9) CONTEXT LOADER
+// 10) CONTEXT LOADER
 // ================================================================
 function loadContext(force) {
   force = !!force;
@@ -292,7 +408,7 @@ function ensureContextLoaded(timeoutMs) {
 }
 
 // ================================================================
-// 10) SYSTEM PROMPT
+// 11) SYSTEM PROMPT + AI CONTEXT BUILDER
 // ================================================================
 function buildSystemPrompt() {
   var now = new Date();
@@ -357,12 +473,46 @@ function buildSystemPrompt() {
   return p;
 }
 
+function buildMessagesForAI(systemPrompt, history) {
+  var arr = Array.isArray(history) ? history : [];
+  var sliced = arr.slice(-MAX_AI_CONTEXT_MESSAGES);
+
+  var total = 0;
+  var kept = [];
+  for (var i = sliced.length - 1; i >= 0; i--) {
+    var m = sliced[i] || {};
+    var c = String(m.content || '');
+    if ((total + c.length) > MAX_AI_CONTEXT_CHARS) break;
+    kept.unshift({ role: m.role || 'user', content: c });
+    total += c.length;
+  }
+
+  return [{ role: 'system', content: systemPrompt }].concat(kept);
+}
+
 // ================================================================
-// 11) SESSION CHAT CRUD
+// 12) SESSION CHAT CRUD
 // ================================================================
 function loadSessions() {
   var el = document.getElementById('sessionsList');
   if (el) el.innerHTML = '<div class="sessions-loading">⏳ Memuat sesi...</div>';
+
+  if (CHAT_STORAGE_MODE === 'local') {
+    var list = readLocalSessions();
+    list = sortByUpdatedDesc(list);
+
+    SESSIONS_LIST = list.map(function (s) {
+      return {
+        session_id: s.session_id,
+        title: s.title || 'Percakapan Baru',
+        msg_count: (s.messages || []).length,
+        updated_at: s.updated_at || ''
+      };
+    });
+
+    renderSessionsList();
+    return;
+  }
 
   fetch(authURL('list-sessions'), { redirect: 'follow' })
     .then(function (r) { return r.json(); })
@@ -413,6 +563,30 @@ function renderSessionsList() {
 }
 
 function openSession(sessionId) {
+  if (CHAT_STORAGE_MODE === 'local') {
+    var list = readLocalSessions();
+    var d = null;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].session_id === sessionId) { d = list[i]; break; }
+    }
+    if (!d) { alert('Sesi tidak ditemukan.'); return; }
+
+    ACTIVE_SESSION = {
+      session_id: d.session_id || sessionId,
+      title: d.title || 'Percakapan',
+      messages: Array.isArray(d.messages) ? d.messages : [],
+      updated_at: d.updated_at || ''
+    };
+
+    document.getElementById('chatTitle').textContent = ACTIVE_SESSION.title;
+    document.getElementById('chatSubtitle').textContent =
+      ACTIVE_SESSION.messages.length + ' pesan · ' + String(ACTIVE_SESSION.updated_at || '').substring(0, 16);
+
+    renderMessages();
+    renderSessionsList();
+    return;
+  }
+
   fetch(authURL('get-session', '&session_id=' + encodeURIComponent(sessionId)), { redirect: 'follow' })
     .then(function (r) { return r.json(); })
     .then(function (j) {
@@ -454,6 +628,35 @@ function startNewSession() {
 function saveSessionToSheet() {
   if (!ACTIVE_SESSION) return;
 
+  if (CHAT_STORAGE_MODE === 'local') {
+    if (Array.isArray(ACTIVE_SESSION.messages) && ACTIVE_SESSION.messages.length > MAX_MSG_PER_SESSION_STORE) {
+      ACTIVE_SESSION.messages = ACTIVE_SESSION.messages.slice(-MAX_MSG_PER_SESSION_STORE);
+    }
+
+    var sid = ensureLocalSessionId();
+    ACTIVE_SESSION.updated_at = new Date().toISOString();
+
+    var list = readLocalSessions();
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].session_id === sid) { idx = i; break; }
+    }
+
+    var payload = {
+      session_id: sid,
+      title: ACTIVE_SESSION.title || 'Percakapan Baru',
+      messages: ACTIVE_SESSION.messages || [],
+      updated_at: ACTIVE_SESSION.updated_at
+    };
+
+    if (idx >= 0) list[idx] = payload;
+    else list.push(payload);
+
+    writeLocalSessions(list);
+    loadSessions();
+    return;
+  }
+
   postAction('save-session', {
     session_id: ACTIVE_SESSION.session_id || '',
     title: ACTIVE_SESSION.title || 'Percakapan Baru',
@@ -473,6 +676,23 @@ function saveSessionToSheet() {
 function confirmDeleteSession(sessionId) {
   if (!confirm('Hapus sesi chat ini?')) return;
 
+  if (CHAT_STORAGE_MODE === 'local') {
+    var list = readLocalSessions().filter(function (s) {
+      return s.session_id !== sessionId;
+    });
+    writeLocalSessions(list);
+
+    if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
+      ACTIVE_SESSION = null;
+      document.getElementById('chatTitle').textContent = 'AI Assistant SIMONTOK';
+      document.getElementById('chatSubtitle').textContent = 'Tanyakan jadwal, buat task, atau minta bantuan apapun';
+      renderMessages();
+    }
+
+    loadSessions();
+    return;
+  }
+
   postAction('delete-session', { session_id: sessionId })
     .then(function () {
       if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
@@ -489,7 +709,7 @@ function confirmDeleteSession(sessionId) {
 }
 
 // ================================================================
-// 12) RENDER CHAT
+// 13) RENDER CHAT
 // ================================================================
 function renderMessages() {
   var area = document.getElementById('chatMessages');
@@ -598,7 +818,7 @@ function sendToAI(messagesForAI) {
 }
 
 // ================================================================
-// 13) SEND MESSAGE
+// 14) SEND MESSAGE
 // ================================================================
 function sendMessage(textOverride) {
   var input = document.getElementById('chatInput');
@@ -633,10 +853,10 @@ function sendMessage(textOverride) {
   showTyping();
 
   ensureContextLoaded(8000).finally(function () {
-    var messagesForAI = [{ role: 'system', content: buildSystemPrompt() }]
-      .concat((ACTIVE_SESSION.messages || []).map(function (m) {
-        return { role: m.role, content: m.content };
-      }));
+    var messagesForAI = buildMessagesForAI(
+      buildSystemPrompt(),
+      ACTIVE_SESSION.messages || []
+    );
 
     sendToAI(messagesForAI)
       .then(function (result) {
@@ -672,12 +892,13 @@ function sendMessage(textOverride) {
           timestamp: new Date().toISOString()
         });
         renderMessages();
+        saveSessionToSheet();
       });
   });
 }
 
 // ================================================================
-// 14) OPENROUTER FALLBACK
+// 15) OPENROUTER FALLBACK
 // ================================================================
 function callOpenRouter(apiKey, messages) {
   var start = Date.now();
@@ -752,7 +973,7 @@ function friendlyError(code, msg) {
 }
 
 // ================================================================
-// 15) TASK JSON HANDLER + MODAL
+// 16) TASK JSON HANDLER + MODAL
 // ================================================================
 var PENDING_TASK = null;
 
@@ -830,7 +1051,7 @@ function submitTaskModal() {
 }
 
 // ================================================================
-// 16) UTIL
+// 17) UTIL
 // ================================================================
 function autoResizeInput() {
   var el = document.getElementById('chatInput');
@@ -848,7 +1069,7 @@ function esc(s) {
 }
 
 // ================================================================
-// 17) EVENTS
+// 18) EVENTS
 // ================================================================
 function initEventListeners() {
   document.getElementById('darkToggle').addEventListener('click', function () {
@@ -878,7 +1099,7 @@ function initEventListeners() {
 
   document.getElementById('logoutBtn').addEventListener('click', function () {
     if (!confirm('Yakin ingin logout?')) return;
-    localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_KEY);
     try { sessionStorage.removeItem('simontok-apikey'); } catch (e) {}
     window.location.href = 'index.html';
   });
@@ -931,6 +1152,6 @@ function initEventListeners() {
 }
 
 // ================================================================
-// 18) ENTRY
+// 19) ENTRY
 // ================================================================
 window.onload = startApp;
