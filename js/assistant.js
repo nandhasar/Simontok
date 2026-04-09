@@ -38,6 +38,33 @@ function authURL(action, extra) {
     + '&token=' + encodeURIComponent(SESSION.token)
     + (extra || '');
 }
+function authBody(obj) {
+  obj = obj || {};
+  obj.user = SESSION.username;
+  obj.token = SESSION.token;
+  return obj;
+}
+
+function postAction(action, bodyData) {
+  var url = authURL(action); // auth di query param
+  var payload = authBody(Object.assign({}, bodyData || {})); // auth juga di body (fallback)
+
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow'
+  })
+    .then(function (res) { return res.text(); })
+    .then(function (text) {
+      var j;
+      try { j = JSON.parse(text); }
+      catch (e) { throw new Error('Response bukan JSON: ' + String(text).substring(0, 180)); }
+
+      if (!j.ok) throw new Error(j.message || 'Request gagal');
+      return j;
+    });
+}
 
 // ================================================================
 // 3) THEME PRELOAD
@@ -426,19 +453,20 @@ function startNewSession() {
 function saveSessionToSheet() {
   if (!ACTIVE_SESSION) return;
 
-  fetch(API_URL, {
-    method : 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    redirect: 'follow',
-    body: JSON.stringify({
-      action    : 'save-session',
-      user      : SESSION.username,
-      token     : SESSION.token,
-      session_id: ACTIVE_SESSION.session_id || '',
-      title     : ACTIVE_SESSION.title || 'Percakapan Baru',
-      messages  : ACTIVE_SESSION.messages || []
-    })
+postAction('save-session', {
+  session_id: ACTIVE_SESSION.session_id || '',
+  title: ACTIVE_SESSION.title || 'Percakapan Baru',
+  messages: ACTIVE_SESSION.messages || []
+})
+  .then(function (j) {
+    if (j.ok && !ACTIVE_SESSION.session_id && j.session_id) {
+      ACTIVE_SESSION.session_id = j.session_id;
+    }
+    loadSessions();
   })
+  .catch(function (err) {
+    console.warn('[SIMONTOK] save-session error:', err.message);
+  });
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (j.ok && !ACTIVE_SESSION.session_id && j.session_id) {
@@ -454,17 +482,22 @@ function saveSessionToSheet() {
 function confirmDeleteSession(sessionId) {
   if (!confirm('Hapus sesi chat ini?')) return;
 
-  fetch(API_URL, {
-    method : 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    redirect: 'follow',
-    body: JSON.stringify({
-      action    : 'delete-session',
-      user      : SESSION.username,
-      token     : SESSION.token,
-      session_id: sessionId
-    })
+postAction('delete-session', { session_id: sessionId })
+  .then(function (j) {
+    if (!j.ok) { alert('Gagal menghapus sesi.'); return; }
+
+    if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
+      ACTIVE_SESSION = null;
+      document.getElementById('chatTitle').textContent = 'AI Assistant SIMONTOK';
+      document.getElementById('chatSubtitle').textContent = 'Tanyakan jadwal, buat task, atau minta bantuan apapun';
+      renderMessages();
+    }
+
+    loadSessions();
   })
+  .catch(function (err) {
+    alert('Error: ' + err.message);
+  });
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (!j.ok) { alert('Gagal menghapus sesi.'); return; }
@@ -795,17 +828,38 @@ function submitTaskModal() {
   btn.disabled = true;
   btn.textContent = '⏳ Menyimpan...';
 
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    redirect: 'follow',
-    body: JSON.stringify({
-      action: 'ai-add-task',
-      user: SESSION.username,
-      token: SESSION.token,
-      task: task
-    })
+postAction('ai-add-task', { task: task })
+  .then(function (j) {
+    btn.disabled = false;
+    btn.textContent = '✅ Simpan Task';
+
+    if (!j.ok) {
+      alert('Gagal simpan task: ' + (j.message || 'Unknown error'));
+      return;
+    }
+
+    closeTaskModal();
+
+    ACTIVE_SESSION.messages.push({
+      role: 'assistant',
+      content:
+        '✅ Task berhasil ditambahkan!\n\n' +
+        '**' + task.title + '**\n' +
+        '• Status: ' + task.status + '\n' +
+        '• Prioritas: ' + task.priority + '\n' +
+        '• Due Date: ' + (task.due_date || '(tidak ada)'),
+      timestamp: new Date().toISOString()
+    });
+
+    renderMessages();
+    saveSessionToSheet();
+    loadContext(true);
   })
+  .catch(function (err) {
+    btn.disabled = false;
+    btn.textContent = '✅ Simpan Task';
+    alert('Error: ' + err.message);
+  });
     .then(function (r) { return r.json(); })
     .then(function (j) {
       btn.disabled = false;
