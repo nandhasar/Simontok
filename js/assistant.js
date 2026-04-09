@@ -1,7 +1,7 @@
 // ================================================================
 // SIMONTOK - Assistant JS
 // File   : js/assistant.js
-// Versi  : 1.3 (stable context-aware + AI_CLIENT compatible)
+// Versi  : 1.4 (stable context-aware + AI_CLIENT + GAS POST safe)
 // Depends: js/ai-client.js (opsional; ada fallback callOpenRouter)
 // ================================================================
 
@@ -38,6 +38,7 @@ function authURL(action, extra) {
     + '&token=' + encodeURIComponent(SESSION.token)
     + (extra || '');
 }
+
 function authBody(obj) {
   obj = obj || {};
   obj.user = SESSION.username;
@@ -45,9 +46,10 @@ function authBody(obj) {
   return obj;
 }
 
+// POST helper gaya entri.html (aman untuk GAS)
 function postAction(action, bodyData) {
-  var url = authURL(action); // auth di query param
-  var payload = authBody(Object.assign({}, bodyData || {})); // auth juga di body (fallback)
+  var url = authURL(action);
+  var payload = authBody(Object.assign({}, bodyData || {}));
 
   return fetch(url, {
     method: 'POST',
@@ -59,8 +61,9 @@ function postAction(action, bodyData) {
     .then(function (text) {
       var j;
       try { j = JSON.parse(text); }
-      catch (e) { throw new Error('Response bukan JSON: ' + String(text).substring(0, 180)); }
-
+      catch (e) {
+        throw new Error('Response bukan JSON: ' + String(text).substring(0, 180));
+      }
       if (!j.ok) throw new Error(j.message || 'Request gagal');
       return j;
     });
@@ -276,9 +279,7 @@ function loadContext(force) {
 function ensureContextLoaded(timeoutMs) {
   timeoutMs = timeoutMs || 8000;
 
-  if (typeof loadContext !== 'function') {
-    return Promise.resolve(null);
-  }
+  if (typeof loadContext !== 'function') return Promise.resolve(null);
 
   var timeoutPromise = new Promise(function (resolve) {
     setTimeout(function () { resolve(null); }, timeoutMs);
@@ -459,7 +460,7 @@ function saveSessionToSheet() {
     messages: ACTIVE_SESSION.messages || []
   })
     .then(function (j) {
-      if (j.ok && !ACTIVE_SESSION.session_id && j.session_id) {
+      if (!ACTIVE_SESSION.session_id && j.session_id) {
         ACTIVE_SESSION.session_id = j.session_id;
       }
       loadSessions();
@@ -473,19 +474,13 @@ function confirmDeleteSession(sessionId) {
   if (!confirm('Hapus sesi chat ini?')) return;
 
   postAction('delete-session', { session_id: sessionId })
-    .then(function (j) {
-      if (!j.ok) {
-        alert('Gagal menghapus sesi.');
-        return;
-      }
-
+    .then(function () {
       if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sessionId) {
         ACTIVE_SESSION = null;
         document.getElementById('chatTitle').textContent = 'AI Assistant SIMONTOK';
         document.getElementById('chatSubtitle').textContent = 'Tanyakan jadwal, buat task, atau minta bantuan apapun';
         renderMessages();
       }
-
       loadSessions();
     })
     .catch(function (err) {
@@ -805,47 +800,10 @@ function submitTaskModal() {
   btn.disabled = true;
   btn.textContent = '⏳ Menyimpan...';
 
-postAction('ai-add-task', { task: task })
-  .then(function (j) {
-    btn.disabled = false;
-    btn.textContent = '✅ Simpan Task';
-
-    if (!j.ok) {
-      alert('Gagal simpan task: ' + (j.message || 'Unknown error'));
-      return;
-    }
-
-    closeTaskModal();
-
-    ACTIVE_SESSION.messages.push({
-      role: 'assistant',
-      content:
-        '✅ Task berhasil ditambahkan!\n\n' +
-        '**' + task.title + '**\n' +
-        '• Status: ' + task.status + '\n' +
-        '• Prioritas: ' + task.priority + '\n' +
-        '• Due Date: ' + (task.due_date || '(tidak ada)'),
-      timestamp: new Date().toISOString()
-    });
-
-    renderMessages();
-    saveSessionToSheet();
-    loadContext(true);
-  })
-  .catch(function (err) {
-    btn.disabled = false;
-    btn.textContent = '✅ Simpan Task';
-    alert('Error: ' + err.message);
-  });
-    .then(function (r) { return r.json(); })
-    .then(function (j) {
+  postAction('ai-add-task', { task: task })
+    .then(function () {
       btn.disabled = false;
       btn.textContent = '✅ Simpan Task';
-
-      if (!j.ok) {
-        alert('Gagal simpan task: ' + (j.message || 'Unknown error'));
-        return;
-      }
 
       closeTaskModal();
 
