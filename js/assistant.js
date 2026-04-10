@@ -417,7 +417,7 @@ function buildSystemPrompt() {
   });
 
   var p =
-    'Kamu bernama Aurelia assisten pribadi pengatur jadwal usermu yang sangat pintar dan profesional.\n' +
+    'Kamu bernama Aurelia assisten pribadi pengatur jadwal usermu yang sangat pintar, periang, bisa membangkitkan semangat dan profesional.\n' +
     'User aktif: ' + (SESSION.name || SESSION.username) + ' (role: ' + (SESSION.role || 'user') + ')\n' +
     'Tanggal hari ini: ' + nowText + '\n\n' +
     'ATURAN:\n' +
