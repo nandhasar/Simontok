@@ -1,17 +1,27 @@
 // ================================================================
 // BEKARYE - AI Client
 // File  : js/ai-client.js
-// Versi : 1.2 (UX improved: retry + fallback + safer payload)
-// Tanggal: 9 April 2026
+// Versi : 1.3 (migration hardened: legacy keys + persistent apiKey)
+// Tanggal: 10 April 2026
 //
 // Deskripsi:
 //   Single provider — OpenRouter
-//   Model default   — google/gemma-4-31b-it (bisa di-override)
+//   Model default   — anthropic/claude-haiku-4.5 (bisa di-override)
 //   Kompatibel dengan SESSION di localStorage + sessionStorage
 // ================================================================
 
 var AI_CLIENT = (function () {
   'use strict';
+
+  // ============================================================
+  // STORAGE KEYS
+  // ============================================================
+  var STORAGE_KEYS = {
+    session: 'bekarye-session',
+    sessionLegacy: 'simontok-session',
+    apiSession: 'bekarye-apikey',
+    apiSessionLegacy: 'simontok-apikey'
+  };
 
   // ============================================================
   // KONFIG DEFAULT
@@ -81,7 +91,10 @@ var AI_CLIENT = (function () {
 
   function _readApiKeyFromSessionStorage() {
     try {
-      return _safeTrim(sessionStorage.getItem('bekarye-apikey')); // ✅ BEKARYE session
+      return _safeTrim(
+        sessionStorage.getItem(STORAGE_KEYS.apiSession) ||
+        sessionStorage.getItem(STORAGE_KEYS.apiSessionLegacy)
+      );
     } catch (e) {
       return '';
     }
@@ -89,7 +102,7 @@ var AI_CLIENT = (function () {
 
   function _readApiKeyFromLocalSession() {
     try {
-      var raw = localStorage.getItem('bekarye-session'); // ✅ BEKARYE session
+      var raw = localStorage.getItem(STORAGE_KEYS.session) || localStorage.getItem(STORAGE_KEYS.sessionLegacy);
       if (!raw) return '';
       var obj = JSON.parse(raw);
       return _safeTrim(obj && obj.apiKey);
@@ -101,8 +114,22 @@ var AI_CLIENT = (function () {
   function _persistApiKey(key) {
     var k = _safeTrim(key);
     if (!k) return;
+
     _runtimeApiKey = k;
-    try { sessionStorage.setItem('bekarye-apikey', k); } catch (e) {}
+
+    // 1) Simpan cepat untuk runtime tab saat ini
+    try {
+      sessionStorage.setItem(STORAGE_KEYS.apiSession, k);
+    } catch (e) {}
+
+    // 2) Simpan persisten ke bekarye-session
+    try {
+      var raw = localStorage.getItem(STORAGE_KEYS.session) || '{}';
+      var sess = JSON.parse(raw);
+      if (!sess || typeof sess !== 'object') sess = {};
+      sess.apiKey = k;
+      localStorage.setItem(STORAGE_KEYS.session, JSON.stringify(sess));
+    } catch (e) {}
   }
 
   function _registerController(c) {
@@ -312,36 +339,42 @@ var AI_CLIENT = (function () {
     var k = _safeTrim(_runtimeApiKey);
     if (k) return k;
 
+    // 1) sessionStorage (bekarye-apikey / simontok-apikey)
     k = _readApiKeyFromSessionStorage();
     if (k) {
-      _runtimeApiKey = k;
+      _persistApiKey(k);
       return k;
     }
 
+    // 2) localStorage session (bekarye-session / simontok-session)
     k = _readApiKeyFromLocalSession();
     if (k) {
       _persistApiKey(k);
       return k;
     }
 
-    // ⬇️ MIGRATION: fallback ke simontok-session jika bekarye-session kosong
+    // 3) migration explicit dari legacy session ke bekarye-session
     try {
-      if (!k) {
-        var oldSession = localStorage.getItem('simontok-session');
-        if (oldSession) {
-          var obj = JSON.parse(oldSession);
-          k = _safeTrim(obj && obj.apiKey);
-          if (k) {
-            _persistApiKey(k);
-            console.log('✅ API Key berhasil dimigrasi dari SIMONTOK ke BEKARYE');
-          }
+      var oldRaw = localStorage.getItem(STORAGE_KEYS.sessionLegacy);
+      if (oldRaw) {
+        var oldObj = JSON.parse(oldRaw);
+        var oldKey = _safeTrim(oldObj && oldObj.apiKey);
+
+        if (!localStorage.getItem(STORAGE_KEYS.session)) {
+          localStorage.setItem(STORAGE_KEYS.session, oldRaw);
+        }
+
+        if (oldKey) {
+          _persistApiKey(oldKey);
+          console.log('✅ API Key/session berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+          return oldKey;
         }
       }
-    } catch(e) {
+    } catch (e) {
       console.error('Error migrasi API Key:', e);
     }
 
-    return k;
+    return '';
   }
 
   function hasApiKey() {
@@ -353,7 +386,7 @@ var AI_CLIENT = (function () {
   // ============================================================
   function _sendOneModel(cleanMessages, options, model, attemptBase) {
     var apiKey = options.apiKey;
-    var referer = options.referer || (window.location.origin || 'https://bekarye.app'); // ⬇️ BEKARYE domain
+    var referer = options.referer || (window.location.origin || 'https://bekarye.app');
     var title = options.title || 'BEKARYE Assistant';
     var maxTokens = _clamp(
       (typeof options.maxTokens === 'number' ? options.maxTokens : CONFIG.maxTokens),
@@ -496,7 +529,7 @@ var AI_CLIENT = (function () {
       return Promise.reject(new Error('API Key tidak tersedia. Hubungi admin untuk mengisi API Key akun BEKARYE Anda.'));
     }
 
-    var chosenModel = options.model || (typeof AI_MODEL !== 'undefined' ? AI_MODEL : 'google/gemma-4-31b-it');
+    var chosenModel = options.model || (typeof AI_MODEL !== 'undefined' ? AI_MODEL : 'anthropic/claude-haiku-4.5');
 
     var cleanMessages = _compactMessages(messages);
     if (!cleanMessages.length) {
@@ -591,10 +624,10 @@ var AI_CLIENT = (function () {
   }
 
   function resetStats() {
-    _stats.requestCount =0;
-    _stats.totalTokens =0;
+    _stats.requestCount = 0;
+    _stats.totalTokens = 0;
     _stats.lastModel = '';
-    _stats.lastLatencyMs =0;
+    _stats.lastLatencyMs = 0;
     _stats.errors = [];
   }
 
