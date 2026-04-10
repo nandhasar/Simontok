@@ -11,7 +11,7 @@
 var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 var SESSION_KEY = 'simontok-session';
 var SESSION     = null;
-var AI_MODEL    = 'openai/gpt-4o-mini';
+var AI_MODEL    = 'anthropic/claude-haiku-4.5';
 
 // Penyimpanan chat: 'local' atau 'remote'
 var CHAT_STORAGE_MODE = 'local';
