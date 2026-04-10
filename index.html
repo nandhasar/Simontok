@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BEKARYE — Sistem Monitoring Organisasi Kerja</title>
   <style>
-    :root{--bg:#f8fafc;--bg2:#fff;--bg3:#f1f5f9;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;--blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;--purple:#7c3aed;--green:#059669;--green-bg:#d1fae5;--red:#dc2626;--red-bg:#fee2e2;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.12);--radius:20px;--radius2:14px}
+    :root{--bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;--border:#e2e8f0;--blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;--purple:#7c3aed;--green:#059669;--green-bg:#d1fae5;--red:#dc2626;--red-bg:#fee2e2;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.12);--radius:20px;--radius2:14px}
     [data-theme="dark"]{--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;--blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;--purple:#8b5cf6;--green:#34d399;--green-bg:#064e3b;--red:#f87171;--red-bg:#450a0a;--border:#334155;--shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden}
@@ -16,21 +16,24 @@
     .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:12px 20px;transition:all .3s}
     .nav.scrolled{background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
     .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-    .nav-brand{display:flex;align-items:center;gap:10px}
-    .nav-logo{width:40px;height:40px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:800;box-shadow:0 4px 12px rgba(37,99,235,.3)}
-    .nav-brand h1{font-size:20px;font-weight:800}
-    .nav-links{display:flex;align-items:center;gap:6px}
-    .nav-link{padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;border:none;background:transparent}
-    .nav-link:hover{background:var(--bg3)}
+    .nav-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .nav-logo{width:48px;height:48px;background:transparent;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .nav-logo img{width:100%;height:100%;object-fit:contain}
+    .nav-brand h1{font-size:20px;font-weight:800;margin:0;line-height:1.2}
+    .nav-links{display:flex;align-items:center;gap:8px}
+    .nav-link{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;border:none;background:transparent;white-space:nowrap}
+    .nav-link:hover{background:var(--bg3);transform:translateY(-1px)}
     .nav-link.primary{background:var(--blue);color:#fff}
+    .nav-link.primary:hover{background:var(--blue2)}
     .nav-link.icon{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
+    .nav-link.icon:hover{background:var(--bg3);transform:translateY(-1px)}
     .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);align-items:center;justify-content:center;font-size:20px}
     .user-bar{display:none;align-items:center;gap:8px}
     .user-bar.on{display:flex}
     .user-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
     .user-name{font-size:13px;font-weight:600;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .btn-logout{padding:8px 12px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg2);color:var(--red);transition:all .2s}
-    .btn-logout:hover{background:var(--red-bg)}
+    .btn-logout:hover{background:var(--red-bg);transform:translateY(-1px)}
 
     /* HERO */
     .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:100px 20px 60px}
@@ -82,16 +85,17 @@
     .modal-o{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px;backdrop-filter:blur(4px)}
     .modal-o.on{display:flex}
     .modal-b{width:min(440px,100%);background:var(--bg2);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow3);position:relative;animation:popIn .3s ease}
-    .modal-x{position:absolute;top:12px;right:16px;border:none;background:none;font-size:28px;color:var(--text3);cursor:pointer;line-height:1}
+    .modal-x{position:absolute;top:12px;right:16px;border:none;background:none;font-size:28px;color:var(--text3);cursor:pointer;line-height:1;transition:color .2s}
     .modal-x:hover{color:var(--text)}
     @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-    .login-logo{width:56px;height:56px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:800;margin:0 auto 16px;box-shadow:0 6px 20px rgba(37,99,235,.3)}
+    .login-logo-wrap{width:auto;height:auto;border:none;background:transparent;margin:0 auto 16px;padding:0;text-align:center}
+    .login-logo-img{width:150px;height:auto;object-fit:contain}
     .login-title{text-align:center;font-size:22px;font-weight:800;margin-bottom:4px}
     .login-sub{text-align:center;font-size:13px;color:var(--text3);margin-bottom:24px}
     .fg{margin-bottom:16px}
     .fg label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px}
-    .fg input{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius2);font-size:15px;background:var(--bg3);color:var(--text);outline:none;transition:border .2s}
-    .fg input:focus{border-color:var(--blue)}
+    .fg input{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius2);font-size:15px;background:var(--bg3);color:var(--text);outline:none;transition:all .2s}
+    .fg input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
     .btn-login{width:100%;padding:16px;border-radius:var(--radius2);font-size:16px;font-weight:700;border:none;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 6px 20px rgba(37,99,235,.3);transition:all .25s;margin-top:8px}
     .btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.4)}
     .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
@@ -119,112 +123,44 @@
     .mob .mp{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none}
     .mob-x{position:absolute;top:16px;right:20px;width:44px;height:44px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2)}
 
+    /* MOBILE OPTIMIZATIONS */
     @media(max-width:1024px){.features{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(2,1fr)}.step-l{display:none}}
-    @media(max-width:768px){.nav-links .nav-link:not(.icon){display:none}.hamburger{display:flex}.user-name{display:none}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section{padding:50px 16px}}
+    @media(max-width:768px){
+      .nav{padding:10px 14px}
+      .nav-brand{gap:8px}
+      .nav-logo{width:40px;height:40px}
+      .nav-brand h1{font-size:18px}
+      .nav-links .nav-link:not(.icon){display:none}.hamburger{display:flex}.user-name{display:none}
+      .features{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section{padding:50px 16px}
+      .hero{padding:88px 16px 44px}
+      .hero-d{font-size:15px}
+      .btn{min-height:48px}
+    }
     @media(max-width:480px){.hero-btns{flex-direction:column;align-items:center}.btn{width:100%;justify-content:center}}
+    @media(max-width:380px){
+      .nav-links{gap:4px}
+      .nav-link{padding:8px 12px;font-size:12px}
+      .nav-link.icon,.hamburger{width:36px;height:36px;font-size:16px}
+    }
 
-/* ===== Brand logo image ===== */
-.nav-logo-img{
-  width:40px;
-  height:40px;
-  object-fit:contain;
-  border-radius:12px;
-  background:var(--bg2);
-  border:1px solid var(--border);
-  padding:4px;
-  box-shadow:var(--shadow);
-}
-
-.login-logo-wrap{
-  width:auto;
-  height:auto;
-  border:none;
-  background:transparent;
-  margin:0 auto 14px;
-  padding:0;
-}
-.login-logo-img{
-  width:150px;
-  height:auto;
-  object-fit:contain;
-}
-
-/* ===== UX mobile improvement ===== */
-@media (max-width: 768px){
-  .nav{
-    padding:10px 14px;
-  }
-
-.nav-brand{
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-.nav-logo,
-.nav-logo-img{
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-}
-
-/* ukuran logo header */
-.nav-logo-img{
-  width: 150px;
-  height: 52px;
-  object-fit: contain;
-}
-
-@media (max-width: 768px){
-  .nav-logo-img{
-    width: 125px;
-    height: 44px;
-  }
-
-  .nav-link.icon,
-  .hamburger{
-    width:42px;
-    height:42px;
-    border-radius:12px;
-  }
-
-  .mob{
-    padding:74px 16px 20px;
-    gap:10px;
-  }
-
-  .mob a,
-  .mob button{
-    min-height:48px;
-    font-size:15px;
-    border-radius:12px;
-  }
-
-  .hero{
-    padding:88px 16px 44px;
-  }
-
-  .hero-d{
-    font-size:15px;
-  }
-
-  .btn{
-    min-height:48px;
-  }
-}
+    /* TOUCH OPTIMIZATIONS */
+    @media(hover:none){
+      .btn:active{transform:scale(.95)}
+      .nav-link:active{transform:scale(.95)}
+      .feat:active{transform:scale(.98)}
+    }
   </style>
 </head>
-<body>
 
   <!-- NAV -->
   <nav class="nav" id="navbar">
     <div class="nav-inner">
- <a href="#" class="nav-brand" aria-label="Beranda BEKARYE">
-  <img id="brandLogo" class="nav-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE" />
-</a>
+      <a href="#" class="nav-brand" aria-label="Beranda BEKARYE">
+        <div class="nav-logo">
+          <img id="brandLogo" class="nav-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE" />
+        </div>
+        <h1>BEKARYE</h1>
+      </a>
       <div class="nav-links">
         <a href="#features" class="nav-link">Fitur</a>
         <a href="#how" class="nav-link">Cara Kerja</a>
@@ -259,9 +195,9 @@
     <div class="modal-b">
       <button class="modal-x" id="loginClose">&times;</button>
       <div class="login-logo-wrap">
-      <img id="loginLogo" class="login-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE">
-</div>
-<div class="login-title">Login BEKARYE</div>
+        <img id="loginLogo" class="login-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE">
+      </div>
+      <div class="login-title">Login BEKARYE</div>
       <div class="login-sub">Masukkan username &amp; password Anda</div>
 
       <!-- Info box (opsional) -->
@@ -368,16 +304,42 @@ var APP_NAME = 'BEKARYE';
 var LOGO_LIGHT = 'assets/logo/logo-light.png';
 var LOGO_DARK  = 'assets/logo/logo-dark.png';
 
-// key baru + fallback lama (biar aman migrasi)
+// Session dan theme keys
 var SESSION_KEY = 'bekarye-session';
 var LEGACY_SESSION_KEY = 'simontok-session';
-
 var THEME_KEY = 'bekarye-theme';
 var LEGACY_THEME_KEY = 'simontok-theme';
 
 // ============================================================
-// SESSION HELPERS
+// SESSION MIGRATION & HELPERS
 // ============================================================
+function migrateSession() {
+  try {
+    // Migrasi session dari simontok ke bekarye
+    if (!localStorage.getItem(SESSION_KEY)) {
+      var oldSession = localStorage.getItem(LEGACY_SESSION_KEY);
+      if (oldSession) {
+        localStorage.setItem(SESSION_KEY, oldSession);
+        console.log('✅ Session berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+        // Optional: hapus session lama setelah migrasi
+        // localStorage.removeItem(LEGACY_SESSION_KEY);
+      }
+    }
+    
+    // Migrasi theme dari simontok ke bekarye
+    if (!localStorage.getItem(THEME_KEY)) {
+      var oldTheme = localStorage.getItem(LEGACY_THEME_KEY);
+      if (oldTheme) {
+        localStorage.setItem(THEME_KEY, oldTheme);
+        console.log('✅ Theme berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+        // localStorage.removeItem(LEGACY_THEME_KEY);
+      }
+    }
+  } catch(e) {
+    console.error('Error migrasi session/theme:', e);
+  }
+}
+
 function saveSession(userData) {
   try {
     localStorage.setItem(SESSION_KEY, JSON.stringify({
@@ -395,6 +357,7 @@ function saveSession(userData) {
 
 function loadSession() {
   try {
+    // Coba ambil session bekarye dulu, lalu fallback ke simontok
     var raw = localStorage.getItem(SESSION_KEY) || localStorage.getItem(LEGACY_SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch(e) {
@@ -423,6 +386,7 @@ function updateBrandLogos() {
 }
 
 function initTheme() {
+  // Prioritas: bekarye-theme dulu, lalu fallback ke simontok-theme
   var t = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
   if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
   updateThemeBtn();
@@ -449,185 +413,184 @@ function updateThemeBtn() {
   if (btn2) btn2.textContent = isDark ? '☀️ Mode Terang' : '🌙 Mode Gelap';
 }
 
-  // ============================================================
-  // UI UPDATE — tampilkan nav sesuai status login
-  // ============================================================
-  function updateUI() {
-    var s          = loadSession();
-    var isLoggedIn = !!(s && s.token);
+// ============================================================
+// UI UPDATE — tampilkan nav sesuai status login
+// ============================================================
+function updateUI() {
+  var s          = loadSession();
+  var isLoggedIn = !!(s && s.token);
 
-    // Nav desktop
-    document.getElementById('navLogin').style.display   = isLoggedIn ? 'none' : '';
-    document.getElementById('navDash').style.display    = isLoggedIn ? ''     : 'none';
-    document.getElementById('navNotulen').style.display = isLoggedIn ? ''     : 'none';
+  // Nav desktop
+  document.getElementById('navLogin').style.display   = isLoggedIn ? 'none' : '';
+  document.getElementById('navDash').style.display    = isLoggedIn ? ''     : 'none';
+  document.getElementById('navNotulen').style.display = isLoggedIn ? ''     : 'none';
 
-    // User bar
-    var userBar = document.getElementById('userBar');
-    if (isLoggedIn) {
-      userBar.classList.add('on');
-      document.getElementById('userAvatar').textContent =
-        (s.name || s.username || '?').charAt(0).toUpperCase();
-      document.getElementById('userName').textContent = s.name || s.username;
-    } else {
-      userBar.classList.remove('on');
-    }
-
-    // Nav mobile
-    document.getElementById('mobLogin').style.display    = isLoggedIn ? 'none' : '';
-    document.getElementById('mobDash2').style.display    = isLoggedIn ? ''     : 'none';
-    document.getElementById('mobNotulen2').style.display = isLoggedIn ? ''     : 'none';
-    document.getElementById('mobLogout').style.display   = isLoggedIn ? ''     : 'none';
-
-    // Hero button
-    var heroBtn = document.getElementById('heroLogin');
-    if (isLoggedIn) {
-      heroBtn.textContent = '📊 Buka Dashboard';
-      heroBtn.onclick     = function(){ location.href = 'dashboard.html'; };
-    } else {
-      heroBtn.textContent = '🔐 Login untuk Mulai';
-      heroBtn.onclick     = openLogin;
-    }
+  // User bar
+  var userBar = document.getElementById('userBar');
+  if (isLoggedIn) {
+    userBar.classList.add('on');
+    document.getElementById('userAvatar').textContent =
+      (s.name || s.username || '?').charAt(0).toUpperCase();
+    document.getElementById('userName').textContent = s.name || s.username;
+  } else {
+    userBar.classList.remove('on');
   }
 
-  // ============================================================
-  // LOGIN MODAL
-  // ============================================================
-  function openLogin() {
-    document.getElementById('loginModal').classList.add('on');
-    document.getElementById('loginInfo').classList.remove('show');
-    hideErr();
-    setTimeout(function(){ document.getElementById('inUser').focus(); }, 100);
+  // Nav mobile
+  document.getElementById('mobLogin').style.display    = isLoggedIn ? 'none' : '';
+  document.getElementById('mobDash2').style.display    = isLoggedIn ? ''     : 'none';
+  document.getElementById('mobNotulen2').style.display = isLoggedIn ? ''     : 'none';
+  document.getElementById('mobLogout').style.display   = isLoggedIn ? ''     : 'none';
+
+  // Hero button
+  var heroBtn = document.getElementById('heroLogin');
+  if (isLoggedIn) {
+    heroBtn.textContent = '📊 Buka Dashboard';
+    heroBtn.onclick     = function(){ location.href = 'dashboard.html'; };
+  } else {
+    heroBtn.textContent = '🔐 Login untuk Mulai';
+    heroBtn.onclick     = openLogin;
   }
+}
 
-  function closeLogin() {
-    document.getElementById('loginModal').classList.remove('on');
-    document.getElementById('loginApiStatus').style.display = 'none';
-    hideErr();
-    document.getElementById('inUser').value = '';
-    document.getElementById('inPass').value = '';
-  }
+// ============================================================
+// LOGIN MODAL
+// ============================================================
+function openLogin() {
+  document.getElementById('loginModal').classList.add('on');
+  document.getElementById('loginInfo').classList.remove('show');
+  hideErr();
+  setTimeout(function(){ document.getElementById('inUser').focus(); }, 100);
+}
 
-  function showErr(msg) {
-    var box = document.getElementById('loginErr');
-    box.textContent = '❌ ' + msg;
-    box.classList.add('show');
-  }
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('on');
+  document.getElementById('loginApiStatus').style.display = 'none';
+  hideErr();
+  document.getElementById('inUser').value = '';
+  document.getElementById('inPass').value = '';
+}
 
-  function hideErr() {
-    document.getElementById('loginErr').classList.remove('show');
-    document.getElementById('loginErr').textContent = '';
-  }
+function showErr(msg) {
+  var box = document.getElementById('loginErr');
+  box.textContent = '❌ ' + msg;
+  box.classList.add('show');
+}
 
-  // ============================================================
-  // FORM SUBMIT — LOGIN
-  // ============================================================
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+function hideErr() {
+  document.getElementById('loginErr').classList.remove('show');
+  document.getElementById('loginErr').textContent = '';
+}
 
-    var usr = document.getElementById('inUser').value.trim();
-    var pwd = document.getElementById('inPass').value;
-    var btn = document.getElementById('btnLoginSubmit');
+// ============================================================
+// FORM SUBMIT — LOGIN
+// ============================================================
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
 
-    if (!usr || !pwd) { showErr('Username dan password wajib diisi'); return; }
+  var usr = document.getElementById('inUser').value.trim();
+  var pwd = document.getElementById('inPass').value;
+  var btn = document.getElementById('btnLoginSubmit');
 
-    btn.disabled    = true;
-    btn.textContent = '⏳ Memproses...';
-    hideErr();
+  if (!usr || !pwd) { showErr('Username dan password wajib diisi'); return; }
 
-    fetch(API_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body:    JSON.stringify({ action: 'login', username: usr, password: pwd })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(j) {
-      btn.disabled    = false;
-      btn.textContent = '🚀 Masuk';
+  btn.disabled    = true;
+  btn.textContent = '⏳ Memproses...';
+  hideErr();
 
-      if (j.ok && j.user) {
+  fetch(API_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body:    JSON.stringify({ action: 'login', username: usr, password: pwd })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(j) {
+    btn.disabled    = false;
+    btn.textContent = '🚀 Masuk';
 
-        // ── Simpan seluruh data user ke sessionStorage ──────────
-        // j.user berisi: username, name, role, sheet_name, token, apiKey
-        // apiKey berasal dari kolom API di sheet _users
-        saveSession(j.user);
+    if (j.ok && j.user) {
+      // Simpan session ke bekarye-session
+      saveSession(j.user);
 
-        // ── Tampilkan status API Key (debug ringan, bukan nilai key) ─
-        var apiStatus = document.getElementById('loginApiStatus');
-        if (j.user.apiKey) {
-          apiStatus.textContent = '🔑 API Key aktif untuk fitur AI Notulen';
-          apiStatus.style.color = 'var(--green)';
-        } else {
-          apiStatus.textContent = '⚠️ API Key tidak tersedia — fitur AI Notulen tidak aktif';
-          apiStatus.style.color = 'var(--red)';
-        }
-        apiStatus.style.display = 'block';
-
-        // ── Redirect setelah 600ms (biar status sempat terlihat) ─
-        setTimeout(function() {
-          closeLogin();
-          updateUI();
-          location.href = 'dashboard.html';
-        }, 600);
-
+      // Tampilkan status API Key
+      var apiStatus = document.getElementById('loginApiStatus');
+      if (j.user.apiKey) {
+        apiStatus.textContent = '🔑 API Key aktif untuk fitur AI Notulen';
+        apiStatus.style.color = 'var(--green)';
       } else {
-        showErr(j.message || 'Login gagal. Periksa username & password.');
+        apiStatus.textContent = '⚠️ API Key tidak tersedia — fitur AI Notulen tidak aktif';
+        apiStatus.style.color = 'var(--red)';
       }
-    })
-    .catch(function(err) {
-      btn.disabled    = false;
-      btn.textContent = '🚀 Masuk';
-      showErr('Koneksi gagal: ' + err.message);
-    });
+      apiStatus.style.display = 'block';
+
+      // Redirect setelah 600ms
+      setTimeout(function() {
+        closeLogin();
+        updateUI();
+        location.href = 'dashboard.html';
+      }, 600);
+
+    } else {
+      showErr(j.message || 'Login gagal. Periksa username & password.');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled    = false;
+    btn.textContent = '🚀 Masuk';
+    showErr('Koneksi gagal: ' + err.message);
   });
+});
 
-  // ============================================================
-  // LOGOUT
-  // ============================================================
-  function doLogout() {
-    clearSession();
-    updateUI();
-    location.href = 'index.html';
-  }
-
-  document.getElementById('btnLogout').onclick  = doLogout;
-  document.getElementById('mobLogout').onclick  = doLogout;
-
-  // ============================================================
-  // MODAL TUTUP
-  // ============================================================
-  document.getElementById('loginClose').onclick = closeLogin;
-  document.getElementById('loginModal').addEventListener('click', function(e){
-    if (e.target === this) closeLogin();
-  });
-
-  // ============================================================
-  // MOBILE MENU
-  // ============================================================
-  document.getElementById('hamBtn').onclick  = function(){ document.getElementById('mobMenu').classList.add('on'); };
-  document.getElementById('mobClose').onclick = closeMob;
-  function closeMob(){ document.getElementById('mobMenu').classList.remove('on'); }
-
-  // ============================================================
-  // NAV SCROLL
-  // ============================================================
-  window.addEventListener('scroll', function(){
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
-  });
-
-  // ============================================================
-  // BIND SEMUA TOMBOL LOGIN
-  // ============================================================
-  document.getElementById('navLogin').onclick  = openLogin;
-  document.getElementById('ctaLogin').onclick  = openLogin;
-  document.getElementById('mobLogin').onclick  = openLogin;
-  document.getElementById('themeBtn').onclick  = toggleTheme;
-  document.getElementById('themeBtn2').onclick = toggleTheme;
-
-  // ============================================================
-  // INIT
-  // ============================================================
-  initTheme();
+// ============================================================
+// LOGOUT
+// ============================================================
+function doLogout() {
+  clearSession();
   updateUI();
+  location.href = 'index.html';
+}
+
+document.getElementById('btnLogout').onclick  = doLogout;
+document.getElementById('mobLogout').onclick  = doLogout;
+
+// ============================================================
+// MODAL TUTUP
+// ============================================================
+document.getElementById('loginClose').onclick = closeLogin;
+document.getElementById('loginModal').addEventListener('click', function(e){
+  if (e.target === this) closeLogin();
+});
+
+// ============================================================
+// MOBILE MENU
+// ============================================================
+document.getElementById('hamBtn').onclick  = function(){ document.getElementById('mobMenu').classList.add('on'); };
+document.getElementById('mobClose').onclick = closeMob;
+function closeMob(){ document.getElementById('mobMenu').classList.remove('on'); }
+
+// ============================================================
+// NAV SCROLL
+// ============================================================
+window.addEventListener('scroll', function(){
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ============================================================
+// BIND SEMUA TOMBOL LOGIN
+// ============================================================
+document.getElementById('navLogin').onclick  = openLogin;
+document.getElementById('ctaLogin').onclick  = openLogin;
+document.getElementById('mobLogin').onclick  = openLogin;
+document.getElementById('themeBtn').onclick  = toggleTheme;
+document.getElementById('themeBtn2').onclick = toggleTheme;
+
+// ============================================================
+// INIT
+// ============================================================
+// Jalankan migrasi dulu sebelum init
+migrateSession();
+initTheme();
+updateUI();
 document.getElementById('yearNow').textContent = new Date().getFullYear();
 </script>
 </body>
