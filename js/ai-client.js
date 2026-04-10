@@ -1,5 +1,5 @@
 // ================================================================
-// SIMONTOK - AI Client
+// BEKARYE - AI Client
 // File  : js/ai-client.js
 // Versi : 1.2 (UX improved: retry + fallback + safer payload)
 // Tanggal: 9 April 2026
@@ -81,7 +81,7 @@ var AI_CLIENT = (function () {
 
   function _readApiKeyFromSessionStorage() {
     try {
-      return _safeTrim(sessionStorage.getItem('simontok-apikey'));
+      return _safeTrim(sessionStorage.getItem('bekarye-apikey')); // ✅ BEKARYE session
     } catch (e) {
       return '';
     }
@@ -89,7 +89,7 @@ var AI_CLIENT = (function () {
 
   function _readApiKeyFromLocalSession() {
     try {
-      var raw = localStorage.getItem('simontok-session');
+      var raw = localStorage.getItem('bekarye-session'); // ✅ BEKARYE session
       if (!raw) return '';
       var obj = JSON.parse(raw);
       return _safeTrim(obj && obj.apiKey);
@@ -102,7 +102,7 @@ var AI_CLIENT = (function () {
     var k = _safeTrim(key);
     if (!k) return;
     _runtimeApiKey = k;
-    try { sessionStorage.setItem('simontok-apikey', k); } catch (e) {}
+    try { sessionStorage.setItem('bekarye-apikey', k); } catch (e) {}
   }
 
   function _registerController(c) {
@@ -324,7 +324,24 @@ var AI_CLIENT = (function () {
       return k;
     }
 
-    return '';
+    // ⬇️ MIGRATION: fallback ke simontok-session jika bekarye-session kosong
+    try {
+      if (!k) {
+        var oldSession = localStorage.getItem('simontok-session');
+        if (oldSession) {
+          var obj = JSON.parse(oldSession);
+          k = _safeTrim(obj && obj.apiKey);
+          if (k) {
+            _persistApiKey(k);
+            console.log('✅ API Key berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+          }
+        }
+      }
+    } catch(e) {
+      console.error('Error migrasi API Key:', e);
+    }
+
+    return k;
   }
 
   function hasApiKey() {
@@ -336,8 +353,8 @@ var AI_CLIENT = (function () {
   // ============================================================
   function _sendOneModel(cleanMessages, options, model, attemptBase) {
     var apiKey = options.apiKey;
-    var referer = options.referer || (window.location.origin || 'https://simontok.app');
-    var title = options.title || 'SIMONTOK Assistant';
+    var referer = options.referer || (window.location.origin || 'https://bekarye.app'); // ⬇️ BEKARYE domain
+    var title = options.title || 'BEKARYE Assistant';
     var maxTokens = _clamp(
       (typeof options.maxTokens === 'number' ? options.maxTokens : CONFIG.maxTokens),
       64,
@@ -476,7 +493,7 @@ var AI_CLIENT = (function () {
 
     var apiKey = getApiKey();
     if (!apiKey) {
-      return Promise.reject(new Error('API Key tidak tersedia. Hubungi admin untuk mengisi API Key akun kamu.'));
+      return Promise.reject(new Error('API Key tidak tersedia. Hubungi admin untuk mengisi API Key akun BEKARYE Anda.'));
     }
 
     var chosenModel = options.model || (typeof AI_MODEL !== 'undefined' ? AI_MODEL : 'google/gemma-4-31b-it');
@@ -574,10 +591,10 @@ var AI_CLIENT = (function () {
   }
 
   function resetStats() {
-    _stats.requestCount = 0;
-    _stats.totalTokens = 0;
+    _stats.requestCount =0;
+    _stats.totalTokens =0;
     _stats.lastModel = '';
-    _stats.lastLatencyMs = 0;
+    _stats.lastLatencyMs =0;
     _stats.errors = [];
   }
 
