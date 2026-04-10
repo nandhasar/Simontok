@@ -756,15 +756,6 @@ function migrateSession() {
   }
 }
 
-function getSession() {
-  try {
-    // Coba ambil bekarye-session dulu, lalu fallback ke simontok-session
-    var s = localStorage.getItem('bekarye-session') || localStorage.getItem('simontok-session');
-    if (s) SESSION = JSON.parse(s);
-  } catch(e) { SESSION = null; }
-  // ...
-}
-
 // ============================================================
 // THEME SWITCHING
 // ============================================================
