@@ -729,7 +729,50 @@
         .catch(function(err) { showMessage('❌ ' + err.message, false); })
         .then(function() { setLoading(false); });
     });
+// ============================================================
+// SESSION MIGRATION & HELPERS
+// ============================================================
+function migrateSession() {
+  try {
+    // Migrasi session dari simontok ke bekarye
+    if (!localStorage.getItem('bekarye-session')) {
+      var oldSession = localStorage.getItem('simontok-session');
+      if (oldSession) {
+        localStorage.setItem('bekarye-session', oldSession);
+        console.log('✅ Session berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+      }
+    }
+    
+    // Migrasi theme dari simontok ke bekarye
+    if (!localStorage.getItem('bekarye-theme')) {
+      var oldTheme = localStorage.getItem('simontok-theme');
+      if (oldTheme) {
+        localStorage.setItem('bekarye-theme', oldTheme);
+        console.log('✅ Theme berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+      }
+    }
+  } catch(e) {
+    console.error('Error migrasi session/theme:', e);
+  }
+}
 
+function getSession() {
+  try {
+    // Coba ambil bekarye-session dulu, lalu fallback ke simontok-session
+    var s = localStorage.getItem('bekarye-session') || localStorage.getItem('simontok-session');
+    if (s) SESSION = JSON.parse(s);
+  } catch(e) { SESSION = null; }
+  // ...
+}
+
+// ============================================================
+// THEME SWITCHING
+// ============================================================
+function initTheme() {
+  // Prioritas: bekarye-theme dulu, lalu fallback ke simontok-theme
+  var t = localStorage.getItem('bekarye-theme') || localStorage.getItem('simontok-theme');
+  // ...
+}
     // ============================================================
     // BUTTONS & INIT
     // ============================================================
@@ -738,6 +781,8 @@
     $('refreshBtn').addEventListener('click', function() { if (!state.loading) loadData(); });
 
     window.addEventListener('DOMContentLoaded', function() { clearForm(); loadData(); });
+    migrateSession();
+    initTheme();
   </script>
 </body>
 </html>
