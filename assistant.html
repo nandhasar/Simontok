@@ -394,6 +394,11 @@ var LEGACY_THEME_KEY   = 'simontok-theme';
 var CHATS_KEY          = 'bekarye-assistant-chats';
 
 // ================================================================
+// FIX #1: Deklarasi settingsOpen di scope global
+// ================================================================
+var settingsOpen = false;
+
+// ================================================================
 // 1. MIGRASI
 // ================================================================
 function migrateSession() {
@@ -458,21 +463,10 @@ function authURL(action) {
 }
 
 // ================================================================
-// 4. BOOT
-// ================================================================
-migrateSession();
-initTheme();
-
-if (!getSession()) {
-  alert('Silakan login terlebih dahulu.');
-  window.location.replace('index.html');
-}
-
-// ================================================================
 // 5. GLOBAL STATE
 // ================================================================
-var TASK_DATA       = [];   // task dari spreadsheet
-var chatSessions    = [];   // [{id, title, createdAt, messages:[{role,content}]}]
+var TASK_DATA       = [];
+var chatSessions    = [];
 var activeSessionId = null;
 var isStreaming      = false;
 
@@ -491,6 +485,28 @@ function timeStr() {
 function todayISO() { return new Date().toISOString().slice(0,10); }
 
 // ================================================================
+// TOAST — visual notification (bukan alert)
+// ================================================================
+function showToast(msg, duration) {
+  // Buat elemen toast kalau belum ada
+  var toast = document.getElementById('appToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'appToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg2);padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:99999;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.2)';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  clearTimeout(toast._tid);
+  toast._tid = setTimeout(function(){
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+  }, duration || 2800);
+}
+
+// ================================================================
 // 7. CHAT PERSISTENCE — localStorage
 // ================================================================
 function loadChats() {
@@ -501,7 +517,6 @@ function loadChats() {
 }
 function saveChats() {
   try {
-    // simpan max 30 sesi, potong pesan lama per sesi max 60
     var trimmed = chatSessions.slice(0,30).map(function(s){
       return {
         id: s.id, title: s.title, createdAt: s.createdAt,
@@ -562,9 +577,7 @@ function switchSession(sid) {
   renderSessionsList();
   renderChatMessages();
   var s = getActiveSession();
-  if (s) {
-    $('chatTitle').textContent = s.title || 'AI Assistant';
-  }
+  if (s) $('chatTitle').textContent = s.title || 'AI Assistant';
 }
 
 function deleteSession(sid) {
@@ -603,7 +616,6 @@ function renderChatMessages() {
 
   if (!session || !session.messages.length) {
     $('chatWelcome').style.display = 'flex';
-    // hapus semua bubble tapi pertahankan welcome
     var bubbles = area.querySelectorAll('.msg-row,.typing-row');
     bubbles.forEach(function(b){ b.remove(); });
     return;
@@ -640,18 +652,26 @@ function renderChatMessages() {
 function formatAIContent(text) {
   if (!text) return '';
   var s = esc(text);
+  // code blocks (```...```) — harus sebelum inline code
+  s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, function(m, lang, code) {
+    return '<pre><code>' + code.trim() + '</code></pre>';
+  });
   // bold
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  // italic
+  // italic (single *)
   s = s.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
   // inline code
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // bullet lists (lines starting with - or *)
-  s = s.replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>');
-  s = s.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+  // bullet lists
+  s = s.replace(/^[\-\*]\s+(.+)$/gm, '~~LI~~$1~~ENDLI~~');
+  s = s.replace(/(~~LI~~[\s\S]*?~~ENDLI~~\n?)+/g, function(block) {
+    var items = block.replace(/~~LI~~/g,'<li>').replace(/~~ENDLI~~/g,'</li>');
+    return '<ul>' + items + '</ul>';
+  });
   // numbered lists
   s = s.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
   // headings
+  s = s.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
   s = s.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
   s = s.replace(/^##\s+(.+)$/gm, '<h3>$1</h3>');
   // hr
@@ -701,6 +721,23 @@ function appendAIBubble() {
   return $('streamBubble');
 }
 
+function appendErrorBubble(text) {
+  removeTyping();
+  var area = $('chatMessages');
+  var div = document.createElement('div');
+  div.className = 'msg-row';
+  div.innerHTML =
+    '<div class="msg-avatar ai">🤖</div>' +
+    '<div class="msg-col"><div class="msg-bubble ai" style="border-color:var(--red);background:var(--red-bg);color:var(--red)">'+ esc(text) +'</div></div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function setInputEnabled(enabled) {
+  $('chatInput').disabled = !enabled;
+  $('btnSend').disabled   = !enabled;
+}
+
 // ================================================================
 // 10. LOAD TASK DATA FROM SPREADSHEET
 // ================================================================
@@ -725,7 +762,7 @@ function loadTaskData(callback) {
 }
 
 // ================================================================
-// 11. BUILD SYSTEM PROMPT — kirim context task ke AI
+// 11. BUILD SYSTEM PROMPT
 // ================================================================
 function buildSystemPrompt() {
   var today = new Date();
@@ -736,12 +773,9 @@ function buildSystemPrompt() {
   if (TASK_DATA.length) {
     var pending = TASK_DATA.filter(function(t){ return t.status !== 'Done'; });
     var done    = TASK_DATA.filter(function(t){ return t.status === 'Done'; });
-    var overdue = pending.filter(function(t){
-      return t.due_date && t.due_date < todayStr;
-    });
+    var overdue = pending.filter(function(t){ return t.due_date && t.due_date < todayStr; });
     var todayTasks = TASK_DATA.filter(function(t){ return t.due_date === todayStr; });
 
-    // Besok
     var tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate()+1);
     var tomorrowStr = tomorrow.toISOString().slice(0,10);
@@ -756,7 +790,6 @@ function buildSystemPrompt() {
       'Task hari ini (' + todayStr + '): ' + todayTasks.length + '\n' +
       'Task besok (' + tomorrowStr + '): ' + tomorrowTasks.length + '\n\n';
 
-    // Kirim semua task (max 50)
     taskSummary += 'DAFTAR SEMUA TASK:\n';
     TASK_DATA.slice(0,50).forEach(function(t,i){
       taskSummary += (i+1) + '. [' + (t.status||'-') + '] [' + (t.priority||'-') + '] ' +
@@ -786,7 +819,7 @@ function buildSystemPrompt() {
 }
 
 // ================================================================
-// 12. SEND MESSAGE TO AI (streaming)
+// FIX #2: sendToAI — Non-streaming fallback + better error handling
 // ================================================================
 function sendToAI(userMessage) {
   if (isStreaming) return;
@@ -821,9 +854,8 @@ function sendToAI(userMessage) {
   $('chatInput').style.height = 'auto';
   setInputEnabled(false);
 
-  // Build messages untuk API (system + riwayat)
+  // Build messages untuk API
   var apiMessages = [{ role:'system', content:buildSystemPrompt() }];
-  // Kirim max 20 pesan terakhir sebagai konteks
   var recent = session.messages.slice(-20);
   recent.forEach(function(m){
     if (m.role === 'user' || m.role === 'assistant') {
@@ -834,38 +866,57 @@ function sendToAI(userMessage) {
   isStreaming = true;
   var fullResponse = '';
 
-  fetch(OR_URL, {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':'Bearer ' + apiKey,
-      'HTTP-Referer':'https://nandhasar.github.io',
-      'X-Title':'BEKARYE Assistant'
-    },
-    body: JSON.stringify({
-      model: AI_MODEL,
-      stream: true,
-      messages: apiMessages
-    })
-  })
-  .then(function(r){
-    if (r.status === 401) throw new Error('API Key tidak valid. Hubungi admin.');
-    if (r.status === 402) throw new Error('Kredit OpenRouter habis. Hubungi admin.');
-    if (r.status === 429) throw new Error('Terlalu banyak permintaan. Tunggu sebentar.');
-    if (!r.ok) throw new Error('Error dari server AI ('+r.status+').');
+  var requestBody = {
+    model: AI_MODEL,
+    messages: apiMessages,
+    max_tokens: 2048
+  };
 
+  // Coba streaming dulu, fallback ke non-streaming kalau gagal
+  tryStreamingRequest(requestBody, apiKey, session);
+}
+
+function tryStreamingRequest(requestBody, apiKey, session) {
+  var fullResponse = '';
+
+  // Tambahkan stream: true
+  var streamBody = JSON.parse(JSON.stringify(requestBody));
+  streamBody.stream = true;
+
+  fetch(OR_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey,
+      'HTTP-Referer': 'https://nandhasar.github.io',
+      'X-Title': 'BEKARYE Assistant'
+    },
+    body: JSON.stringify(streamBody)
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      // Jika streaming gagal (400/401/dll), coba non-streaming
+      console.warn('Streaming gagal (HTTP ' + r.status + '), mencoba non-streaming...');
+      return r.text().then(function(errText) {
+        console.warn('Streaming error body:', errText);
+        // Lempar ke fallback
+        throw { fallback: true, status: r.status, body: errText };
+      });
+    }
+
+    // Streaming berhasil — baca chunk
     var bubble = appendAIBubble();
     var reader = r.body.getReader();
     var decoder = new TextDecoder();
 
     function read() {
-      return reader.read().then(function(chunk){
+      return reader.read().then(function(chunk) {
         if (chunk.done) {
           finishStreaming(session, fullResponse);
           return;
         }
-        var lines = decoder.decode(chunk.value, {stream:true}).split('\n');
-        lines.forEach(function(line){
+        var lines = decoder.decode(chunk.value, { stream: true }).split('\n');
+        lines.forEach(function(line) {
           line = line.trim();
           if (!line || !line.startsWith('data:')) return;
           var jsonStr = line.slice(5).trim();
@@ -879,14 +930,81 @@ function sendToAI(userMessage) {
               bubble.innerHTML = formatAIContent(fullResponse);
               $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
             }
-          } catch(e){}
+          } catch(e) {}
         });
         return read();
       });
     }
     return read();
   })
-  .catch(function(err){
+  .catch(function(err) {
+    // Jika err.fallback === true, coba non-streaming
+    if (err && err.fallback) {
+      console.log('Fallback ke non-streaming request...');
+      tryNonStreamingRequest(requestBody, apiKey, session, err.status, err.body);
+    } else {
+      // Error jaringan / lainnya
+      removeTyping();
+      appendErrorBubble('❌ Koneksi gagal: ' + (err.message || 'Unknown error'));
+      isStreaming = false;
+      setInputEnabled(true);
+    }
+  });
+}
+
+function tryNonStreamingRequest(requestBody, apiKey, session, prevStatus, prevBody) {
+  // Non-streaming: tanpa stream:true
+  var nonStreamBody = JSON.parse(JSON.stringify(requestBody));
+  delete nonStreamBody.stream;
+
+  fetch(OR_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey,
+      'HTTP-Referer': 'https://nandhasar.github.io',
+      'X-Title': 'BEKARYE Assistant'
+    },
+    body: JSON.stringify(nonStreamBody)
+  })
+  .then(function(r) {
+    if (r.status === 401) throw new Error('API Key tidak valid. Hubungi admin.');
+    if (r.status === 402) throw new Error('Kredit OpenRouter habis. Hubungi admin.');
+    if (r.status === 429) throw new Error('Terlalu banyak permintaan. Tunggu sebentar.');
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('Non-streaming error body:', t);
+        // Coba parse error dari OpenRouter
+        try {
+          var errJson = JSON.parse(t);
+          var errMsg = (errJson.error && errJson.error.message) ? errJson.error.message : t;
+          throw new Error('AI Error: ' + errMsg);
+        } catch(e2) {
+          if (e2.message.startsWith('AI Error:')) throw e2;
+          throw new Error('Error dari server AI (' + r.status + '): ' + t.substring(0,200));
+        }
+      });
+    }
+    return r.json();
+  })
+  .then(function(j) {
+    var content = '';
+    if (j.choices && j.choices[0] && j.choices[0].message) {
+      content = j.choices[0].message.content || '';
+    }
+
+    if (!content) {
+      throw new Error('AI tidak memberikan respons. Coba lagi.');
+    }
+
+    // Render bubble sekaligus (non-streaming)
+    var bubble = appendAIBubble();
+    bubble.innerHTML = formatAIContent(content);
+    $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+
+    finishStreaming(session, content);
+  })
+  .catch(function(err) {
     removeTyping();
     appendErrorBubble('❌ ' + err.message);
     isStreaming = false;
@@ -898,47 +1016,25 @@ function finishStreaming(session, fullResponse) {
   isStreaming = false;
   setInputEnabled(true);
 
-  // Simpan respon AI
   session.messages.push({ role:'assistant', content:fullResponse, time:timeStr() });
   saveChats();
   renderSessionsList();
 
-  // Deteksi kalau AI minta buat task
   detectCreateTask(fullResponse);
 }
 
-function appendErrorBubble(text) {
-  removeTyping();
-  var area = $('chatMessages');
-  var div = document.createElement('div');
-  div.className = 'msg-row';
-  div.innerHTML =
-    '<div class="msg-avatar ai">🤖</div>' +
-    '<div class="msg-col"><div class="msg-bubble ai" style="border-color:var(--red);background:var(--red-bg);color:var(--red)">'+ esc(text) +'</div></div>';
-  area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
-}
-
-function setInputEnabled(enabled) {
-  $('chatInput').disabled = !enabled;
-  $('btnSend').disabled   = !enabled;
-}
-
 // ================================================================
-// 13. DETECT CREATE TASK — dari respons AI
+// 13. DETECT CREATE TASK
 // ================================================================
 function detectCreateTask(text) {
   var match = text.match(/\[CREATE_TASK\]\s*title="([^"]*)"(?:\s*\|\s*status="([^"]*)")?(?:\s*\|\s*priority="([^"]*)")?(?:\s*\|\s*due_date="([^"]*)")?(?:\s*\|\s*note="([^"]*)")?/);
   if (!match) return;
 
-  // Isi modal
   $('mTaskTitle').value    = match[1] || '';
   $('mTaskStatus').value   = match[2] || 'To Do';
   $('mTaskPriority').value = match[3] || 'Medium';
   $('mTaskDueDate').value  = match[4] || '';
   $('mTaskNote').value     = match[5] || '';
-
-  // Tampilkan modal
   $('taskModal').classList.add('active');
 }
 
@@ -972,7 +1068,6 @@ function saveTaskToSheet(taskData, onDone) {
   .then(function(j){
     if (j.ok) {
       onDone(true, 'Task berhasil disimpan!');
-      // Refresh data
       loadTaskData();
     } else {
       onDone(false, j.message || 'Gagal menyimpan task');
@@ -984,10 +1079,9 @@ function saveTaskToSheet(taskData, onDone) {
 }
 
 // ================================================================
-// 15. INIT APP — SEMUA LOGIC SEBENARNYA
+// 15. INIT APP — SEMUA EVENT LISTENERS
 // ================================================================
 function initApp() {
-  // Tampilkan app
   $('loadingState').style.display = 'none';
   $('app').style.display = '';
 
@@ -1005,11 +1099,9 @@ function initApp() {
     $('aiKeyMsg').textContent = '⚠️ API Key tidak tersedia. Fitur AI tidak aktif. Hubungi admin.';
   }
 
-  // Load chats dari localStorage
+  // Load chats
   loadChats();
-  if (chatSessions.length) {
-    activeSessionId = chatSessions[0].id;
-  }
+  if (chatSessions.length) activeSessionId = chatSessions[0].id;
   renderSessionsList();
   renderChatMessages();
   if (activeSessionId) {
@@ -1020,18 +1112,15 @@ function initApp() {
   // Load task data
   loadTaskData();
 
-  // ---- EVENT LISTENERS ----
+  // --- EVENT LISTENERS ---
 
-  // New Chat
   $('btnNewChat').addEventListener('click', createNewSession);
 
-  // Send
   $('btnSend').addEventListener('click', function(){
     var msg = $('chatInput').value.trim();
     if (msg && !isStreaming) sendToAI(msg);
   });
 
-  // Enter to send
   $('chatInput').addEventListener('keydown', function(e){
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -1040,13 +1129,11 @@ function initApp() {
     }
   });
 
-  // Auto-resize textarea
   $('chatInput').addEventListener('input', function(){
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 120) + 'px';
   });
 
-  // Quick action buttons
   document.querySelectorAll('.qa-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
       var prompt = btn.getAttribute('data-prompt');
@@ -1057,7 +1144,6 @@ function initApp() {
     });
   });
 
-  // Welcome tips
   document.querySelectorAll('.tip-item').forEach(function(tip){
     tip.addEventListener('click', function(){
       var prompt = tip.getAttribute('data-prompt');
@@ -1068,97 +1154,86 @@ function initApp() {
     });
   });
 
-  // Refresh context
   $('btnRefreshCtx').addEventListener('click', function(){
-    $('btnRefreshCtx').textContent = '⏳ Loading...';
-    $('btnRefreshCtx').disabled = true;
+    var btn = $('btnRefreshCtx');
+    btn.textContent = '⏳ Loading...';
+    btn.disabled = true;
     loadTaskData(function(){
-      $('btnRefreshCtx').textContent = '🔄 Refresh Data';
-      $('btnRefreshCtx').disabled = false;
-            // Kirim notifikasi kecil bahwa data sudah diperbarui
-      showToast('✅ Data tugas berhasil diperbarui');
+      btn.textContent = '🔄 Refresh Data';
+      btn.disabled = false;
+      showToast('✅ Data task berhasil diperbarui (' + TASK_DATA.length + ' task)');
     });
   });
 
-  // ---- Modal Task Listeners ----
+  // Modal Task
   $('taskModalClose').addEventListener('click', function() {
     $('taskModal').classList.remove('active');
   });
   $('taskModalCancel').addEventListener('click', function() {
     $('taskModal').classList.remove('active');
   });
+  $('taskModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('active');
+  });
   $('taskModalConfirm').addEventListener('click', function() {
     var taskData = {
-      title: $('mTaskTitle').value.trim(),
-      status: $('mTaskStatus').value,
+      title:    $('mTaskTitle').value.trim(),
+      status:   $('mTaskStatus').value,
       priority: $('mTaskPriority').value,
       due_date: $('mTaskDueDate').value,
-      note: $('mTaskNote').value.trim()
+      note:     $('mTaskNote').value.trim()
     };
-
     if (!taskData.title) {
-      alert('Judul task wajib diisi!');
+      showToast('⚠️ Judul task wajib diisi!');
       return;
     }
-
-    $('taskModalConfirm').disabled = true;
-    $('taskModalConfirm').textContent = '⏳ Menyimpan...';
-
+    var btn = $('taskModalConfirm');
+    btn.disabled = true;
+    btn.textContent = '⏳ Menyimpan...';
     saveTaskToSheet(taskData, function(success, msg) {
-      $('taskModalConfirm').disabled = false;
-      $('taskModalConfirm').textContent = '✅ Simpan Task';
-      
+      btn.disabled = false;
+      btn.textContent = '✅ Simpan Task';
       if (success) {
-        alert(msg);
+        showToast('✅ ' + msg);
         $('taskModal').classList.remove('active');
-        loadTaskData(); // Refresh context AI
       } else {
-        alert('❌ Error: ' + msg);
+        showToast('❌ Error: ' + msg);
       }
     });
   });
+
+  // Logout
+  $('logoutBtn').addEventListener('click', function() {
+    if (!confirm('Yakin ingin logout?')) return;
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(LEGACY_SESSION_KEY);
+    window.location.href = 'index.html';
+  });
+
+  // Settings dropdown
+  $('settingsBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    settingsOpen = !settingsOpen;
+    $('settingsDropdown').classList.toggle('open', settingsOpen);
+  });
+
+  document.addEventListener('click', function(e) {
+    if (settingsOpen && !$('settingsDropdown').contains(e.target)
+        && e.target !== $('settingsBtn')) {
+      settingsOpen = false;
+      $('settingsDropdown').classList.remove('open');
+    }
+  });
+
+  $('settingsDropdown').addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+
+  $('darkToggle').addEventListener('click', toggleTheme);
 }
 
-// Helper untuk notifikasi simpel
-function showToast(msg) {
-  console.log('Toast: ' + msg);
-  // Anda bisa menambahkan elemen toast HTML jika ingin visual, 
-  // untuk saat ini kita gunakan alert simpel agar tidak merusak CSS Anda
-  alert(msg);
-}
-
 // ================================================================
-// SETTINGS & LOGOUT (Sama seperti halaman lain)
-// ================================================================
-document.getElementById('logoutBtn').addEventListener('click', function() {
-  if (!confirm('Yakin ingin logout?')) return;
-  localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem(LEGACY_SESSION_KEY);
-  window.location.href = 'index.html';
-});
-
-document.getElementById('settingsBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  settingsOpen = !settingsOpen;
-  document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
-});
-
-document.addEventListener('click', function(e) {
-  if (settingsOpen && !document.getElementById('settingsDropdown').contains(e.target)
-      && e.target !== document.getElementById('settingsBtn')) {
-    settingsOpen = false;
-    document.getElementById('settingsDropdown').classList.remove('open');
-  }
-});
-
-document.getElementById('settingsDropdown').addEventListener('click', function(e) {
-  e.stopPropagation();
-});
-
-document.getElementById('darkToggle').addEventListener('click', toggleTheme);
-
-// ================================================================
-// FINAL EXECUTION
+// FIX #3: SATU TITIK BOOT — tidak ada duplikasi
 // ================================================================
 (function boot() {
   migrateSession();
