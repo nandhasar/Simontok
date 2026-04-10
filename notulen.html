@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIMONTOK - Notulen</title>
+  <title>bekarye - Notulen</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
@@ -236,7 +236,7 @@
       <div class="topbar-logo">📝</div>
       <div class="topbar-info">
         <h1>Tools Notulen</h1>
-        <p>SIMONTOK — Notulen Rapat</p>
+        <p>bekarye — Notulen Rapat</p>
       </div>
     </div>
     <div class="topbar-actions">
@@ -387,7 +387,7 @@
 // 1. CONFIG — satu tempat, tidak ada duplikat
 // ================================================================
 var API_URL     = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
-var SESSION_KEY = 'simontok-session';
+var SESSION_KEY = 'bekarye-session';
 var SESSION     = null; // satu-satunya sumber kebenaran user di halaman ini
 var AI_MODEL    = 'google/gemma-4-31b-it';
 
@@ -409,7 +409,7 @@ function getApiKey() {
 // 3. THEME (bisa jalan sebelum startApp, tidak butuh SESSION)
 // ================================================================
 (function(){
-  var t = localStorage.getItem('simontok-theme');
+  var t = localStorage.getItem('bekarye-theme');
   if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
 })();
 
@@ -498,7 +498,7 @@ function initThemeButton() {
   btn.addEventListener('click', function(){
     isDark = !isDark;
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-    localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('bekarye-theme', isDark ? 'dark' : 'light');
     btn.textContent = isDark ? '☀️' : '🌙';
   });
 }
@@ -722,7 +722,7 @@ function initAIButton() {
         'Content-Type':  'application/json',
         'Authorization': 'Bearer ' + apiKey,
         'HTTP-Referer':  'https://nandhasar.github.io',
-        'X-Title':       'SIMONTOK Notulen'
+        'X-Title':       'bekarye Notulen'
       },
       body: JSON.stringify({
         model:    AI_MODEL,
@@ -1011,7 +1011,7 @@ function doExportPDF() {
   var total = doc.internal.getNumberOfPages();
   for (var p=1; p<=total; p++){
     doc.setPage(p); doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(148,163,184);
-    doc.text('SIMONTOK — Notulen Rapat  |  Halaman '+p+' dari '+total, W/2, H-8, {align:'center'});
+    doc.text('bekarye — Notulen Rapat  |  Halaman '+p+' dari '+total, W/2, H-8, {align:'center'});
   }
   doc.save('Notulen_'+(data.judul||'Rapat').replace(/\s+/g,'_')+'.pdf');
   showToast('✅ PDF berhasil didownload!');
@@ -1102,7 +1102,7 @@ function saveNotulenToCloud(data, onSuccess, onError) {
 }
 
 function getDrafts(){
-  try{ var r=localStorage.getItem('simontok-notulen-drafts'); return r?JSON.parse(r):[]; }catch(e){return [];}
+  try{ var r=localStorage.getItem('bekarye-notulen-drafts'); return r?JSON.parse(r):[]; }catch(e){return [];}
 }
 
 function saveDraft(){
@@ -1113,7 +1113,7 @@ function saveDraft(){
     tanggal:data.tanggal, waktu:data.waktu, tempat:data.tempat, notulis:data.notulis,
     peserta:data.peserta, points:data.points, summary:data.summary });
   if(drafts.length>20) drafts=drafts.slice(0,20);
-  localStorage.setItem('simontok-notulen-drafts', JSON.stringify(drafts));
+  localStorage.setItem('bekarye-notulen-drafts', JSON.stringify(drafts));
   renderHistory();
   showToast('💾 Tersimpan lokal, menyimpan ke cloud...');
   saveNotulenToCloud(data, function(id){showToast('✅ Tersimpan di cloud! ID: '+id);},
@@ -1123,7 +1123,7 @@ function saveDraft(){
 function deleteDraft(id){
   if(!confirm('Hapus draft ini?')) return;
   var drafts = getDrafts().filter(function(d){return d.id!==id;});
-  localStorage.setItem('simontok-notulen-drafts',JSON.stringify(drafts));
+  localStorage.setItem('bekarye-notulen-drafts',JSON.stringify(drafts));
   showToast('🗑️ Draft dihapus!'); renderHistory();
 }
 
