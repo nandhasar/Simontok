@@ -48,36 +48,305 @@ function getSession() {
   }
 }
 
+var PENDING_TASK = null;
+
 function getApiKey() {
-  // ⬇️ BEKARYE API Key dengan fallback ke simontok-session
-  var k = (SESSION && SESSION.apiKey) ? String(SESSION.apiKey) : '';
-  if (!k || k === 'undefined' || k === 'null') return '';
-  
-  // Fallback ke simontok-session jika bekarye-session tidak ada
-  if (!k) {
+  var k = (SESSION && SESSION.apiKey) ? String(SESSION.apiKey).trim() : '';
+  if (k && k !== 'undefined' && k !== 'null') return k;
+
+  try {
     var oldSession = localStorage.getItem('simontok-session');
     if (oldSession) {
-      try {
-        var obj = JSON.parse(oldSession);
-        k = String(obj && obj.apiKey || '');
-        if (k) {
-          console.log('✅ API Key berhasil dimigrasi dari SIMONTOK ke BEKARYE');
-        // Update session ke bekarye-session
+      var obj = JSON.parse(oldSession);
+      k = String((obj && obj.apiKey) || '').trim();
+      if (k) {
         localStorage.setItem('bekarye-session', oldSession);
-        // Hapus session lama
-        localStorage.removeItem('simontok-session');
-        // Update SESSION variable
-        if (SESSION && SESSION.apiKey !== k) {
-          SESSION.apiKey = k;
-        }
+        try { localStorage.removeItem('simontok-session'); } catch (e) {}
+        if (SESSION) SESSION.apiKey = k;
+        console.log('✅ API Key berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+        return k;
       }
-    } catch(e) {
-      console.error('Error migrasi API Key:', e);
     }
+  } catch (e) {
+    console.error('Error migrasi API Key:', e);
   }
-  return k.trim();
+
+  return '';
 }
 
+function readLocalSessions() {
+  try {
+    var key = chatStoreKey();
+    var raw = localStorage.getItem(key);
+
+    if (!raw) {
+      var u = (SESSION && SESSION.username) ? SESSION.username : 'guest';
+      var legacyKey = 'simontok-chat-sessions:' + u;
+      var oldRaw = localStorage.getItem(legacyKey);
+      if (oldRaw) {
+        localStorage.setItem(key, oldRaw);
+        console.log('✅ Chat sessions berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+        raw = oldRaw;
+      }
+    }
+
+    if (!raw) return [];
+    var arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    console.error('[BEKARYE] readLocalSessions error:', e.message);
+    return [];
+  }
+}
+
+function compactSessionForStore(s) {
+  var msgs = Array.isArray(s.messages) ? s.messages : [];
+
+  if (msgs.length > MAX_MSG_PER_SESSION_STORE) {
+    msgs = msgs.slice(-MAX_MSG_PER_SESSION_STORE);
+  }
+
+  msgs = msgs.map(function (m) {
+    return {
+      role: m.role || 'user',
+      content: safeText(m.content || '', MAX_CHARS_PER_MSG_STORE),
+      timestamp: m.timestamp || ''
+    };
+  });
+
+  return {
+    session_id: s.session_id,
+    title: s.title || 'Percakapan Baru',
+    messages: msgs,
+    msg_count: msgs.length,
+    updated_at: s.updated_at || new Date().toISOString()
+  };
+}
+
+function calcTaskStats(tasks) {
+  var st = { total: 0, todo: 0, doing: 0, done: 0, blocked: 0 };
+  (tasks || []).forEach(function (t) {
+    st.total++;
+    if (t.status === 'To Do') st.todo++;
+    else if (t.status === 'D' || t.status === 'Doing') st.doing++;
+    else if (t.status === 'Done') st.done++;
+    else if (t.status === 'B' || t.status === 'Blocked') st.blocked++;
+  });
+  return st;
+}
+
+function buildSystemPrompt() {
+  var now = new Date();
+  var nowText = now.toLocaleDateString('id-ID', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  var roleText = SESSION && SESSION.role === 'admin' ? 'Admin' : 'User';
+  var userText = (SESSION && (SESSION.name || SESSION.username)) || 'User';
+
+  var p =
+    'Kamu adalah asisten pribadi BEKARYE yang profesional, proaktif, dan suportif.\n' +
+    'User aktif: ' + userText + ' (' + roleText + ')\n' +
+    'Tanggal hari ini: ' + nowText + '\n\n' +
+    'ATURAN:\n' +
+    '1. Jawaban proaktif, bantu breakdown pekerjaan.\n' +
+    '2. Gunakan data task/notulen di bawah sebagai sumber utama.\n' +
+    '3. Jika user meminta buat task, sisipkan format:\n' +
+    '%%TASK_JSON%%{"title":"...","status":"To Do","priority":"High/Medium/Low","due_date":"YYYY-MM-DD","note":"..."}%%END_TASK%%\n' +
+    '4. Jangan mengarang data.\n\n';
+
+  if (USER_CONTEXT && USER_CONTEXT.ok) {
+    var st = USER_CONTEXT.task_stats || {};
+    var tasks = USER_CONTEXT.tasks || [];
+    var nts = USER_CONTEXT.notulen || [];
+
+    p +=
+      '=== TASK STATS ===\n' +
+      'Total=' + (st.total || 0) +
+      ', To Do=' + (st.todo || 0) +
+      ', Doing=' + (st.doing || 0) +
+      ', Done=' + (st.done || 0) +
+      ', Blocked=' + (st.blocked || 0) + '\n\n';
+
+    if (tasks.length) {
+      p += '=== LIST TASK ===\n';
+      tasks.forEach(function (t, i) {
+        p +=
+          (i + 1) + '. [' + (t.status || '-') + '] ' + (t.title || '-') +
+          ' | Due: ' + (t.due_date || '-') +
+          ' | Priority: ' + (t.priority || '-') +
+          (t.note ? ' | Note: ' + String(t.note).substring(0, 80) : '') + '\n';
+      });
+      p += '\n';
+    }
+
+    if (nts.length) {
+      p += '=== NOTULEN TERBARU ===\n';
+      nts.forEach(function (n, i) {
+        p +=
+          (i + 1) + '. ' + (n.kegiatan || '-') +
+          ' | Tanggal: ' + (n.tanggal || '-') +
+          ' | Tempat: ' + (n.tempat || '-') + '\n';
+      });
+      p += '\n';
+    }
+  } else {
+    p +=
+      '=== DATA TASK USER ===\n' +
+      'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
+      'Catatan: jika belum ada task, sampaikan secara natural.\n\n';
+  }
+
+  p += 'Gunakan bullet points jika menjawab daftar.';
+  return p;
+}
+
+function sendToAI(messagesForAI) {
+  if (window.AI_CLIENT && typeof AI_CLIENT.sendChat === 'function') {
+    return AI_CLIENT.sendChat(messagesForAI, {
+      apiKey: (SESSION && SESSION.apiKey) || '',
+      model: AI_MODEL
+    });
+  }
+
+  var key = getApiKey();
+  return callOpenRouter(key, messagesForAI);
+}
+
+function callOpenRouter(apiKey, messages) {
+  var start = Date.now();
+  var controller = new AbortController();
+  var timer = setTimeout(function () { controller.abort(); }, 30000);
+
+  return fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + apiKey,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin || 'https://bekarye.app',
+      'X-Title': 'BEKARYE Assistant'
+    },
+    body: JSON.stringify({
+      model: AI_MODEL,
+      messages: messages,
+      max_tokens: 2048,
+      temperature: 0.7,
+      stream: false
+    }),
+    signal: controller.signal,
+    redirect: 'follow'
+  })
+    .then(function (res) {
+      clearTimeout(timer);
+      if (!res.ok) {
+        return res.json().then(function (body) {
+          var msg = body && body.error && body.error.message
+            ? body.error.message
+            : ('HTTP ' + res.status + ' ' + res.statusText);
+          throw new Error(friendlyError(res.status, msg));
+        }).catch(function (e) {
+          if (e.message) throw e;
+          throw new Error('❌ HTTP ' + res.status);
+        });
+      }
+      return res.json();
+    })
+    .then(function (data) {
+      if (!data || !data.choices || !data.choices.length) {
+        throw new Error('Response AI kosong. Coba lagi.');
+      }
+      var text = data.choices[0].message && data.choices[0].message.content
+        ? String(data.choices[0].message.content).trim()
+        : '';
+      if (!text) throw new Error('AI tidak menghasilkan teks. Coba lagi.');
+      return { text: text, latencyMs: Date.now() - start };
+    })
+    .catch(function (err) {
+      clearTimeout(timer);
+      if (err && err.name === 'AbortError') {
+        throw new Error('⏳ Timeout 30 detik. Coba lagi.');
+      }
+      throw err;
+    });
+}
+
+function friendlyError(code, msg) {
+  var map = {
+    400: '❌ Request tidak valid.',
+    401: '🔑 API Key tidak valid / expired.',
+    402: '💳 Saldo OpenRouter habis.',
+    403: '🚫 Akses ditolak oleh OpenRouter.',
+    404: '🤖 Model tidak ditemukan.',
+    408: '⏳ Request timeout. Coba lagi.',
+    409: '⚠️ Terjadi konflik request. Coba lagi.',
+    413: '📦 Payload terlalu besar.',
+    429: '⏳ Terlalu banyak request. Tunggu sebentar.',
+    500: '🔧 Server OpenRouter bermasalah.',
+    502: '🔧 Gateway error OpenRouter.',
+    503: '🔧 OpenRouter maintenance.',
+    504: '⏳ Gateway timeout dari OpenRouter.'
+  };
+  var c = parseInt(code, 10);
+  return (map[c] || '❌ Error AI.') + ' Detail: ' + msg;
+}
+
+function processAIResponse(text) {
+  var m = String(text || '').match(/%%TASK_JSON%%([\s\S]*?)%%END_TASK%%/);
+  if (!m) return;
+  try {
+    var taskData = JSON.parse(m[1].trim());
+    setTimeout(function () { openTaskModal(taskData); }, 350);
+  } catch (e) {
+    console.warn('[BEKARYE] parse TASK JSON gagal:', e.message);
+  }
+}
+
+function submitTaskModal() {
+  var task = {
+    title: document.getElementById('mTaskTitle').value.trim(),
+    status: document.getElementById('mTaskStatus').value || 'To Do',
+    priority: document.getElementById('mTaskPriority').value || 'Medium',
+    due_date: document.getElementById('mTaskDueDate').value || '',
+    note: document.getElementById('mTaskNote').value.trim()
+  };
+
+  if (!task.title) {
+    alert('Judul task wajib diisi.');
+    return;
+  }
+
+  var btn = document.getElementById('taskModalConfirm');
+  btn.disabled = true;
+  btn.textContent = '⏳ Menyimpan...';
+
+  postAction('add', { task: task })
+    .then(function () {
+      btn.disabled = false;
+      btn.textContent = '✅ Simpan Task';
+      closeTaskModal();
+
+      ACTIVE_SESSION.messages.push({
+        role: 'assistant',
+        content:
+          '✅ Task berhasil ditambahkan!\n\n' +
+          '**' + task.title + '**\n' +
+          '• Status: ' + task.status + '\n' +
+          '• Prioritas: ' + task.priority + '\n' +
+          '• Due Date: ' + (task.due_date || '(tidak ada)') + '\n' +
+          '✅ Task berhasil disimpan!',
+        timestamp: new Date().toISOString()
+      });
+
+      renderMessages();
+      saveSessionToSheet();
+      loadContext(true);
+    })
+    .catch(function (err) {
+      btn.disabled = false;
+      btn.textContent = '❌ Simpan Task';
+      alert('Error: ' + err.message);
+    });
+}
 function authURL(action, extra) {
   return API_URL
     + '?action=' + encodeURIComponent(action)
@@ -122,32 +391,6 @@ function chatStoreKey() {
   return 'bekarye-chat-sessions:' + u; // ⬇️ BEKARYE session key
 }
 
-function readLocalSessions() {
-  try {
-    // ⬇️ BEKARYE session dengan fallback ke simontok-session
-    var raw = localStorage.getItem('bekarye-chat-sessions');
-    if (!raw) {
-      // Fallback ke simontok-chat-sessions jika bekarye-chat-sessions tidak ada
-      var oldRaw = localStorage.getItem('simontok-chat-sessions');
-      if (oldRaw) {
-        var arr = JSON.parse(oldRaw);
-        if (Array.isArray(arr)) {
-          // Migrasi session dan update key ke bekarye-chat-sessions
-          localStorage.setItem('bekarye-chat-sessions', oldRaw);
-          console.log('✅ Chat sessions berhasil dimigrasi dari SIMONTOK ke BEKARYE');
-          console.log('Session count:', arr.length);
-        }
-      }
-      raw = localStorage.getItem('bekarye-chat-sessions');
-      return raw ? JSON.parse(raw) : [];
-    }
-    return arr;
-  } catch (e) {
-    console.error('[BEKARYE] readLocalSessions error:', e.message);
-    return [];
-  }
-}
-
 function approxBytes(str) {
   try { return new Blob([str]).size; }
   catch (e) { return (str || '').length * 2; }
@@ -157,29 +400,6 @@ function safeText(s, maxChars) {
   s = String(s || '');
   if (s.length <= maxChars) return s;
   return s.slice(0, maxChars) + '…';
-}
-
-function compactSessionForStore(s) {
-  var msgs = Array.isArray(s.messages) ? s.messages : [];
-
-  if (msgs.length > MAX_MSG_PER_SESSION_STORE) {
-    msgs = msgs.slice(-MAX_MSG_PER_SESSION_STORE);
-  }
-
-  msgs = msgs.map(function (m) {
-    return {
-      role: m.role || 'user',
-      content: safeText(m.content || '', MAX_CHARS_PER_MSG_STORE),
-      timestamp: m.timestamp || ''
-    };
-  });
-
-  return {
-    session_id: s.session_id,
-    title: s.title || 'Percakapan Baru',
-    msg_count: (s.messages || []).length,
-    updated_at: s.updated_at || ''
-  };
 }
 
 function sortByUpdatedDesc(list) {
@@ -413,18 +633,6 @@ function renderApiKeyStatus() {
 // ============================================================
 // 8. CONTEXT HELPERS
 // ============================================================
-function calcTaskStats(tasks) {
-  var st = { total: 0, todo: 0, doing: 0, 0, blocked: 0 };
-  (tasks || []).forEach(function (t) {
-    st.total++;
-    if (t.status === 'To Do') st.todo++;
-    else if (t.status === 'D' || t.status === 'Doing') st.doing++;
-    else if (t.status === 'Done') st.done++;
-    else if (t.status === 'B') st.blocked++;
-  });
-  });
-  return st;
-}
 
 function normalizeContextFromList(taskRows) {
   var tasks = Array.isArray(taskRows) ? taskRows : [];
@@ -500,67 +708,6 @@ function ensureContextLoaded(timeoutMs) {
 // ============================================================
 // 11. SYSTEM PROMPT + AI CONTEXT BUILDER
 // ============================================================
-function buildSystemPrompt() {
-  var now = new Date();
-  var nowText = now.toLocaleDateString('id-ID', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  });
-
-  var p =
-    'Kamu adalah ' + (SESSION.name || SESSION.username) + ', assisten pribadi pengatur jadwal usermu yang sangat pintar, periang, bisa membangkitkan semangat dan profesional.\n' +
-    'User aktif: ' + (SESSION.name || SESSION.username) + (SESSION.role === 'admin' ? ' (SESSION.role === 'admin' ? 'Admin' : 'User') + ')\n' +
-    'Tanggal hari ini: ' + nowText + '\n\n' +
-    'ATURAN:\n' +
-    '1. Jawaban yang proaktif (memebri pendapat, jangan pasif seperti ai biasa) dan bisa menjadi teman diskusi untuk menyelesaikan dan membreakdown pekerjaan.\n' +
-    '2. Gunakan data task/notulen di bawah sebagai sumber utama dan internet apabila diperlukan.\n' +
-    '3. Jika user meminta buat task, WAJIBAN sisipkan:\n' +
-    '   %%TASK_JSON%%{"title":"...","status":"To Do","priority":"High/Medium/Low","due_date":"YYYY-MM-DD","note":"..."}%%END_TASK%%\n' +
-    '4. Jangan mengarang data yang tidak ada.\n\n';
-
-  if (USER_CONTEXT && USER_CONTEXT.ok) {
-    var st = USER_CONTEXT.task_stats || {};
-    var tasks = USER_CONTEXT.tasks || [];
-    var nts = USER_CONTEXT.notulen || [];
-
-    p +=
-      '=== TASK STATS ===\n' +
-      'Total=' + (st.total || 0) +
-      ', To Do=' + (st.todo || 0) +
-      ', Doing=' + (st.doing || 0) +
-      ', Done=' + (st.done || 0) +
-      ', Blocked=' + (st.blocked || 0) + '\n\n';
-
-    if (tasks.length) {
-      p += '=== LIST TASK ===\n' +
-        tasks.forEach(function (t, i) {
-          p +=
-            (i + 1) + '. [' + (t.status || '-') + '] ' + (t.title || '-') +
-            ' | Due: ' + (t.due_date || '-') +
-            ' | Priority: ' + (t.priority || '-') +
-            (t.note ? ' | Note: ' + String(t.note).substring(0, 80) : '') + '\n';
-        });
-      p += '\n';
-    }
-
-    if (nts.length) {
-      p += '=== NOTULEN TERBARU ===\n' +
-        nts.forEach(function (n, i) {
-          p += (i + 1) + '. ' + (n.kegiatan || '-') +
-               ' | Tanggal: ' + (n.tanggal || '-') +
-               ' | Tempat: ' + (n.tempat || '-') + '\n';
-        });
-      p += '\n';
-    }
-  } else {
-    p +=
-      '=== DATA TASK USER ===\n' +
-      'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
-      'Catatan: Jika tidak ada task, sampaikan secara natural bahwa belum ada task tercatat.\n\n';
-  }
-
-  p += 'Gunakan bullet points jika menjawab daftar.';
-  return p;
-}
 
 function buildMessagesForAI(systemPrompt, history) {
   var arr = Array.isArray(history) ? history : [];
@@ -673,100 +820,6 @@ function sendMessage(textOverride) {
 // ============================================================
 // 15. OPENROUTER FALLBACK
 // ============================================================
-function callOpenRouter(apiKey, messages) {
-  var start = Date.now();
-  var controller = new AbortController();
-  var timer = setTimeout(function () { controller.abort(); }, 30000);
-
-  return fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + apiKey,
-      'Content-Type: 'application/json',
-      'HTTP-735ed; border-radius: 14px; border: 2px solid var(--border);
-      color: var(--text);
-      transition: background .3s;
-      padding: 16px 20px;
-      font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow2);
-    },
-    body: JSON.stringify({
-      model: AI_MODEL,
-      messages: messages,
-      max_tokens: 2048,
-      temperature: 0.7,
-      stream: false
-    }),
-    signal: controller.signal,
-    redirect: 'follow'
-  })
-    .then(function (res) {
-      clearTimeout(timer);
-      if (!res.ok) {
-        return res.json().then(function (body) {
-          var msg = body && body.error && body.error.message
-            ? body.error.message
-            : ('HTTP ' + res.status + ' ' + res.statusText);
-          throw new Error(friendlyError(res.status, msg));
-        }).catch(function (e) {
-          if (e.message) throw e;
-          throw new Error('❌ HTTP ' + res.status);
-        });
-      }
-      return res.json();
-    })
-    .then(function (data) {
-      if (!data || !data.choices || !data.choices || !data.choices.length) {
-        throw new Error('Response AI kosong. Coba lagi.');
-      }
-      var text = data.choices[0].message && data.choices[0].message.content
-        ? String(data.choices[0].message.content).trim()
-        : '';
-      if (!text) throw new Error('AI tidak menghasilkan teks. Coba lagi.');
-      return { text: text, latencyMs: Date.now() - start };
-    })
-    .catch(function (err) {
-      clearTimeout(timer);
-      if (err.name === 'AbortError') {
-        new Error('⏳ Timeout 30 detik. Coba lagi.');
-      }
-      throw err;
-    });
-}
-
-function friendlyError(code, msg) {
-  var map = {
-    400: '❌ Request tidak valid.',
-    401: '🔑 API Key tidak valid / expired.',
-    402: '💳 Saldo OpenRouter habis.',
-    403: '🚫 Akses ditolak oleh OpenRouter.',
-    404: '🤖 Model tidak ditemukan.',
-    408: '⏳ Request timeout. Coba lagi.',
-    409: '⚠️ Terjadi konflik request. Coba lagi.',
-    413: '📦 Payload terlalu besar.',
-    429: '⏳ Terlalu banyak request. Tunggu sebentar.',
-    500: '🔧 Server OpenRouter bermasalah.',
-    502: '🔧 Gateway error OpenRouter.',
-    503: '🔧 OpenRouter maintenance.',
-    504: '⏳ Gateway timeout dari OpenRouter.'
-  };
-  var c = parseInt(code, 10);
-  return (map[c] || '❌ Error AI.') + ' Detail: ' + msg);
-}
-
-function processAIResponse(text) {
-  var m = String(text || '').match(/%%TASK_JSON%%([\s\S]*?%%END_TASK%%/);
-  if (!m) return;
-  try {
-    var taskData = JSON.parse(m[1].trim());
-    setTimeout(function () { openTaskModal(taskData); }, 350);
-  } catch(e) {
-    console.warn('[BEKARYE] parse TASK JSON gagal:', e.message);
-  }
-}
 
 function openTaskModal(taskData) {
   PENDING_TASK = taskData || {};
@@ -785,53 +838,6 @@ function closeTaskModal() {
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function submitTaskModal() {
-  var task = {
-    title   : document.getElementById('mTaskTitle').value.trim(),
-    status : document.getElementById('mTaskStatus').value || 'To Do',
-    priority: document.getElementById('mTaskPriority').value || 'Medium',
-    due_date: document.getElementById('mTaskDueDate').value || '',
-    note    : document.getElementById('mTaskNote').value.trim()
-  };
-
-  if (!task.title) {
-    alert('Judul task wajib diisi.');
-    return;
-  }
-
-  var btn = document.getElementById('taskModalConfirm');
-  btn.disabled = true;
-  btn.textContent = '⏳ Menyimpan...';
-
-  postAction('add', { task: task })
-    .then(function () {
-      btn.disabled = false;
-      btn.textContent = '✅ Simpan Task';
-      closeTaskModal();
-
-      ACTIVE_SESSION.messages.push({
-        role: 'assistant',
-        content:
-          '✅ Task berhasil ditambahkan!\n\n' +
-          '**' + task.title + '**\n' +
-          '• Status: ' + task.status + '\n' +
-          '• Prioritas: ' + task.priority + '\n' +
-          '• Due Date: ' + (task.due_date || '(tidak ada)') + '\n' +
-          '✅ Task berhasil disimpan!'
-      timestamp: new Date().toISOString()
-      });
-
-      renderMessages();
-      saveSessionToSheet();
-      loadContext(true);
-    })
-    .catch(function (err) {
-      btn.disabled = false;
-      btn.textContent = '❌ Simpan Task';
-      alert('Error: ' + err.message);
-    });
 }
 
 // ============================================================
