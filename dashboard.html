@@ -448,7 +448,7 @@
 
   function getSession() {
     try {
-      var s = localStorage.getItem('simontok-session');
+      var s = localStorage.getItem('bekarye-session');
       if (s) {
         var parsed = JSON.parse(s);
         if (parsed && parsed.token) {
@@ -493,7 +493,7 @@
   // ============================================================
   document.getElementById('logoutBtn').addEventListener('click', function() {
     if (!confirm('Yakin ingin logout?')) return;
-    localStorage.removeItem('simontok-session');
+    localStorage.removeItem('bekarye-session');
     window.location.href = 'index.html';
   });
 
@@ -501,7 +501,7 @@
   // THEME — sinkron dengan logo
   // ============================================================
   function initTheme() {
-    var t = localStorage.getItem('simontok-theme');
+    var t = localStorage.getItem('bekarye-theme');
     var isDark = t === 'dark';
     applyTheme(isDark);
   }
@@ -521,7 +521,7 @@
   document.getElementById('darkToggle').addEventListener('click', function() {
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     isDark = !isDark;
-    localStorage.setItem('simontok-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('bekarye-theme', isDark ? 'dark' : 'light');
     applyTheme(isDark);
     if (DATA.length) render();
   });
