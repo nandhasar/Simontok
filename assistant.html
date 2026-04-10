@@ -873,7 +873,7 @@
 // ============================================================
 // CONFIG
 // ============================================================
-var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU.exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
 // ============================================================
 // SESSION MIGRATION & HELPERS
@@ -989,13 +989,6 @@ function getSession() {
   return false;
 }
 
-if (!getSession()) {
-  alert('Silakan login terlebih dahulu.');
-  window.location.replace('index.html');
-} else {
-  initAssistant();
-}
-
 function authURL(action) {
   return API_URL
     + '?action=' + encodeURIComponent(action)
@@ -1049,13 +1042,25 @@ document.getElementById('settingsDropdown').addEventListener('click', function(e
 document.getElementById('darkToggle').addEventListener('click', toggleTheme);
 
 // ============================================================
-// INIT
+// INIT / BOOTSTRAP
 // ============================================================
-// Jalankan migrasi dulu sebelum init
-migrateSession();
-initTheme();
-document.getElementById('yearNow').textContent = new Date().getFullYear();
+(function boot() {
+  // 1) Migrasi dulu
+  migrateSession();
 
+  // 2) Theme setelah migrasi
+  initTheme();
+
+  // 3) Ambil session hasil migrasi
+  if (!getSession()) {
+    alert('Silakan login terlebih dahulu.');
+    window.location.replace('index.html');
+    return;
+  }
+
+  // 4) Lanjut app
+  initAssistant();
+})();
 // ============================================================
 // INIT APP (placeholder - ganti dengan ai-client.js dan assistant.js)
 // ============================================================
