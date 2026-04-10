@@ -1,8 +1,8 @@
 // ================================================================
 // BEKARYE - Assistant JS
 // File   : js/assistant.js
-// Versi  : 1.6 (clean + stable + migration safe)
-// Depends: js/ai-client.js (optional; fallback OpenRouter included)
+// Versi  : 1.7 (fixed: ID mismatch, logo path, markdown render, welcome UX)
+// Depends: js/ai-client.js
 // ================================================================
 
 (function () {
@@ -18,7 +18,7 @@
   var LEGACY_THEME_KEY = 'simontok-theme';
 
   var AI_MODEL = 'anthropic/claude-haiku-4.5';
-  var CHAT_STORAGE_MODE = 'local'; // 'local' | 'remote'
+  var CHAT_STORAGE_MODE = 'local';
 
   var MAX_LOCAL_SESSIONS = 40;
   var MAX_MSG_PER_SESSION_STORE = 120;
@@ -57,12 +57,13 @@
       .replace(/>/g, '&gt;');
   }
 
-  function nl2br(s) {
-    return esc(s).replace(/\n/g, '<br>');
-  }
-
   function nowISO() {
     return new Date().toISOString();
+  }
+
+  function timeStr() {
+    var d = new Date();
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
   }
 
   function safeText(s, maxChars) {
@@ -82,6 +83,50 @@
     });
   }
 
+  // FIX #4: Markdown formatter untuk AI bubble
+  function formatAIMarkdown(text) {
+    if (!text) return '';
+    var s = esc(text);
+    // code blocks
+    s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, function (m, lang, code) {
+      return '<pre><code>' + code.trim() + '</code></pre>';
+    });
+    // bold
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // italic
+    s = s.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    // inline code
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // bullet lists
+    s = s.replace(/^[\-\*]\s+(.+)$/gm, '~~LI~~$1~~ENDLI~~');
+    s = s.replace(/(~~LI~~[\s\S]*?~~ENDLI~~\n?)+/g, function (block) {
+      return '<ul>' + block.replace(/~~LI~~/g, '<li>').replace(/~~ENDLI~~/g, '</li>') + '</ul>';
+    });
+    // numbered lists
+    s = s.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+    // headings
+    s = s.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+    s = s.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
+    s = s.replace(/^##\s+(.+)$/gm, '<h3>$1</h3>');
+    // hr
+    s = s.replace(/^---$/gm, '<hr>');
+    // line breaks (sisanya)
+    s = s.replace(/\n/g, '<br>');
+    return s;
+  }
+
+  // Toast notification
+  function showToast(msg, duration) {
+    var toast = el('appToast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._tid);
+    toast._tid = setTimeout(function () {
+      toast.classList.remove('show');
+    }, duration || 2800);
+  }
+
   // ================================================================
   // 4) MIGRATION + SESSION HELPERS
   // ================================================================
@@ -92,7 +137,6 @@
         if (oldS) localStorage.setItem(SESSION_KEY, oldS);
       }
     } catch (e) {}
-
     try {
       if (!localStorage.getItem(THEME_KEY)) {
         var oldT = localStorage.getItem(LEGACY_THEME_KEY);
@@ -107,8 +151,6 @@
       if (!raw) return null;
       var s = JSON.parse(raw);
       if (!s || !s.username || !s.token) return null;
-
-      // persist ke key baru
       localStorage.setItem(SESSION_KEY, JSON.stringify(s));
       return s;
     } catch (e) {
@@ -117,20 +159,13 @@
   }
 
   function getApiKey() {
-    var k = (SESSION && SESSION.apiKey) ? String(SESSION.apiKey).trim() : '';
-    if (k && k !== 'undefined' && k !== 'null') return k;
-
-    try {
-      var sess = getSession();
-      k = String((sess && sess.apiKey) || '').trim();
+    // Prioritas: AI_CLIENT > SESSION > sessionStorage
+    if (window.AI_CLIENT && typeof AI_CLIENT.getApiKey === 'function') {
+      var k = AI_CLIENT.getApiKey();
       if (k) return k;
-    } catch (e) {}
-
-    try {
-      k = String(sessionStorage.getItem('bekarye-apikey') || sessionStorage.getItem('simontok-apikey') || '').trim();
-      if (k) return k;
-    } catch (e2) {}
-
+    }
+    var k2 = (SESSION && SESSION.apiKey) ? String(SESSION.apiKey).trim() : '';
+    if (k2 && k2 !== 'undefined' && k2 !== 'null') return k2;
     return '';
   }
 
@@ -162,9 +197,7 @@
       .then(function (text) {
         var j;
         try { j = JSON.parse(text); }
-        catch (e) {
-          throw new Error('Response bukan JSON: ' + String(text).substring(0, 180));
-        }
+        catch (e) { throw new Error('Response bukan JSON: ' + String(text).substring(0, 180)); }
         if (!j.ok) throw new Error(j.message || 'Request gagal');
         return j;
       });
@@ -173,34 +206,25 @@
   // ================================================================
   // 5) THEME
   // ================================================================
+  // FIX #3: Logo path yang benar
   function updateBrandLogos() {
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    var logoPath = isDark ? 'assets/logo/logo-dark.png' : 'assets/logo-light.png';
-
     var logo = el('logoImage');
-    if (logo) logo.src = logoPath;
-
-    var brand = el('brandLogo');
-    if (brand) brand.textContent = 'BEKARYE';
+    if (logo) logo.src = isDark ? 'assets/logo/logo-dark.png' : 'assets/logo/logo-light.png';
   }
 
   function applyTheme(isDark) {
     if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
     else document.documentElement.removeAttribute('data-theme');
-
     try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch (e) {}
-
     var darkToggle = el('darkToggle');
     if (darkToggle) darkToggle.classList.toggle('on', isDark);
-
     updateBrandLogos();
   }
 
   function initTheme() {
     var t = 'light';
-    try {
-      t = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY) || 'light';
-    } catch (e) {}
+    try { t = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY) || 'light'; } catch (e) {}
     applyTheme(t === 'dark');
   }
 
@@ -220,7 +244,6 @@
   function compactSessionForStore(s) {
     var msgs = Array.isArray(s.messages) ? s.messages : [];
     if (msgs.length > MAX_MSG_PER_SESSION_STORE) msgs = msgs.slice(-MAX_MSG_PER_SESSION_STORE);
-
     msgs = msgs.map(function (m) {
       return {
         role: m.role || 'user',
@@ -228,7 +251,6 @@
         timestamp: m.timestamp || ''
       };
     });
-
     return {
       session_id: s.session_id,
       title: s.title || 'Percakapan Baru',
@@ -242,44 +264,28 @@
     try {
       var key = chatStoreKey();
       var raw = localStorage.getItem(key);
-
       if (!raw) {
         var oldRaw = localStorage.getItem(legacyChatStoreKey());
-        if (oldRaw) {
-          localStorage.setItem(key, oldRaw);
-          raw = oldRaw;
-        }
+        if (oldRaw) { localStorage.setItem(key, oldRaw); raw = oldRaw; }
       }
-
       if (!raw) return [];
       var arr = JSON.parse(raw);
       return Array.isArray(arr) ? arr : [];
-    } catch (e) {
-      console.warn('[BEKARYE] readLocalSessions error:', e.message);
-      return [];
-    }
+    } catch (e) { return []; }
   }
 
   function writeLocalSessionsSafe(list) {
     var key = chatStoreKey();
     var work = sortByUpdatedDesc((list || []).map(compactSessionForStore));
-
     if (work.length > MAX_LOCAL_SESSIONS) work = work.slice(0, MAX_LOCAL_SESSIONS);
-
     while (work.length > 0) {
       var raw = JSON.stringify(work);
       while (approxBytes(raw) > MAX_LOCAL_BYTES_SOFT && work.length > 1) {
-        work.pop();
-        raw = JSON.stringify(work);
+        work.pop(); raw = JSON.stringify(work);
       }
-      try {
-        localStorage.setItem(key, raw);
-        return true;
-      } catch (e) {
-        work.pop();
-      }
+      try { localStorage.setItem(key, raw); return true; }
+      catch (e) { work.pop(); }
     }
-
     try { localStorage.setItem(key, JSON.stringify([])); } catch (e2) {}
     return false;
   }
@@ -301,14 +307,14 @@
     if (!ACTIVE_SESSION) return;
     ensureLocalSessionId();
     ACTIVE_SESSION.updated_at = nowISO();
-
     var list = readLocalSessions();
     var id = ACTIVE_SESSION.session_id;
-    var idx = list.findIndex(function (x) { return x.session_id === id; });
-
+    var idx = -1;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].session_id === id) { idx = i; break; }
+    }
     if (idx >= 0) list[idx] = ACTIVE_SESSION;
     else list.unshift(ACTIVE_SESSION);
-
     writeLocalSessions(list);
   }
 
@@ -329,18 +335,11 @@
 
   function normalizeContextFromList(taskRows) {
     var tasks = Array.isArray(taskRows) ? taskRows : [];
-    return {
-      ok: true,
-      tasks: tasks,
-      notulen: [],
-      task_stats: calcTaskStats(tasks),
-      source: 'list-fallback'
-    };
+    return { ok: true, tasks: tasks, notulen: [], task_stats: calcTaskStats(tasks), source: 'list-fallback' };
   }
 
   function loadContext(force) {
     force = !!force;
-
     if (CONTEXT_STATE.loading && CONTEXT_STATE.promise) return CONTEXT_STATE.promise;
     if (!force && CONTEXT_STATE.loaded) return Promise.resolve(USER_CONTEXT);
 
@@ -355,7 +354,6 @@
           CONTEXT_STATE.loaded = true;
           return USER_CONTEXT;
         }
-
         return fetch(authURL('list'), { redirect: 'follow' })
           .then(function (r2) { return r2.json(); })
           .then(function (j2) {
@@ -373,20 +371,16 @@
         CONTEXT_STATE.loaded = true;
         return USER_CONTEXT;
       })
-      .finally(function () {
-        CONTEXT_STATE.loading = false;
-      });
+      .finally(function () { CONTEXT_STATE.loading = false; });
 
     return CONTEXT_STATE.promise;
   }
 
   function ensureContextLoaded(timeoutMs) {
     timeoutMs = timeoutMs || 8000;
-
     var timeoutPromise = new Promise(function (resolve) {
       setTimeout(function () { resolve(null); }, timeoutMs);
     });
-
     return Promise.race([
       loadContext(false).catch(function () { return null; }),
       timeoutPromise
@@ -401,7 +395,6 @@
     var nowText = now.toLocaleDateString('id-ID', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
     });
-
     var roleText = SESSION && SESSION.role === 'admin' ? 'Admin' : 'User';
     var userText = (SESSION && (SESSION.name || SESSION.username)) || 'User';
 
@@ -414,28 +407,24 @@
       '2. Gunakan data task/notulen di bawah sebagai sumber utama.\n' +
       '3. Jika user meminta buat task, sisipkan:\n' +
       '%%TASK_JSON%%{"title":"...","status":"To Do","priority":"High/Medium/Low","due_date":"YYYY-MM-DD","note":"..."}%%END_TASK%%\n' +
-      '4. Jangan mengarang data.\n\n';
+      '4. Jangan mengarang data.\n' +
+      '5. Gunakan Markdown formatting: **bold**, *italic*, - bullet, 1. numbered list.\n\n';
 
     if (USER_CONTEXT && USER_CONTEXT.ok) {
       var st = USER_CONTEXT.task_stats || {};
       var tasks = USER_CONTEXT.tasks || [];
       var nts = USER_CONTEXT.notulen || [];
 
-      p +=
-        '=== TASK STATS ===\n' +
-        'Total=' + (st.total || 0) +
-        ', To Do=' + (st.todo || 0) +
-        ', Doing=' + (st.doing || 0) +
-        ', Done=' + (st.done || 0) +
+      p += '=== TASK STATS ===\n' +
+        'Total=' + (st.total || 0) + ', To Do=' + (st.todo || 0) +
+        ', Doing=' + (st.doing || 0) + ', Done=' + (st.done || 0) +
         ', Blocked=' + (st.blocked || 0) + '\n\n';
 
       if (tasks.length) {
         p += '=== LIST TASK ===\n';
         tasks.forEach(function (t, i) {
-          p +=
-            (i + 1) + '. [' + (t.status || '-') + '] ' + (t.title || '-') +
-            ' | Due: ' + (t.due_date || '-') +
-            ' | Priority: ' + (t.priority || '-') +
+          p += (i + 1) + '. [' + (t.status || '-') + '] ' + (t.title || '-') +
+            ' | Due: ' + (t.due_date || '-') + ' | Priority: ' + (t.priority || '-') +
             (t.note ? ' | Note: ' + String(t.note).substring(0, 80) : '') + '\n';
         });
         p += '\n';
@@ -444,28 +433,22 @@
       if (nts.length) {
         p += '=== NOTULEN TERBARU ===\n';
         nts.forEach(function (n, i) {
-          p +=
-            (i + 1) + '. ' + (n.kegiatan || '-') +
+          p += (i + 1) + '. ' + (n.kegiatan || '-') +
             ' | Tanggal: ' + (n.tanggal || '-') +
             ' | Tempat: ' + (n.tempat || '-') + '\n';
         });
         p += '\n';
       }
     } else {
-      p +=
-        '=== DATA TASK USER ===\n' +
-        'Total=0, To Do=0, Doing=0, Done=0, Blocked=0\n' +
-        'Jika belum ada task, sampaikan secara natural.\n\n';
+      p += '=== DATA TASK USER ===\nBelum ada data task.\n\n';
     }
 
-    p += 'Gunakan bullet points jika menjawab daftar.';
     return p;
   }
 
   function buildMessagesForAI(systemPrompt, history) {
     var arr = Array.isArray(history) ? history : [];
     var sliced = arr.slice(-MAX_AI_CONTEXT_MESSAGES);
-
     var total = 0;
     var kept = [];
     for (var i = sliced.length - 1; i >= 0; i--) {
@@ -475,98 +458,18 @@
       kept.unshift({ role: m.role || 'user', content: c });
       total += c.length;
     }
-
     return [{ role: 'system', content: systemPrompt }].concat(kept);
   }
 
-  function friendlyError(code, msg) {
-    var map = {
-      400: '❌ Request tidak valid.',
-      401: '🔑 API Key tidak valid / expired.',
-      402: '💳 Saldo OpenRouter habis.',
-      403: '🚫 Akses ditolak oleh OpenRouter.',
-      404: '🤖 Model tidak ditemukan.',
-      408: '⏳ Request timeout. Coba lagi.',
-      409: '⚠️ Terjadi konflik request. Coba lagi.',
-      413: '📦 Payload terlalu besar.',
-      429: '⏳ Terlalu banyak request. Tunggu sebentar.',
-      500: '🔧 Server OpenRouter bermasalah.',
-      502: '🔧 Gateway error OpenRouter.',
-      503: '🔧 OpenRouter maintenance.',
-      504: '⏳ Gateway timeout dari OpenRouter.'
-    };
-    var c = parseInt(code, 10);
-    return (map[c] || '❌ Error AI.') + ' Detail: ' + msg;
-  }
-
-  function callOpenRouter(apiKey, messages) {
-    var start = Date.now();
-    var controller = new AbortController();
-    var timer = setTimeout(function () { controller.abort(); }, 30000);
-
-    return fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + apiKey,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': window.location.origin || 'https://bekarye.app',
-        'X-Title': 'BEKARYE Assistant'
-      },
-      body: JSON.stringify({
-        model: AI_MODEL,
-        messages: messages,
-        max_tokens: 2048,
-        temperature: 0.7,
-        stream: false
-      }),
-      signal: controller.signal,
-      redirect: 'follow'
-    })
-      .then(function (res) {
-        clearTimeout(timer);
-        if (!res.ok) {
-          return res.json().then(function (body) {
-            var msg = body && body.error && body.error.message
-              ? body.error.message
-              : ('HTTP ' + res.status + ' ' + res.statusText);
-            throw new Error(friendlyError(res.status, msg));
-          }).catch(function (e) {
-            if (e.message) throw e;
-            throw new Error('❌ HTTP ' + res.status);
-          });
-        }
-        return res.json();
-      })
-      .then(function (data) {
-        if (!data || !data.choices || !data.choices.length) {
-          throw new Error('Response AI kosong. Coba lagi.');
-        }
-        var text = data.choices[0].message && data.choices[0].message.content
-          ? String(data.choices[0].message.content).trim()
-          : '';
-        if (!text) throw new Error('AI tidak menghasilkan teks. Coba lagi.');
-        return { text: text, latencyMs: Date.now() - start };
-      })
-      .catch(function (err) {
-        clearTimeout(timer);
-        if (err && err.name === 'AbortError') {
-          throw new Error('⏳ Timeout 30 detik. Coba lagi.');
-        }
-        throw err;
-      });
-  }
-
   function sendToAI(messagesForAI) {
+    // Selalu gunakan AI_CLIENT jika tersedia
     if (window.AI_CLIENT && typeof AI_CLIENT.sendChat === 'function') {
       return AI_CLIENT.sendChat(messagesForAI, {
         apiKey: getApiKey(),
         model: AI_MODEL
       });
     }
-
-    var key = getApiKey();
-    if (!key) return Promise.reject(new Error('API Key tidak tersedia.'));
-    return callOpenRouter(key, messagesForAI);
+    return Promise.reject(new Error('AI Client tidak tersedia. Pastikan ai-client.js sudah di-load.'));
   }
 
   function stripTaskJsonBlock(text) {
@@ -585,31 +488,62 @@
   }
 
   // ================================================================
-  // 9) CHAT UI
+  // 9) CHAT UI — FIX #4 & #5: Proper rendering
   // ================================================================
   function renderMessages() {
     var box = el('chatMessages');
     if (!box) return;
 
     var msgs = (ACTIVE_SESSION && Array.isArray(ACTIVE_SESSION.messages)) ? ACTIVE_SESSION.messages : [];
-    box.innerHTML = '';
+
+    // Manage welcome visibility
+    var welcome = el('chatWelcome');
 
     if (!msgs.length) {
-      box.innerHTML = '<div class="empty-chat">Mulai percakapan dengan mengetik pesan di bawah 👇</div>';
+      if (welcome) welcome.style.display = 'flex';
+      // Hapus bubble lama tapi pertahankan welcome
+      var oldBubbles = box.querySelectorAll('.msg-row,.typing-row,.empty-chat');
+      oldBubbles.forEach(function (b) { b.remove(); });
       return;
     }
 
+    if (welcome) welcome.style.display = 'none';
+
+    // Build HTML bubbles
+    var userInitial = (SESSION && (SESSION.name || SESSION.username) || 'U').charAt(0).toUpperCase();
+    var html = '';
+
     msgs.forEach(function (m) {
-      var div = document.createElement('div');
-      div.className = 'msg ' + (m.role === 'assistant' ? 'assistant' : 'user');
+      var t = m.timestamp ? new Date(m.timestamp) : null;
+      var tStr = t ? (('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2)) : '';
 
-      var content = document.createElement('div');
-      content.className = 'msg-content';
-      content.innerHTML = nl2br(m.content || '');
-
-      div.appendChild(content);
-      box.appendChild(div);
+      if (m.role === 'user') {
+        html +=
+          '<div class="msg-row user">' +
+            '<div class="msg-avatar user">' + userInitial + '</div>' +
+            '<div class="msg-col">' +
+              '<div class="msg-bubble user">' + esc(m.content) + '</div>' +
+              '<div class="msg-time">' + tStr + '</div>' +
+            '</div>' +
+          '</div>';
+      } else if (m.role === 'assistant') {
+        html +=
+          '<div class="msg-row">' +
+            '<div class="msg-avatar ai">🤖</div>' +
+            '<div class="msg-col">' +
+              '<div class="msg-bubble ai">' + formatAIMarkdown(m.content) + '</div>' +
+              '<div class="msg-time">' + tStr + '</div>' +
+            '</div>' +
+          '</div>';
+      }
     });
+
+    // Preserve welcome element, clear rest
+    var welcomeHTML = welcome ? welcome.outerHTML : '';
+    box.innerHTML = welcomeHTML + html;
+    // Re-hide welcome since we have messages
+    var newWelcome = el('chatWelcome');
+    if (newWelcome) newWelcome.style.display = 'none';
 
     box.scrollTop = box.scrollHeight;
   }
@@ -618,11 +552,16 @@
     var box = el('chatMessages');
     if (!box) return;
     hideTyping();
-
     var div = document.createElement('div');
+    div.className = 'typing-row';
     div.id = 'typingIndicator';
-    div.className = 'msg assistant';
-    div.innerHTML = '<div class="msg-content">⏳ Assistant sedang mengetik...</div>';
+    div.innerHTML =
+      '<div class="msg-avatar ai">🤖</div>' +
+      '<div class="typing-bubble">' +
+        '<div class="typing-dot"></div>' +
+        '<div class="typing-dot"></div>' +
+        '<div class="typing-dot"></div>' +
+      '</div>';
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
   }
@@ -639,63 +578,93 @@
     input.style.height = Math.min(input.scrollHeight, 220) + 'px';
   }
 
+  // FIX #5: Render ke ID "sessionsList" (sesuai HTML)
   function renderSessionList() {
-    var listEl = el('chatSessionList');
+    var listEl = el('sessionsList');
     if (!listEl) return;
 
-    listEl.innerHTML = '';
     if (!SESSIONS_LIST.length) {
-      listEl.innerHTML = '<div class="empty-sessions">Belum ada sesi</div>';
+      listEl.innerHTML = '<div class="sessions-empty">📭 Belum ada riwayat chat</div>';
       return;
     }
 
+    var html = '';
     SESSIONS_LIST.forEach(function (s) {
-      var btn = document.createElement('button');
-      btn.className = 'session-item' + (ACTIVE_SESSION && ACTIVE_SESSION.session_id === s.session_id ? ' active' : '');
-      btn.textContent = s.title || 'Percakapan Baru';
-      btn.addEventListener('click', function () {
-        openSessionById(s.session_id);
+      var isActive = ACTIVE_SESSION && ACTIVE_SESSION.session_id === s.session_id;
+      var d = s.updated_at ? new Date(s.updated_at) : new Date(s.created_at || Date.now());
+      var meta = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) +
+        ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      var msgCount = (s.messages && s.messages.length) || s.msg_count || 0;
+
+      html +=
+        '<div class="session-item' + (isActive ? ' active' : '') + '" data-sid="' + s.session_id + '" style="cursor:pointer">' +
+          '<div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:24px">' +
+            esc(s.title || 'Percakapan Baru') +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--text4);margin-top:2px">' + meta + ' · ' + msgCount + ' pesan</div>' +
+          '<button class="session-del-btn" data-del="' + s.session_id + '" title="Hapus" style="position:absolute;top:50%;right:8px;transform:translateY(-50%);width:22px;height:22px;border-radius:6px;background:transparent;border:none;color:var(--text4);font-size:13px;display:flex;align-items:center;justify-content:center;opacity:0;cursor:pointer">🗑</button>' +
+        '</div>';
+    });
+    listEl.innerHTML = html;
+
+    // Attach click listeners
+    listEl.querySelectorAll('.session-item').forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        if (e.target.closest('[data-del]')) return;
+        var sid = item.getAttribute('data-sid');
+        if (sid) openSessionById(sid);
       });
-      listEl.appendChild(btn);
+      // Show/hide delete btn on hover
+      item.addEventListener('mouseenter', function () {
+        var btn = item.querySelector('.session-del-btn');
+        if (btn) btn.style.opacity = '1';
+      });
+      item.addEventListener('mouseleave', function () {
+        var btn = item.querySelector('.session-del-btn');
+        if (btn) btn.style.opacity = '0';
+      });
+    });
+
+    listEl.querySelectorAll('[data-del]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteSession(btn.getAttribute('data-del'));
+      });
     });
   }
 
-  function loadSessions() {
-    if (CHAT_STORAGE_MODE === 'local') {
-      SESSIONS_LIST = readLocalSessions();
-      SESSIONS_LIST = sortByUpdatedDesc(SESSIONS_LIST);
-      renderSessionList();
+  function deleteSession(sid) {
+    if (!confirm('Hapus sesi chat ini?')) return;
+    var list = readLocalSessions().filter(function (s) { return s.session_id !== sid; });
+    writeLocalSessions(list);
+    SESSIONS_LIST = sortByUpdatedDesc(list);
 
-      if (!ACTIVE_SESSION) {
-        if (SESSIONS_LIST.length) ACTIVE_SESSION = SESSIONS_LIST[0];
-        else startNewSession();
-      }
-
+    if (ACTIVE_SESSION && ACTIVE_SESSION.session_id === sid) {
+      ACTIVE_SESSION = SESSIONS_LIST.length ? SESSIONS_LIST[0] : null;
+      if (!ACTIVE_SESSION) startNewSession();
+    }
+    renderSessionList();
+    renderMessages();
+    if (ACTIVE_SESSION) {
       var titleEl = el('chatTitle');
-      if (titleEl) titleEl.textContent = ACTIVE_SESSION.title || 'Percakapan Baru';
+      if (titleEl) titleEl.textContent = ACTIVE_SESSION.title || 'AI Assistant';
+    }
+    showToast('🗑 Sesi chat dihapus');
+  }
 
-      renderMessages();
-      return;
+  function loadSessions() {
+    SESSIONS_LIST = sortByUpdatedDesc(readLocalSessions());
+    renderSessionList();
+
+    if (!ACTIVE_SESSION) {
+      if (SESSIONS_LIST.length) ACTIVE_SESSION = SESSIONS_LIST[0];
+      else startNewSession();
     }
 
-    // Remote mode (optional)
-    fetch(authURL('list-chat-sessions'), { redirect: 'follow' })
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        if (!j || !j.ok || !Array.isArray(j.data)) throw new Error('Gagal load remote chat');
-        SESSIONS_LIST = j.data;
-        renderSessionList();
-        if (!ACTIVE_SESSION) startNewSession();
-        renderMessages();
-      })
-      .catch(function () {
-        // fallback local
-        SESSIONS_LIST = readLocalSessions();
-        SESSIONS_LIST = sortByUpdatedDesc(SESSIONS_LIST);
-        renderSessionList();
-        if (!ACTIVE_SESSION) startNewSession();
-        renderMessages();
-      });
+    var titleEl = el('chatTitle');
+    if (titleEl && ACTIVE_SESSION) titleEl.textContent = ACTIVE_SESSION.title || 'Percakapan Baru';
+
+    renderMessages();
   }
 
   function startNewSession() {
@@ -705,7 +674,6 @@
       messages: [],
       updated_at: nowISO()
     };
-
     var titleEl = el('chatTitle');
     if (titleEl) titleEl.textContent = ACTIVE_SESSION.title;
 
@@ -713,37 +681,35 @@
     SESSIONS_LIST = sortByUpdatedDesc(readLocalSessions());
     renderSessionList();
     renderMessages();
+
+    var input = el('chatInput');
+    if (input) input.focus();
   }
 
   function openSessionById(id) {
     var list = readLocalSessions();
-    var found = list.find(function (x) { return x.session_id === id; });
+    var found = null;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].session_id === id) { found = list[i]; break; }
+    }
     if (!found) return;
-
     ACTIVE_SESSION = found;
     var titleEl = el('chatTitle');
     if (titleEl) titleEl.textContent = ACTIVE_SESSION.title || 'Percakapan Baru';
-
     renderSessionList();
     renderMessages();
   }
 
   function saveSessionToSheet() {
-    // selalu simpan local dulu
     persistActiveSession();
     SESSIONS_LIST = sortByUpdatedDesc(readLocalSessions());
     renderSessionList();
-
     if (CHAT_STORAGE_MODE !== 'remote') return Promise.resolve({ ok: true });
-
-    // optional remote save
     return postAction('save-chat-session', {
       session_id: ACTIVE_SESSION.session_id,
       title: ACTIVE_SESSION.title || 'Percakapan Baru',
       messages: ACTIVE_SESSION.messages || []
-    }).catch(function () {
-      return { ok: false };
-    });
+    }).catch(function () { return { ok: false }; });
   }
 
   // ================================================================
@@ -766,54 +732,36 @@
 
   function submitTaskModal() {
     var task = {
-      title: (el('mTaskTitle') && el('mTaskTitle').value || '').trim(),
-      status: (el('mTaskStatus') && el('mTaskStatus').value) || 'To Do',
-      priority: (el('mTaskPriority') && el('mTaskPriority').value) || 'Medium',
-      due_date: (el('mTaskDueDate') && el('mTaskDueDate').value) || '',
-      note: (el('mTaskNote') && el('mTaskNote').value || '').trim()
+      title: (el('mTaskTitle') ? el('mTaskTitle').value : '').trim(),
+      status: (el('mTaskStatus') ? el('mTaskStatus').value : 'To Do'),
+      priority: (el('mTaskPriority') ? el('mTaskPriority').value : 'Medium'),
+      due_date: (el('mTaskDueDate') ? el('mTaskDueDate').value : ''),
+      note: (el('mTaskNote') ? el('mTaskNote').value : '').trim()
     };
-
     if (!task.title) {
-      alert('Judul task wajib diisi.');
+      showToast('⚠️ Judul task wajib diisi!');
       return;
     }
-
     var btn = el('taskModalConfirm');
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = '⏳ Menyimpan...';
-    }
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Menyimpan...'; }
 
     postAction('add', { task: task })
       .then(function () {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = '✅ Simpan Task';
-        }
+        if (btn) { btn.disabled = false; btn.textContent = '✅ Simpan Task'; }
         closeTaskModal();
-
         ACTIVE_SESSION.messages.push({
           role: 'assistant',
-          content:
-            '✅ Task berhasil ditambahkan!\n\n' +
-            '**' + task.title + '**\n' +
-            '• Status: ' + task.status + '\n' +
-            '• Prioritas: ' + task.priority + '\n' +
-            '• Due Date: ' + (task.due_date || '(tidak ada)') + '\n' +
-            '✅ Task berhasil disimpan!',
+          content: '✅ Task berhasil ditambahkan!\n\n**' + task.title + '**\n- Status: ' + task.status + '\n- Prioritas: ' + task.priority + '\n- Due Date: ' + (task.due_date || '(tidak ada)'),
           timestamp: nowISO()
         });
-
         renderMessages();
         saveSessionToSheet();
         loadContext(true);
+        showToast('✅ Task berhasil disimpan!');
       })
       .catch(function (err) {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = '❌ Simpan Task';
-        }
-        alert('Error: ' + err.message);
+        if (btn) { btn.disabled = false; btn.textContent = '✅ Simpan Task'; }
+        showToast('❌ Error: ' + err.message);
       });
   }
 
@@ -825,9 +773,9 @@
     var content = textOverride || ((input && input.value) || '').trim();
     if (!content || IS_THINKING) return;
 
-    var apiKey = (window.AI_CLIENT && AI_CLIENT.getApiKey) ? AI_CLIENT.getApiKey() : getApiKey();
+    var apiKey = getApiKey();
     if (!apiKey) {
-      alert('API Key tidak tersedia. Hubungi admin untuk mengisi API Key akun BEKARYE Anda.');
+      showToast('⚠️ API Key tidak tersedia. Hubungi admin.');
       return;
     }
 
@@ -848,6 +796,7 @@
     renderMessages();
     IS_THINKING = true;
     if (el('btnSend')) el('btnSend').disabled = true;
+    if (input) input.disabled = true;
     showTyping();
 
     ensureContextLoaded(8000).finally(function () {
@@ -861,6 +810,7 @@
           hideTyping();
           IS_THINKING = false;
           if (el('btnSend')) el('btnSend').disabled = false;
+          if (el('chatInput')) el('chatInput').disabled = false;
 
           var aiTextRaw = (result && result.text) ? result.text : '';
           processAIResponse(aiTextRaw);
@@ -872,6 +822,7 @@
             timestamp: nowISO()
           });
 
+          // Update title dari pesan pertama
           if (ACTIVE_SESSION.title === 'Percakapan Baru') {
             ACTIVE_SESSION.title = content.length > 45 ? content.substring(0, 45) + '...' : content;
             if (el('chatTitle')) el('chatTitle').textContent = ACTIVE_SESSION.title;
@@ -884,6 +835,7 @@
           hideTyping();
           IS_THINKING = false;
           if (el('btnSend')) el('btnSend').disabled = false;
+          if (el('chatInput')) el('chatInput').disabled = false;
 
           ACTIVE_SESSION.messages.push({
             role: 'assistant',
@@ -905,14 +857,13 @@
     var msg = el('aiKeyMsg');
     if (!dot || !msg) return;
 
-    var key = (window.AI_CLIENT && AI_CLIENT.getApiKey) ? AI_CLIENT.getApiKey() : getApiKey();
-
+    var key = getApiKey();
     if (!key) {
       dot.className = 'ai-key-dot err';
       msg.textContent = '⚠️ API Key tidak tersedia untuk akun ini. Hubungi admin.';
     } else {
       dot.className = 'ai-key-dot ok';
-      msg.textContent = '✅ API Key aktif · Login sebagai ' + (SESSION.name || SESSION.username || 'User');
+      msg.textContent = '✅ AI aktif · Model: ' + AI_MODEL + ' · ' + (SESSION.name || SESSION.username);
     }
   }
 
@@ -922,18 +873,18 @@
   function onSessionReady() {
     var topbar = el('topbarUser');
     if (topbar) {
-      topbar.textContent =
-        '🤖 AI Assistant · ' +
+      topbar.textContent = '🤖 AI Assistant · ' +
         (SESSION.name || SESSION.username) +
         (SESSION.role === 'admin' ? ' — Admin' : ' — User');
     }
 
+    // Sync API key ke AI_CLIENT
     if (window.AI_CLIENT && typeof AI_CLIENT.setApiKey === 'function') {
       AI_CLIENT.setApiKey(SESSION.apiKey || '');
     }
 
     var wt = el('welcomeTitle');
-    if (wt) wt.textContent = 'Halo, ' + (SESSION.name || SESSION.username) + '! Ada yang bisa saya bantu?';
+    if (wt) wt.textContent = 'Halo, ' + (SESSION.name || SESSION.username) + '! 👋';
 
     if (el('loadingState')) el('loadingState').style.display = 'none';
     if (el('app')) el('app').style.display = '';
@@ -987,14 +938,12 @@
         onSessionReady();
       })
       .catch(function (err) {
-        console.warn('[BEKARYE] Validasi offline:', err.message);
-
+        console.warn('[BEKARYE] Validasi offline, lanjut dengan session lokal:', err.message);
         SESSION = s;
         if (!SESSION || !SESSION.token) {
           window.location.replace('index.html');
           return;
         }
-
         onSessionReady();
       });
   }
@@ -1003,6 +952,7 @@
   // 14) EVENTS
   // ================================================================
   function initEventListeners() {
+    // Dark toggle
     var darkToggle = el('darkToggle');
     if (darkToggle) {
       darkToggle.addEventListener('click', function () {
@@ -1011,6 +961,7 @@
       });
     }
 
+    // Settings dropdown — variabel lokal di dalam closure
     var settingsOpen = false;
     var settingsBtn = el('settingsBtn');
     var settingsDropdown = el('settingsDropdown');
@@ -1022,6 +973,10 @@
         settingsDropdown.classList.toggle('open', settingsOpen);
       });
 
+      settingsDropdown.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+
       document.addEventListener('click', function (e) {
         if (!settingsOpen) return;
         if (!settingsDropdown.contains(e.target) && e.target !== settingsBtn) {
@@ -1031,23 +986,23 @@
       });
     }
 
+    // Logout
     var logoutBtn = el('logoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', function () {
         if (!confirm('Yakin ingin logout?')) return;
-        localStorage.removeItem('bekarye-session');
-        localStorage.removeItem('simontok-session');
-        localStorage.removeItem('bekarye-theme');
-        localStorage.removeItem('simontok-theme');
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(LEGACY_SESSION_KEY);
         sessionStorage.removeItem('bekarye-apikey');
-        sessionStorage.removeItem('simontok-apikey');
         window.location.href = 'index.html';
       });
     }
 
+    // New chat
     var btnNewChat = el('btnNewChat');
     if (btnNewChat) btnNewChat.addEventListener('click', startNewSession);
 
+    // Refresh context
     var btnRefresh = el('btnRefreshCtx');
     if (btnRefresh) {
       btnRefresh.addEventListener('click', function () {
@@ -1056,16 +1011,20 @@
         loadContext(true).finally(function () {
           btnRefresh.disabled = false;
           btnRefresh.textContent = '🔄 Refresh Data';
+          var taskCount = (USER_CONTEXT && USER_CONTEXT.tasks) ? USER_CONTEXT.tasks.length : 0;
+          showToast('✅ Data diperbarui (' + taskCount + ' task)');
         });
       });
     }
 
+    // Quick action buttons
     Array.prototype.forEach.call(document.querySelectorAll('.qa-btn[data-prompt]'), function (btn) {
       btn.addEventListener('click', function () {
         sendMessage(btn.getAttribute('data-prompt'));
       });
     });
 
+    // Welcome tips
     var chatMessages = el('chatMessages');
     if (chatMessages) {
       chatMessages.addEventListener('click', function (e) {
@@ -1074,9 +1033,11 @@
       });
     }
 
+    // Send button
     var btnSend = el('btnSend');
     if (btnSend) btnSend.addEventListener('click', function () { sendMessage(); });
 
+    // Input
     var input = el('chatInput');
     if (input) {
       input.addEventListener('keydown', function (e) {
@@ -1088,25 +1049,28 @@
       input.addEventListener('input', autoResizeInput);
     }
 
+    // Task modal
     var taskModalClose = el('taskModalClose');
     if (taskModalClose) taskModalClose.addEventListener('click', closeTaskModal);
-
     var taskModal = el('taskModal');
     if (taskModal) {
       taskModal.addEventListener('click', function (e) {
         if (e.target === taskModal) closeTaskModal();
       });
     }
-
     var taskModalCancel = el('taskModalCancel');
     if (taskModalCancel) taskModalCancel.addEventListener('click', closeTaskModal);
-
     var taskModalConfirm = el('taskModalConfirm');
     if (taskModalConfirm) taskModalConfirm.addEventListener('click', submitTaskModal);
   }
 
   // ================================================================
-  // 15) ENTRY
+  // 15) ENTRY POINT
   // ================================================================
-  window.onload = startApp;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startApp);
+  } else {
+    startApp();
+  }
+
 })();
