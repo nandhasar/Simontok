@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIMONTOK - AI Assistant</title>
+  <title>BEKARYE - AI Assistant</title>
   <style>
     /* ============================================================
        CSS VARIABLES
@@ -63,17 +63,16 @@
       border:1px solid var(--border); border-radius:var(--radius);
       box-shadow:var(--shadow);
     }
-    .topbar-brand  { display:flex; align-items:center; gap:12px }
+    .topbar-brand  { display:flex; align-items:center; gap:12px; flex:1;min-width:0 }
     .topbar-logo {
-      width:44px; height:44px;
-      background:linear-gradient(135deg,#2563eb,#7c3aed);
-      border-radius:14px; display:flex; align-items:center;
-      justify-content:center; font-size:20px; color:#fff;
-      font-weight:800; flex-shrink:0;
+      width:48px;height:48px;background:transparent;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;overflow:hidden
     }
-    .topbar-info h1 { font-size:22px; font-weight:800; line-height:1.2 }
-    .topbar-info p  { font-size:12px; color:var(--text3); letter-spacing:.05em }
-    .topbar-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+    .topbar-logo img{width:100%;height:100%;object-fit:contain}
+    .topbar-info h1 { font-size:22px; font-weight:800; line-height:1.2;margin:0 }
+    .topbar-info p  { font-size:12px; color:var(--text3); letter-spacing:.05em;margin:0 }
+    .topbar-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap;flex-shrink:0 }
 
     /* ============================================================
        BUTTONS NAV
@@ -82,7 +81,7 @@
       border:1px solid var(--border); background:var(--bg2);
       padding:10px 16px; border-radius:var(--radius2);
       font-size:13px; font-weight:600; color:var(--text2);
-      transition:all .2s; display:inline-flex; align-items:center; gap:6px;
+      transition:all .2s; display:inline-flex; align-items:center; gap:6px;white-space:nowrap
     }
     .btn-nav:hover        { background:var(--bg3); transform:translateY(-1px) }
     .btn-nav.primary      { background:var(--blue); color:#fff; border-color:var(--blue) }
@@ -257,7 +256,7 @@
       display:flex; align-items:center; justify-content:center;
       font-size:20px; flex-shrink:0;
     }
-    .chat-header-info h3  { font-size:15px; font-weight:800; color:var(--purple) }
+    .chat-header-info h3  { font-size:15px; font-weight:800; color:var(--purple); }
     .chat-header-info p   { font-size:11px; color:var(--text3) }
     .chat-header-actions  { margin-left:auto; display:flex; gap:8px }
     .btn-chat-action {
@@ -337,15 +336,13 @@
   color:#fff;
 }
 
-/* Parent kolom: cukup batasi di sini */
 .msg-col{
   display:flex;
   flex-direction:column;
   max-width:75%;
-  min-width:0; /* penting agar wrapping normal di flex container */
+  min-width:0;
 }
 
-/* Bubble: jangan batasi max-width lagi agar tidak dobel */
 .msg-bubble{
   width:fit-content;
   max-width:100%;
@@ -353,8 +350,6 @@
   border-radius:18px;
   font-size:14px;
   line-height:1.7;
-
-  /* anti pecah per-huruf */
   white-space:pre-wrap;
   word-break:normal;
   overflow-wrap:break-word;
@@ -384,7 +379,6 @@
   text-align:left;
 }
 
-/* Markdown dalam bubble AI */
 .msg-bubble.ai strong{ font-weight:700; }
 .msg-bubble.ai em{ font-style:italic; }
 
@@ -411,8 +405,6 @@
   margin:8px 0;
   font-size:12px;
   font-family:monospace;
-
-  /* pre tetap horizontal, jangan split huruf */
   white-space:pre;
   word-break:normal;
   overflow-wrap:normal;
@@ -459,11 +451,11 @@
   margin:10px 0;
 }
 
-/* HARD OVERRIDE jika ada rule global liar */
 .msg-bubble,
 .msg-bubble *{
   word-break:inherit;
 }
+
     /* Typing Indicator */
     .typing-row    { display:flex; gap:10px; align-items:flex-end }
     .typing-bubble {
@@ -609,12 +601,15 @@
     }
     @media (max-width:768px) {
       .topbar                  { padding:12px 14px }
+      .topbar-brand{gap:8px}
+      .topbar-logo{width:40px;height:40px}
       .topbar-info h1          { font-size:18px }
+      .topbar-actions{gap:6px}
       .topbar-actions .btn-nav span { display:none }
       .msg-bubble,.msg-col     { max-width:90% }
     }
     @media (max-width:480px) {
-      .topbar-logo             { width:36px; height:36px; font-size:16px; border-radius:10px }
+      .assistant-layout{gap:12px}
       .chat-panel              { height:calc(100vh - 260px) }
     }
 
@@ -634,9 +629,11 @@
   ============================================================ -->
   <div class="topbar">
     <div class="topbar-brand">
-      <div class="topbar-logo">S</div>
+      <div class="topbar-logo">
+        <img src="assets/logo/logo-light.png" alt="BEKARYE" id="logoImage">
+      </div>
       <div class="topbar-info">
-        <h1>SIMONTOK</h1>
+        <h1>BEKARYE</h1>
         <p id="topbarUser">Sistem Monitoring Organisasi Kerja</p>
       </div>
     </div>
@@ -653,7 +650,7 @@
         <div class="settings-dropdown" id="settingsDropdown">
           <div class="sd-header">
             <h3>⚙️ Pengaturan</h3>
-            <p>SIMONTOK v2.0</p>
+            <p>BEKARYE v1.0</p>
           </div>
           <div class="sd-section">
             <div class="sd-label">Tampilan</div>
@@ -724,7 +721,7 @@
         <div class="chat-header">
           <div class="chat-header-avatar">🤖</div>
           <div class="chat-header-info">
-            <h3 id="chatTitle">AI Assistant SIMONTOK</h3>
+            <h3 id="chatTitle">AI Assistant BEKARYE</h3>
             <p  id="chatSubtitle">Tanyakan jadwal, buat task, atau minta bantuan apapun</p>
           </div>
           <div class="chat-header-actions">
@@ -872,13 +869,263 @@
   </div>
 </div>
 
-<!-- ============================================================
-     SCRIPTS — urutan PENTING:
-     1. ai-client.js   → AI_CLIENT (sendChat, getApiKey, dll)
-     2. assistant.js   → logic utama (pakai AI_CLIENT & DOM di atas)
-============================================================ -->
-<script src="js/ai-client.js"></script>
-<script src="js/assistant.js"></script>
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU.exec';
 
+// ============================================================
+// SESSION MIGRATION & HELPERS
+// ============================================================
+function migrateSession() {
+  try {
+    // Migrasi session dari simontok ke bekarye
+    if (!localStorage.getItem('bekarye-session')) {
+      var oldSession = localStorage.getItem('simontok-session');
+      if (oldSession) {
+        localStorage.setItem('bekarye-session', oldSession);
+        console.log('✅ Session berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+      }
+    }
+    
+    // Migrasi theme dari simontok ke bekarye
+    if (!localStorage.getItem('bekarye-theme')) {
+      var oldTheme = localStorage.getItem('simontok-theme');
+      if (oldTheme) {
+        localStorage.setItem('bekarye-theme', oldTheme);
+        console.log('✅ Theme berhasil dimigrasi dari SIMONTOK ke BEKARYE');
+      }
+    }
+  } catch(e) {
+    console.error('Error migrasi session/theme:', e);
+  }
+}
+
+function saveSession(userData) {
+  try {
+    localStorage.setItem('bekarye-session', JSON.stringify({
+      username:   userData.username   || '',
+      name:       userData.name       || '',
+      role:       userData.role       || 'user',
+      sheet_name: userData.sheet_name || '',
+      token:      userData.token      || '',
+      apiKey:     userData.apiKey     || ''
+    }));
+  } catch(e) {
+    console.error('saveSession error:', e);
+  }
+}
+
+function loadSession() {
+  try {
+    // Coba ambil bekarye-session dulu, lalu fallback ke simontok-session
+    var raw = localStorage.getItem('bekarye-session') || localStorage.getItem('simontok-session');
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    console.error('loadSession error:', e);
+    return null;
+  }
+}
+
+function clearSession() {
+  localStorage.removeItem('bekarye-session');
+  localStorage.removeItem('simontok-session');
+}
+
+// ============================================================
+// THEME + LOGO
+// ============================================================
+function updateBrandLogos() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var logoPath = isDark ? 'assets/logo/logo-dark.png' : 'assets/logo/logo-light.png';
+  document.getElementById('logoImage').src = logoPath;
+}
+
+function initTheme() {
+  // Prioritas: bekarye-theme dulu, lalu fallback ke simontok-theme
+  var t = localStorage.getItem('bekarye-theme') || localStorage.getItem('simontok-theme');
+  if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  updateThemeBtn();
+  updateBrandLogos();
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('bekarye-theme','light');
+  } else {
+    document.documentElement.setAttribute('data-theme','dark');
+    localStorage.setItem('bekarye-theme','dark');
+  }
+  updateThemeBtn();
+  updateBrandLogos();
+}
+
+function updateThemeBtn() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('darkToggle').textContent = isDark ? '☀️' : '🌙';
+}
+
+// ============================================================
+// AUTH GUARD
+// ============================================================
+var SESSION = null;
+
+function getSession() {
+  try {
+    var s = localStorage.getItem('bekarye-session');
+    if (s) {
+      var parsed = JSON.parse(s);
+      if (parsed && parsed.token) {
+        SESSION = parsed;
+        return true;
+      }
+    }
+  } catch(e) { 
+    console.error("Error parsing session:", e);
+  }
+  return false;
+}
+
+if (!getSession()) {
+  alert('Silakan login terlebih dahulu.');
+  window.location.replace('index.html');
+} else {
+  initAssistant();
+}
+
+function authURL(action) {
+  return API_URL
+    + '?action=' + encodeURIComponent(action)
+    + '&user='   + encodeURIComponent(SESSION.username)
+    + '&token='  + encodeURIComponent(SESSION.token);
+}
+
+function initAssistant() {
+  var topbar = document.getElementById('topbarUser');
+  if (topbar) {
+    topbar.textContent = '👤 ' + (SESSION.name || SESSION.username) +
+                       (SESSION.role === 'admin' ? ' — Admin' : ' — User');
+  }
+
+  // Initialize app logic
+  initApp();
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+document.getElementById('logoutBtn').addEventListener('click', function() {
+  if (!confirm('Yakin ingin logout?')) return;
+  clearSession();
+  window.location.href = 'index.html';
+});
+
+// ============================================================
+// SETTINGS DROPDOWN
+// ============================================================
+var settingsOpen = false;
+
+document.getElementById('settingsBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  settingsOpen = !settingsOpen;
+  document.getElementById('settingsDropdown').classList.toggle('open', settingsOpen);
+});
+
+document.addEventListener('click', function(e) {
+  if (settingsOpen && !document.getElementById('settingsDropdown').contains(e.target)
+      && e.target !== document.getElementById('settingsBtn')) {
+    settingsOpen = false;
+    document.getElementById('settingsDropdown').classList.remove('open');
+  }
+});
+
+document.getElementById('settingsDropdown').addEventListener('click', function(e) {
+  e.stopPropagation();
+});
+
+document.getElementById('darkToggle').addEventListener('click', toggleTheme);
+
+// ============================================================
+// INIT
+// ============================================================
+// Jalankan migrasi dulu sebelum init
+migrateSession();
+initTheme();
+document.getElementById('yearNow').textContent = new Date().getFullYear();
+
+// ============================================================
+// INIT APP (placeholder - ganti dengan ai-client.js dan assistant.js)
+// ============================================================
+function initApp() {
+  // Show app container
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Update user info
+  var topbarUser = document.getElementById('topbarUser');
+  if (topbarUser) {
+    topbarUser.textContent = '👤 ' + (SESSION.name || SESSION.username) + 
+                       (SESSION.role === 'admin' ? ' — Admin' : ' — User');
+  }
+
+  // Check API Key
+  checkApiKey();
+
+  // Initialize chat interface
+  // ... (lanjutkan dengan logic chat yang ada di ai-client.js dan assistant.js)
+}
+
+function checkApiKey() {
+  var hasApiKey = SESSION && SESSION.apiKey;
+  var dot = document.getElementById('aiKeyDot');
+  var msg = document.getElementById('aiKeyMsg');
+  
+  if (hasApiKey) {
+    dot.className = 'ai-key-dot ok';
+    msg.textContent = '✅ AI Assistant aktif';
+  } else {
+    dot.className = 'ai-key-dot err';
+    msg.textContent = '⚠️ AI Assistant tidak tersedia';
+  }
+}
+
+// Placeholder untuk event listeners yang akan diimplement di ai-client.js
+document.getElementById('btnNewChat').addEventListener('click', function() {
+  console.log('New chat clicked');
+  // ... logic untuk membuat chat baru
+});
+
+document.getElementById('btnSend').addEventListener('click', function() {
+  console.log('Send message clicked');
+  // ... logic untuk mengirim pesan
+});
+
+document.getElementById('btnRefreshCtx').addEventListener('click', function() {
+  console.log('Refresh context clicked');
+  // ... logic untuk refresh data
+});
+
+// Quick action buttons
+document.querySelectorAll('.qa-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var prompt = btn.getAttribute('data-prompt');
+    console.log('Quick action:', prompt);
+    // ... logic untuk mengirim quick prompt
+  });
+});
+
+// Welcome tips
+document.querySelectorAll('.tip-item').forEach(function(tip) {
+  tip.addEventListener('click', function() {
+    var prompt = tip.getAttribute('data-prompt');
+    console.log('Welcome tip:', prompt);
+    // ... logic untuk mengirim tip prompt
+  });
+});
+
+</script>
 </body>
 </html>
