@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIMONTOK — Sistem Monitoring Organisasi Kerja</title>
+  <title>BEKARYE — Sistem Monitoring Organisasi Kerja</title>
   <style>
     :root{--bg:#f8fafc;--bg2:#fff;--bg3:#f1f5f9;--text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;--blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;--purple:#7c3aed;--green:#059669;--green-bg:#d1fae5;--red:#dc2626;--red-bg:#fee2e2;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.12);--radius:20px;--radius2:14px}
     [data-theme="dark"]{--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;--blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;--purple:#8b5cf6;--green:#34d399;--green-bg:#064e3b;--red:#f87171;--red-bg:#450a0a;--border:#334155;--shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4)}
@@ -122,6 +122,99 @@
     @media(max-width:1024px){.features{grid-template-columns:repeat(2,1fr)}.steps{grid-template-columns:repeat(2,1fr)}.step-l{display:none}}
     @media(max-width:768px){.nav-links .nav-link:not(.icon){display:none}.hamburger{display:flex}.user-name{display:none}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.section{padding:50px 16px}}
     @media(max-width:480px){.hero-btns{flex-direction:column;align-items:center}.btn{width:100%;justify-content:center}}
+
+/* ===== Brand logo image ===== */
+.nav-logo-img{
+  width:40px;
+  height:40px;
+  object-fit:contain;
+  border-radius:12px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:4px;
+  box-shadow:var(--shadow);
+}
+
+.login-logo-wrap{
+  width:auto;
+  height:auto;
+  border:none;
+  background:transparent;
+  margin:0 auto 14px;
+  padding:0;
+}
+.login-logo-img{
+  width:150px;
+  height:auto;
+  object-fit:contain;
+}
+
+/* ===== UX mobile improvement ===== */
+@media (max-width: 768px){
+  .nav{
+    padding:10px 14px;
+  }
+
+.nav-brand{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.nav-logo,
+.nav-logo-img{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+/* ukuran logo header */
+.nav-logo-img{
+  width: 150px;
+  height: 52px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px){
+  .nav-logo-img{
+    width: 125px;
+    height: 44px;
+  }
+
+  .nav-link.icon,
+  .hamburger{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+  }
+
+  .mob{
+    padding:74px 16px 20px;
+    gap:10px;
+  }
+
+  .mob a,
+  .mob button{
+    min-height:48px;
+    font-size:15px;
+    border-radius:12px;
+  }
+
+  .hero{
+    padding:88px 16px 44px;
+  }
+
+  .hero-d{
+    font-size:15px;
+  }
+
+  .btn{
+    min-height:48px;
+  }
+}
   </style>
 </head>
 <body>
@@ -129,10 +222,9 @@
   <!-- NAV -->
   <nav class="nav" id="navbar">
     <div class="nav-inner">
-      <a href="#" class="nav-brand">
-        <div class="nav-logo">S</div>
-        <h1>SIMONTOK</h1>
-      </a>
+ <a href="#" class="nav-brand" aria-label="Beranda BEKARYE">
+  <img id="brandLogo" class="nav-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE" />
+</a>
       <div class="nav-links">
         <a href="#features" class="nav-link">Fitur</a>
         <a href="#how" class="nav-link">Cara Kerja</a>
@@ -166,8 +258,10 @@
   <div class="modal-o" id="loginModal">
     <div class="modal-b">
       <button class="modal-x" id="loginClose">&times;</button>
-      <div class="login-logo">S</div>
-      <div class="login-title">Login SIMONTOK</div>
+      <div class="login-logo-wrap">
+      <img id="loginLogo" class="login-logo-img" src="assets/logo/logo-light.png" alt="Logo BEKARYE">
+</div>
+<div class="login-title">Login BEKARYE</div>
       <div class="login-sub">Masukkan username &amp; password Anda</div>
 
       <!-- Info box (opsional) -->
@@ -206,7 +300,7 @@
     </div>
     <div class="hero-c">
       <div class="badge"><span class="dot"></span>Sistem Monitoring Organisasi Kerja</div>
-      <h2 class="hero-t">Kelola Task Organisasi<br>dengan <em>SIMONTOK</em></h2>
+      <h2 class="hero-t">Kelola Task Organisasi<br>dengan <em>BEKARYE</em></h2>
       <p class="hero-d">Platform monitoring kerja yang simpel, cepat, dan langsung bisa mendownload rekapan kinerja. Pantau progres, deadline, dan prioritas tim secara real-time.</p>
       <div class="hero-btns">
         <button class="btn btn-p" id="heroLogin">🔐 Login untuk Mulai</button>
@@ -261,94 +355,99 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <p>© 2024 SIMONTOK — Sistem Monitoring Organisasi Kerja</p>
+    <p>© <span id="yearNow"></span> BEKARYE — Sistem Monitoring Organisasi Kerja</p>
   </footer>
 
 <script>
 // ============================================================
-// CONFIG — ganti dengan URL deployment Apps Script Anda
+// CONFIG
 // ============================================================
 var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
-// Kunci penyimpanan session
-// SEKARANG MENGGUNAKAN localStorage agar data stabil saat pindah halaman
-var SESSION_KEY = 'simontok-session';
+var APP_NAME = 'BEKARYE';
+var LOGO_LIGHT = 'assets/logo/logo-light.png';
+var LOGO_DARK  = 'assets/logo/logo-dark.png';
+
+// key baru + fallback lama (biar aman migrasi)
+var SESSION_KEY = 'bekarye-session';
+var LEGACY_SESSION_KEY = 'simontok-session';
+
+var THEME_KEY = 'bekarye-theme';
+var LEGACY_THEME_KEY = 'simontok-theme';
 
 // ============================================================
 // SESSION HELPERS
 // ============================================================
-
-/**
- * Simpan session ke localStorage.
- * Data mencakup: username, name, role, sheet_name, token, apiKey
- */
 function saveSession(userData) {
   try {
-    // GANTI sessionStorage MENJADI localStorage
     localStorage.setItem(SESSION_KEY, JSON.stringify({
       username:   userData.username   || '',
       name:       userData.name       || '',
       role:       userData.role       || 'user',
       sheet_name: userData.sheet_name || '',
       token:      userData.token      || '',
-      apiKey:     userData.apiKey     || ''   // ← dari kolom API sheet _users
+      apiKey:     userData.apiKey     || ''
     }));
-    console.log('✅ Session saved to localStorage');
   } catch(e) {
     console.error('saveSession error:', e);
   }
 }
 
-/**
- * Ambil session dari localStorage.
- */
 function loadSession() {
   try {
-    // GANTI sessionStorage MENJADI localStorage
-    var raw = localStorage.getItem(SESSION_KEY);
+    var raw = localStorage.getItem(SESSION_KEY) || localStorage.getItem(LEGACY_SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch(e) { 
+  } catch(e) {
     console.error('loadSession error:', e);
-    return null; 
+    return null;
   }
 }
 
-/**
- * Hapus session.
- */
 function clearSession() {
-  // GANTI sessionStorage MENJADI localStorage
   localStorage.removeItem(SESSION_KEY);
-  console.log('🗑️ Session cleared');
+  localStorage.removeItem(LEGACY_SESSION_KEY);
 }
-  
-  // ============================================================
-  // THEME
-  // ============================================================
-  function initTheme() {
-    var t = localStorage.getItem('simontok-theme');
-    if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-    updateThemeBtn();
-  }
 
-  function toggleTheme() {
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('simontok-theme','light');
-    } else {
-      document.documentElement.setAttribute('data-theme','dark');
-      localStorage.setItem('simontok-theme','dark');
-    }
-    updateThemeBtn();
-  }
+// ============================================================
+// THEME + LOGO
+// ============================================================
+function updateBrandLogos() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  var logoPath = isDark ? LOGO_DARK : LOGO_LIGHT;
 
-  function updateThemeBtn() {
-    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    document.getElementById('themeBtn').textContent    = isDark ? '☀️' : '🌙';
-    var btn2 = document.getElementById('themeBtn2');
-    if (btn2) btn2.textContent = isDark ? '☀️ Mode Terang' : '🌙 Mode Gelap';
+  var brandLogo = document.getElementById('brandLogo');
+  var loginLogo = document.getElementById('loginLogo');
+
+  if (brandLogo) brandLogo.src = logoPath;
+  if (loginLogo) loginLogo.src = logoPath;
+}
+
+function initTheme() {
+  var t = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
+  if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  updateThemeBtn();
+  updateBrandLogos();
+}
+
+function toggleTheme() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem(THEME_KEY,'light');
+  } else {
+    document.documentElement.setAttribute('data-theme','dark');
+    localStorage.setItem(THEME_KEY,'dark');
   }
+  updateThemeBtn();
+  updateBrandLogos();
+}
+
+function updateThemeBtn() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+  var btn2 = document.getElementById('themeBtn2');
+  if (btn2) btn2.textContent = isDark ? '☀️ Mode Terang' : '🌙 Mode Gelap';
+}
 
   // ============================================================
   // UI UPDATE — tampilkan nav sesuai status login
@@ -529,6 +628,7 @@ function clearSession() {
   // ============================================================
   initTheme();
   updateUI();
+document.getElementById('yearNow').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
