@@ -3,120 +3,222 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simontok - Entri</title>
+  <title>BEKARYE - Entri</title>
   <style>
+    :root {
+      --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;
+      --text:#0f172a;--text2:#334155;--text3:#64748b;--text4:#94a3b8;
+      --border:#e2e8f0;--border2:#f1f5f9;
+      --blue:#2563eb;--blue2:#3b82f6;--blue-bg:#dbeafe;--blue-bg2:#eff6ff;
+      --green:#059669;--green-bg:#d1fae5;
+      --red:#dc2626;--red-bg:#ffe4e6;--red2:#be123c;
+      --yellow:#d97706;--yellow-bg:#fef3c7;
+      --purple:#7c3aed;--purple-bg:#ede9fe;
+      --shadow:0 1px 3px rgba(0,0,0,.06);--shadow2:0 8px 30px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.15);
+      --radius:24px;--radius2:16px;
+    }
+    [data-theme="dark"] {
+      --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
+      --text:#f1f5f9;--text2:#cbd5e1;--text3:#94a3b8;--text4:#64748b;
+      --border:#334155;--border2:#334155;
+      --blue:#3b82f6;--blue2:#60a5fa;--blue-bg:#1e3a5f;--blue-bg2:#172554;
+      --green:#34d399;--green-bg:#064e3b;
+      --red:#f87171;--red-bg:#450a0a;--red2:#fca5a5;
+      --yellow:#fbbf24;--yellow-bg:#451a03;
+      --purple:#a78bfa;--purple-bg:#2e1065;
+      --shadow:0 1px 3px rgba(0,0,0,.2);--shadow2:0 8px 30px rgba(0,0,0,.3);--shadow3:0 20px 60px rgba(0,0,0,.4);
+    }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.6}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
     a{text-decoration:none;color:inherit}
     button{cursor:pointer;font-family:inherit;font-size:inherit}
     input,select,textarea{font-family:inherit;font-size:inherit}
-    .container{max-width:1100px;margin:0 auto;padding:24px 16px;min-height:100vh}
-    .header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px}
-    .header-label{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#64748b}
-    .header h1{font-size:28px;font-weight:700}
-    .header p{color:#64748b;margin-top:4px;font-size:14px}
-    .header-actions{display:flex;gap:8px}
-    .btn-outline{display:inline-block;border:1px solid #e2e8f0;background:#fff;padding:8px 16px;border-radius:16px;font-size:14px;color:#334155;transition:background .2s}
-    .btn-outline:hover{background:#f1f5f9}
-    .main-grid{display:grid;gap:24px}
+    .container{max-width:1100px;margin:0 auto;padding:20px 16px;min-height:100vh}
+
+    /* TOPBAR */
+    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .topbar-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .topbar-logo{width:48px;height:48px;background:transparent;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .topbar-logo img{width:100%;height:100%;object-fit:contain}
+    .topbar-info h1{font-size:28px;font-weight:700;margin:0;line-height:1.2}
+    .topbar-info p{color:var(--text3);margin-top:4px;font-size:14px}
+    .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+    .btn-outline{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--bg2);padding:10px 16px;border-radius:var(--radius2);font-size:14px;color:var(--text2);transition:all .2s;white-space:nowrap}
+    .btn-outline:hover{background:var(--bg3);transform:translateY(-1px)}
+    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+    .btn-icon:hover{background:var(--bg3);transform:translateY(-1px)}
+
+    /* MAIN GRID */
+    .main-grid{display:grid;gap:20px}
     @media(min-width:1024px){.main-grid{grid-template-columns:1fr 360px}}
-    .card{border:1px solid #e2e8f0;background:#fff;border-radius:24px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-    .card-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-    .card-label{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#64748b}
+
+    /* CARD */
+    .card{border:1px solid var(--border);background:var(--bg2);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:transform .2s}
+    .card-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .card-label{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:var(--text3)}
     .card h2{font-size:22px;font-weight:700}
     .card h3{font-size:17px;font-weight:600}
-    .btn-primary{background:#2563eb;color:#fff;border:none;padding:12px 20px;border-radius:16px;font-weight:600;transition:background .2s}
-    .btn-primary:hover{background:#3b82f6}
-    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
-    .btn-cancel{background:#fff;color:#334155;border:1px solid #e2e8f0;padding:12px 16px;border-radius:16px;transition:background .2s}
-    .btn-cancel:hover{background:#f1f5f9}
-    .btn-delete{background:#fff1f2;color:#be123c;border:1px solid #fecdd3;padding:12px 16px;border-radius:16px;display:none;transition:background .2s}
-    .btn-delete:hover{background:#ffe4e6}
+
+    /* BUTTONS */
+    .btn-primary{background:var(--blue);color:#fff;border:none;padding:12px 20px;border-radius:var(--radius2);font-weight:600;transition:all .2s}
+    .btn-primary:hover{background:var(--blue2);transform:translateY(-1px)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .btn-cancel{background:var(--bg2);color:var(--text2);border:1px solid var(--border);padding:12px 16px;border-radius:var(--radius2);transition:all .2s}
+    .btn-cancel:hover{background:var(--bg3);transform:translateY(-1px)}
+    .btn-delete{background:#fff1f2;color:var(--red2);border:1px solid #fecdd3;padding:12px 16px;border-radius:var(--radius2);display:none;transition:all .2s}
+    .btn-delete:hover{background:var(--red-bg);transform:translateY(-1px)}
     .btn-delete.show{display:inline-block}
-    .btn-link{background:none;border:none;color:#2563eb;font-size:14px;padding:0}
-    .btn-link:hover{text-decoration:underline}
+    .btn-link{background:none;border:none;color:var(--blue);font-size:14px;padding:0;transition:opacity .2s}
+    .btn-link:hover{opacity:.8}
+
+    /* FORM */
     .form-grid{display:grid;gap:16px;margin-top:20px}
     @media(min-width:768px){.form-grid{grid-template-columns:1fr 1fr}.col-span-2{grid-column:span 2}}
-    .form-grid label{display:block;font-size:13px;font-weight:500;color:#334155;margin-bottom:4px}
-    .form-grid label .required{color:#e11d48}
-    .form-input{width:100%;border:1px solid #e2e8f0;background:#fff;padding:12px 16px;border-radius:16px;outline:none;transition:box-shadow .2s,border-color .2s}
-    .form-input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-    textarea.form-input{resize:vertical}
-    .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-top:8px}
-    .form-mode{font-size:12px;font-weight:500;margin-top:4px;color:#2563eb}
-    .form-mode.editing{color:#d97706}
-    .message{margin-top:16px;padding:12px 16px;border-radius:16px;font-size:14px;display:none}
+    .form-grid label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:4px}
+    .form-grid label .required{color:var(--red)}
+    .form-input{width:100%;border:1px solid var(--border);background:var(--bg2);padding:12px 16px;border-radius:var(--radius2);outline:none;transition:all .2s;color:var(--text)}
+    .form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+    textarea.form-input{resize:vertical;min-height:120px}
+    .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-top:8px;flex-wrap:wrap}
+    .form-mode{font-size:12px;font-weight:500;margin-top:4px;color:var(--blue)}
+    .form-mode.editing{color:var(--yellow)}
+
+    /* MESSAGE */
+    .message{margin-top:16px;padding:12px 16px;border-radius:var(--radius2);font-size:14px;display:none;animation:slideIn .3s ease}
     .message.show{display:block}
-    .message.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
-    .message.error{background:#fff1f2;color:#be123c;border:1px solid #fecdd3}
+    .message.success{background:var(--green-bg);color:var(--green);border:1px solid #86efac}
+    .message.error{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5}
+    @keyframes slideIn{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+    /* SIDEBAR */
     .sidebar{display:flex;flex-direction:column;gap:16px}
-    .guide-list{margin-top:12px;padding-left:20px;font-size:14px;color:#475569}
+    .guide-list{margin-top:12px;padding-left:20px;font-size:14px;color:var(--text2);line-height:1.6}
     .guide-list li{margin-bottom:8px}
-    .task-list{margin-top:16px;display:flex;flex-direction:column;gap:12px}
-    .task-item{width:100%;text-align:left;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:14px;transition:background .2s,border-color .2s}
-    .task-item:hover{background:#f8fafc}
-    .task-item.active{border-color:#3b82f6;background:#eff6ff;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
-    .task-item-title{font-weight:600;color:#0f172a;font-size:14px}
-    .task-item-meta{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
-    .task-item-actions{margin-top:8px;display:flex;gap:6px}
-    .task-btn{border:none;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:600;transition:background .2s}
-    .task-btn-view{background:#eff6ff;color:#2563eb}
-    .task-btn-view:hover{background:#dbeafe}
-    .task-btn-edit{background:#f1f5f9;color:#334155}
-    .task-btn-edit:hover{background:#e2e8f0}
+    .task-list{margin-top:16px;display:flex;flex-direction:column;gap:12px;max-height:500px;overflow-y:auto}
+    .task-item{width:100%;text-align:left;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);padding:14px;transition:all .2s;cursor:pointer}
+    .task-item:hover{background:var(--bg3);transform:translateY(-1px)}
+    .task-item.active{border-color:var(--blue);background:var(--blue-bg2);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+    .task-item-title{font-weight:600;color:var(--text);font-size:14px;margin-bottom:8px}
+    .task-item-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;margin-bottom:8px}
+    .task-item-actions{display:flex;gap:6px}
+    .task-btn{border:none;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:600;transition:all .2s;white-space:nowrap}
+    .task-btn-view{background:var(--blue-bg2);color:var(--blue)}
+    .task-btn-view:hover{background:var(--blue-bg)}
+    .task-btn-edit{background:var(--bg3);color:var(--text2)}
+    .task-btn-edit:hover{background:var(--border2)}
     .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:500}
-    .badge-todo{background:#f1f5f9;color:#334155}
-    .badge-doing{background:#dbeafe;color:#1d4ed8}
-    .badge-done{background:#d1fae5;color:#047857}
-    .badge-blocked{background:#ffe4e6;color:#be123c}
-    .badge-priority{background:#f1f5f9;color:#475569}
-    .task-empty{border:2px dashed #e2e8f0;border-radius:16px;padding:16px;text-align:center;color:#94a3b8;font-size:14px}
-    .loading-text{text-align:center;color:#94a3b8;font-size:14px;display:none;margin-top:16px}
+    .badge-todo{background:var(--bg3);color:var(--text2)}
+    .badge-doing{background:var(--blue-bg);color:var(--blue)}
+    .badge-done{background:var(--green-bg);color:var(--green)}
+    .badge-blocked{background:var(--red-bg);color:var(--red)}
+    .badge-priority{background:var(--bg3);color:var(--text2)}
+    .task-empty{border:2px dashed var(--border);border-radius:var(--radius2);padding:16px;text-align:center;color:var(--text4);font-size:14px}
+    .loading-text{text-align:center;color:var(--text4);font-size:14px;display:none;margin-top:16px}
     .loading-text.show{display:block}
+
+    /* STATS */
     .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    .stat-box{border-radius:16px;padding:12px;text-align:center}
-    .stat-box .stat-number{font-size:24px;font-weight:700}
-    .stat-box .stat-label{font-size:11px;margin-top:4px}
-    .stat-todo{background:#f1f5f9;color:#334155}
-    .stat-doing{background:#dbeafe;color:#1d4ed8}
-    .stat-done{background:#d1fae5;color:#047857}
-    .stat-blocked{background:#ffe4e6;color:#be123c}
+    .stat-box{border-radius:var(--radius2);padding:12px;text-align:center;transition:transform .2s}
+    .stat-box:hover{transform:translateY(-2px)}
+    .stat-box .stat-number{font-size:24px;font-weight:700;line-height:1}
+    .stat-box .stat-label{font-size:11px;margin-top:4px;opacity:.8}
+    .stat-todo{background:var(--bg3);color:var(--text2)}
+    .stat-doing{background:var(--blue-bg);color:var(--blue)}
+    .stat-done{background:var(--green-bg);color:var(--green)}
+    .stat-blocked{background:var(--red-bg);color:var(--red)}
+
+    /* SPINNER */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
-    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(4px)}
     .modal-overlay.active{display:flex}
-    .modal-box{width:min(560px,100%);background:#fff;color:#0f172a;border-radius:22px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.22);position:relative;animation:popIn .25s ease;max-height:88vh;overflow-y:auto}
-    .modal-box h3{margin-bottom:14px;font-size:22px}
-    .modal-box p{line-height:1.7;color:#334155;margin-bottom:8px}
-    .modal-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:34px;cursor:pointer;color:#64748b;line-height:1}
-    .modal-close:hover{color:#0f172a}
+    .modal-box{width:min(560px,100%);background:var(--bg2);color:var(--text);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow3);position:relative;animation:popIn .25s ease;max-height:88vh;overflow-y:auto}
+    .modal-box h3{margin-bottom:14px;font-size:22px;font-weight:700}
+    .modal-box p{line-height:1.7;color:var(--text2);margin-bottom:8px}
+    .modal-close{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:34px;cursor:pointer;color:var(--text3);line-height:1;transition:color .2s}
+    .modal-close:hover{color:var(--text)}
     .modal-detail{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-    .modal-detail-item{padding:14px;border-radius:16px;background:#f8fafc;border:1px solid rgba(15,23,42,.06)}
-    .modal-detail-item strong{display:block;font-size:12px;color:#64748b;margin-bottom:4px}
-    .modal-detail-item span{font-size:16px;font-weight:700;color:#0f172a}
-    .modal-note{margin-top:14px;padding:14px;border-radius:16px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:14px;line-height:1.7;white-space:pre-wrap}
-    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
-    .btn-modal-edit{background:#2563eb;color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:600}
-    .btn-modal-edit:hover{background:#3b82f6}
-    .btn-modal-close{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;padding:10px 16px;border-radius:12px;font-weight:600}
-    .btn-modal-close:hover{background:#e2e8f0}
+    .modal-detail-item{padding:14px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border)}
+    .modal-detail-item strong{display:block;font-size:12px;color:var(--text3);margin-bottom:4px}
+    .modal-detail-item span{font-size:16px;font-weight:700;color:var(--text)}
+    .modal-note{margin-top:14px;padding:14px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);color:var(--yellow);font-size:14px;line-height:1.7;white-space:pre-wrap}
+    .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .btn-modal-edit{background:var(--blue);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius2);font-weight:600;transition:all .2s}
+    .btn-modal-edit:hover{background:var(--blue2)}
+    .btn-modal-close{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:10px 16px;border-radius:var(--radius2);font-weight:600;transition:all .2s}
+    .btn-modal-close:hover{background:var(--border2)}
     @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-    @media(max-width:600px){.modal-detail{grid-template-columns:1fr}}
-    .debug-box{margin-top:16px;padding:12px;border-radius:12px;background:#fefce8;border:1px solid #fde68a;font-size:12px;font-family:monospace;white-space:pre-wrap;display:none;max-height:200px;overflow:auto}
+
+    /* DEBUG */
+    .debug-box{margin-top:16px;padding:12px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);font-size:12px;font-family:monospace;white-space:pre-wrap;display:none;max-height:200px;overflow:auto}
     .debug-box.show{display:block}
+
+    /* MOBILE OPTIMIZATIONS */
+    @media(max-width:768px){
+      .container{padding:16px 12px}
+      .topbar{padding:12px 14px}
+      .topbar-brand{gap:8px}
+      .topbar-logo{width:40px;height:40px}
+      .topbar-info h1{font-size:22px}
+      .topbar-info p{font-size:12px}
+      .topbar-actions{gap:6px}
+      .btn-outline{padding:8px 12px;font-size:13px}
+      .btn-outline span{display:none}
+      .btn-icon{width:36px;height:36px;font-size:16px}
+      .main-grid{grid-template-columns:1fr}
+      .card{padding:16px}
+      .card-header{flex-direction:column;align-items:stretch}
+      .form-grid{grid-template-columns:1fr}
+      .modal-detail{grid-template-columns:1fr}
+      .modal-box{padding:20px}
+    }
+    @media(max-width:480px){
+      .card{padding:14px}
+      .card h2{font-size:20px}
+      .form-input{padding:10px 14px;font-size:14px}
+      .btn-primary{padding:10px 16px;font-size:14px}
+      .task-item{padding:12px}
+      .stat-box .stat-number{font-size:20px}
+    }
+    @media(max-width:380px){
+      .topbar-actions{gap:4px}
+      .btn-outline{padding:6px 10px;font-size:12px}
+      .btn-icon{width:32px;height:32px;font-size:14px}
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+    /* TOUCH OPTIMIZATIONS */
+    @media(hover:none){
+      .task-item:active{transform:scale(.98)}
+      .btn-outline:active{transform:scale(.95)}
+      .btn-primary:active{transform:scale(.95)}
+      .btn-icon:active{transform:scale(.95)}
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div>
-        <div class="header-label">Entri</div>
-        <h1>Input / Edit Task</h1>
-        <p>Simpan data langsung ke Google Spreadsheet.</p>
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-logo">
+          <img src="assets/logo/logo-light.png" alt="BEKARYE" id="logoImage">
+        </div>
+        <div class="topbar-info">
+          <h1>BEKARYE</h1>
+          <p>Input / Edit Task</p>
+        </div>
       </div>
-      <div class="header-actions">
-        <a href="index.html" class="btn-outline">← Kembali</a>
-        <a href="dashboard.html" class="btn-outline">Dashboard</a>
+      <div class="topbar-actions">
+        <a href="index.html" class="btn-outline">← <span>Kembali</span></a>
+        <a href="dashboard.html" class="btn-outline">📊 <span>Dashboard</span></a>
+        <button class="btn-icon" id="themeToggle" title="Ganti Tema">🌙</button>
       </div>
     </div>
 
@@ -210,13 +312,43 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
     // ============================================================
+    // THEME SWITCHING
+    // ============================================================
+    function initTheme() {
+      var t = localStorage.getItem('bekarye-theme');
+      var isDark = t === 'dark';
+      applyTheme(isDark);
+    }
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').textContent = '☀️';
+        document.getElementById('logoImage').src = 'assets/logo/logo-dark.png';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('themeToggle').textContent = '🌙';
+        document.getElementById('logoImage').src = 'assets/logo/logo-light.png';
+      }
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      isDark = !isDark;
+      localStorage.setItem('bekarye-theme', isDark ? 'dark' : 'light');
+      applyTheme(isDark);
+    });
+
+    initTheme();
+
+    // ============================================================
     // AUTH GUARD
     // ============================================================
     var SESSION = null;
 
     function getSession() {
       try {
-        var s = localStorage.getItem('simontok-session');
+        var s = localStorage.getItem('bekarye-session');
         if (s) SESSION = JSON.parse(s);
       } catch(e) { SESSION = null; }
       if (!SESSION || !SESSION.token) {
@@ -245,7 +377,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('simontok-session');
+      localStorage.removeItem('bekarye-session');
       window.location.href = 'index.html';
     }
 
@@ -297,18 +429,18 @@
       if (!t) return;
       openPopup(
         '<h3>📋 Detail Task</h3>' +
-        '<p style="font-size:18px;font-weight:700;color:#0f172a;margin-bottom:14px">' + esc(t.title) + '</p>' +
+        '<p style="font-size:18px;font-weight:700;margin-bottom:14px">' + esc(t.title) + '</p>' +
         '<div class="modal-detail">' +
         '<div class="modal-detail-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:13px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
         '<div class="modal-detail-item"><strong>Priority</strong><span>' + esc(t.priority || '-') + '</span></div>' +
         '<div class="modal-detail-item"><strong>Due Date</strong><span>' + esc(t.due_date || 'Tidak ada') + '</span></div>' +
         '<div class="modal-detail-item"><strong>Updated</strong><span>' + esc(t.updated_at || '-') + '</span></div>' +
         '<div class="modal-detail-item"><strong>Created</strong><span>' + esc(t.created_at || '-') + '</span></div>' +
-        '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:#64748b">' + esc(t.id) + '</span></div>' +
+        '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:var(--text3)">' + esc(t.id) + '</span></div>' +
         '</div>' +
         (t.note
           ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
-          : '<p style="color:#94a3b8;margin-top:14px">Tidak ada catatan.</p>') +
+          : '<p style="color:var(--text4);margin-top:14px">Tidak ada catatan.</p>') +
         '<div class="modal-footer">' +
         '<button class="btn-modal-edit" onclick="editFromPopup(\'' + esc(t.id) + '\')">✏️ Edit</button>' +
         '<button class="btn-modal-close" onclick="closePopup()">Tutup</button>' +
@@ -334,7 +466,7 @@
       if (ok === undefined) ok = true;
       var b = $('message');
       b.className = 'message show ' + (ok ? 'success' : 'error');
-      b.textContent = t;
+      b.textContent = tet;
       clearTimeout(msgTO);
       msgTO = setTimeout(function() { b.classList.remove('show'); }, 4000);
     }
@@ -352,12 +484,10 @@
     }
 
     // ============================================================
-    // ✅ PERBAIKAN UTAMA: sendPost — sekarang sertakan auth di URL
+    // SEND POST WITH AUTH
     // ============================================================
     function sendPost(action, bodyData) {
-      // Token & user dikirim via URL query param (lebih aman untuk GAS)
       var url = authURL(action);
-      // Pastikan body juga mengandung auth sebagai fallback
       var payload = authBody(Object.assign({}, bodyData));
 
       console.log('📤 POST to:', url);
@@ -392,7 +522,7 @@
     }
 
     // ============================================================
-    // ✅ PERBAIKAN UTAMA: loadData — fetch 'list' yang benar
+    // LOAD DATA
     // ============================================================
     function loadData() {
       var list = $('taskList');
@@ -400,7 +530,6 @@
       ld.classList.add('show');
       list.innerHTML = '';
 
-      // GET ke action=list dengan auth di URL
       fetch(authURL('list'), { redirect: 'follow' })
         .then(function(res) { return res.text(); })
         .then(function(text) {
@@ -413,7 +542,6 @@
           }
           if (!json.ok) throw new Error(json.message || 'Gagal memuat data');
 
-          // Simpan ke state dan render
           state.data = Array.isArray(json.data) ? json.data : [];
           renderList();
           renderStats();
@@ -421,7 +549,7 @@
         .catch(function(err) {
           console.error('loadData error:', err);
           list.innerHTML =
-            '<div class="task-empty" style="border-color:#fecdd3;color:#be123c;background:#fff1f2">' +
+            '<div class="task-empty" style="border-color:var(--red);color:var(--red);background:var(--red-bg)">' +
             '⚠️ ' + esc(err.message) +
             '<br><button onclick="loadData()" class="btn-link" style="margin-top:8px">Coba lagi</button>' +
             '</div>';
@@ -446,7 +574,7 @@
           '<div class="task-item-meta">' +
           '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status || '-') + '</span>' +
           '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>' +
-          '<span style="color:#94a3b8">' + esc(t.due_date || 'No date') + '</span>' +
+          '<span style="color:var(--text4)">' + esc(t.due_date || 'No date') + '</span>' +
           '</div>' +
           '<div class="task-item-actions">' +
           '<button class="task-btn task-btn-view" data-view="' + esc(t.id) + '">👁 Lihat</button>' +
@@ -581,7 +709,7 @@
     });
 
     // ============================================================
-    // DELETE — ✅ sekarang pakai authBody via sendPost
+    // DELETE
     // ============================================================
     $('deleteBtn').addEventListener('click', function() {
       if (!state.editingId) return;
