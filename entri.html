@@ -466,7 +466,7 @@
       if (ok === undefined) ok = true;
       var b = $('message');
       b.className = 'message show ' + (ok ? 'success' : 'error');
-      b.textContent = tet;
+      b.textContent = t;
       clearTimeout(msgTO);
       msgTO = setTimeout(function() { b.classList.remove('show'); }, 4000);
     }
