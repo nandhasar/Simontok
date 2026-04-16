@@ -976,6 +976,17 @@
       $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // Helper format tanggal → yyyy-MM-dd
+function formatDateInput(val) {
+  if (!val) return '';
+  var d = new Date(val);
+  if (isNaN(d.getTime())) return '';
+  var yyyy = d.getFullYear();
+  var mm   = String(d.getMonth() + 1).padStart(2, '0');
+  var dd   = String(d.getDate()).padStart(2, '0');
+  return yyyy + '-' + mm + '-' + dd;
+}
+    
     // ============================================================
     // SAVE
     // ============================================================
