@@ -37,22 +37,38 @@
     a{text-decoration:none;color:inherit}
     button{cursor:pointer;font-family:inherit;font-size:inherit}
     .page{max-width:1400px;margin:0 auto;padding:16px;min-height:100vh}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* TOPBAR */
+    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .topbar-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
     .topbar-logo{width:52px;height:52px;background:transparent;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
     .topbar-logo img{width:100%;height:100%;object-fit:contain}
     .topbar-info{flex:1;min-width:0}
     .topbar-info h1{font-size:22px;font-weight:800;line-height:1.2;margin:0}
     .topbar-info p{font-size:12px;color:var(--text3);letter-spacing:.05em;margin:0}
-    .topbar-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
-    .hamburger{display:flex;width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:5px;transition:all .2s;position:relative}
+    .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+    .btn-nav{border:1px solid var(--border);background:var(--bg2);padding:10px 16px;border-radius:var(--radius2);font-size:13px;font-weight:600;color:var(--text2);transition:all .2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .btn-nav:hover{background:var(--bg3);transform:translateY(-1px)}
+    .btn-nav.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .btn-nav.primary:hover{background:var(--blue2)}
+    .btn-nav.purple{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none}
+    .btn-nav.purple:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-nav.danger{background:#fff1f2;color:var(--red2);border-color:#fecdd3}
+    .btn-nav.danger:hover{background:#ffe4e6}
+    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;position:relative}
+    .btn-icon:hover{background:var(--bg3);transform:translateY(-1px)}
+
+    /* HAMBURGER MENU */
+    .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:5px;transition:all .2s;position:relative}
     .hamburger span{width:20px;height:2px;background:var(--text2);border-radius:2px;transition:all .3s}
     .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px, 8px)}
     .hamburger.active span:nth-child(2){opacity:0}
     .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(8px, -8px)}
     .hamburger:hover{background:var(--bg3)}
+
+    /* SETTINGS DROPDOWN / MOBILE MENU */
     .settings-wrap{position:relative}
-    .settings-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:320px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow3);z-index:9999;overflow:hidden;display:none;animation:dropIn .2s ease;max-height:85vh;overflow-y:auto}
+    .settings-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow3);z-index:9999;overflow:hidden;display:none;animation:dropIn .2s ease;max-height:85vh;overflow-y:auto}
     .settings-dropdown.open{display:block}
     @keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
     .sd-header{padding:16px 18px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#2563eb,#7c3aed)}
@@ -68,27 +84,36 @@
     .toggle.on{background:var(--blue)}
     .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
     .toggle.on::after{left:23px}
-    .sd-btn{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:11px 14px;border-radius:var(--radius2);font-weight:600;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s;text-align:left;cursor:pointer}
+    .sd-btn{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:11px 14px;border-radius:var(--radius2);font-weight:600;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s;text-align:left}
     .sd-btn:last-child{margin-bottom:0}
     .sd-btn:hover{background:var(--blue-bg2);border-color:var(--blue);color:var(--blue)}
-    .sd-btn .sd-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-    .sd-btn-text{flex:1;min-width:0}
-    .sd-btn-text strong{display:block;font-size:13px}
-    .sd-btn-text span{font-size:11px;color:var(--text4)}
+    .sd-btn .sd-icon{font-size:18px;width:24px;text-align:center}
     .sd-notulen{background:var(--purple-bg);border-color:var(--purple);color:var(--purple)}
     .sd-notulen:hover{background:var(--purple-bg);opacity:.85}
     .export-range{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
     .export-range-item label{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:4px;display:block}
     .export-range-item input{width:100%;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px;outline:none}
     .export-range-item input:focus{border-color:var(--blue)}
-    .desktop-nav-section{padding:12px 18px;border-bottom:1px solid var(--border)}
-    .desktop-nav-section h4{font-size:12px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
-    .desktop-nav-links{display:flex;flex-direction:column;gap:6px}
-    .desktop-nav-links a{padding:10px 12px;border-radius:10px;background:var(--bg3);color:var(--text2);font-weight:600;font-size:13px;text-align:center;transition:all .2s;display:block}
-    .desktop-nav-links a:hover{background:var(--blue);color:#fff}
-    .desktop-nav-links a.active{background:var(--blue);color:#fff}
-    .desktop-nav-links button{width:100%;border:none;padding:10px 12px;border-radius:10px;background:var(--red-bg);color:var(--red2);font-weight:600;font-size:13px;transition:all .2s}
-    .desktop-nav-links button:hover{background:var(--red);color:#fff}
+
+    /* MOBILE NAV SECTION */
+    .mobile-nav-section{display:none;padding:12px 18px;border-bottom:1px solid var(--border)}
+    .mobile-nav-section.show{display:block}
+    .mobile-nav-section h4{font-size:12px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+    .mobile-nav-links{display:flex;flex-direction:column;gap:6px}
+    .mobile-nav-links a{padding:10px 12px;border-radius:10px;background:var(--bg3);color:var(--text2);font-weight:600;font-size:13px;text-align:center;transition:all .2s;display:block}
+    .mobile-nav-links a:hover{background:var(--blue);color:#fff}
+    .mobile-nav-links a.active{background:var(--blue);color:#fff}
+
+    /* ADMIN BANNER */
+    .admin-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius2);margin-bottom:16px;flex-wrap:wrap}
+    .admin-banner-left{display:flex;align-items:center;gap:10px}
+    .admin-banner-icon{font-size:24px}
+    .admin-banner-text h4{font-size:14px;font-weight:700;color:var(--purple)}
+    .admin-banner-text p{font-size:12px;color:var(--text3)}
+    .btn-admin{padding:10px 18px;border-radius:var(--radius2);font-size:13px;font-weight:700;background:var(--purple);color:#fff;border:none;transition:all .2s}
+    .btn-admin:hover{opacity:.85;transform:translateY(-1px)}
+
+    /* ADMIN MODAL */
     .admin-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px;backdrop-filter:blur(4px)}
     .admin-modal.active{display:flex}
     .admin-box{width:min(700px,100%);background:var(--bg2);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow3);position:relative;max-height:85vh;overflow-y:auto;animation:popIn .25s ease}
@@ -108,6 +133,8 @@
     .active-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
     .active-true{background:var(--green-bg);color:var(--green)}
     .active-false{background:var(--red-bg);color:var(--red)}
+
+    /* FILTER BAR */
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .filter-bar label{font-size:13px;font-weight:600;color:var(--text3)}
     .filter-select{border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-weight:600;outline:none;min-width:100px}
@@ -119,6 +146,8 @@
     .pill{border:1px solid var(--border);background:var(--bg2);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;transition:all .2s}
     .pill:hover{background:var(--bg3)}
     .pill.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+    /* STATS */
     .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
     .stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center;transition:transform .2s,box-shadow .2s;cursor:default;box-shadow:var(--shadow)}
     .stat:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
@@ -128,11 +157,16 @@
     .stat-sub{font-size:11px;color:var(--text4);margin-top:2px}
     .stat-bar{height:4px;border-radius:4px;margin-top:10px;background:var(--border)}
     .stat-bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
-    .content{display:grid;gap:16px;grid-template-columns:1fr 380px}
+
+    /* CONTENT */
+    .content{display:grid;gap:16px}
+    @media(min-width:1024px){.content{grid-template-columns:1fr 380px}}
     .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:transform .2s}
     .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
     .card-head h2{font-size:18px;font-weight:700}
     .card-head h3{font-size:16px;font-weight:700}
+
+    /* TABLE */
     .table-wrap{overflow-x:auto;margin:0 -18px;padding:0 18px}
     table{width:100%;border-collapse:collapse;min-width:640px}
     th{padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);border-bottom:2px solid var(--border);font-weight:700}
@@ -149,9 +183,14 @@
     .p-low{color:var(--green);font-weight:600}
     .empty{text-align:center;padding:30px;color:var(--text4);font-size:14px}
     .loading{text-align:center;padding:40px;color:var(--text4)}
-    .charts{display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-bottom:16px}
+
+    /* CHARTS */
+    .charts{display:grid;gap:14px;grid-template-columns:1fr;margin-bottom:16px}
+    @media(min-width:768px){.charts{grid-template-columns:1fr 1fr}}
     .chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
     .chart-card canvas{width:100%!important;height:200px!important}
+
+    /* CALENDAR */
     .cal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
     .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
     .cal-head h3{font-size:17px;font-weight:700}
@@ -170,6 +209,8 @@
     .cal-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin:1px}
     .cal-task-preview{font-size:9px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
     .cal-count{position:absolute;top:3px;right:5px;font-size:9px;font-weight:700;color:var(--blue);background:var(--blue-bg);padding:1px 5px;border-radius:8px}
+
+    /* SIDEBAR */
     .sidebar{display:flex;flex-direction:column;gap:14px}
     .priority-list{display:flex;flex-direction:column;gap:8px}
     .priority-item{display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all .2s}
@@ -183,10 +224,14 @@
     .deadline-overdue{background:var(--red-bg);color:var(--red)}
     .deadline-soon{background:var(--yellow-bg);color:var(--yellow)}
     .deadline-ok{background:var(--green-bg);color:var(--green)}
+
+    /* SHORTCUT NOTULEN CARD */
     .notulen-shortcut{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius);padding:20px;text-align:center;transition:all .2s;cursor:pointer;text-decoration:none;display:block}
     .notulen-shortcut:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
     .notulen-shortcut h3{font-size:15px;font-weight:700;color:var(--purple);margin:8px 0 4px}
     .notulen-shortcut p{font-size:12px;color:var(--text3)}
+
+    /* MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px;backdrop-filter:blur(4px)}
     .modal-overlay.active{display:flex}
     .modal-box{width:min(620px,100%);background:var(--bg2);color:var(--text);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow3);position:relative;animation:popIn .25s ease;max-height:90vh;overflow-y:auto}
@@ -206,21 +251,23 @@
     .btn-m-secondary{background:var(--bg2);color:var(--text2)}
     .btn-m-secondary:hover{background:var(--bg3)}
     @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-    @media(max-width:1024px){
-      .content{grid-template-columns:1fr}
-      .charts{grid-template-columns:1fr}
-    }
+
+    /* MOBILE OPTIMIZATIONS */
     @media(max-width:768px){
       .page{padding:12px}
-      .topbar{padding:12px 14px;border-radius:14px}
+      .topbar{padding:12px 14px;border-radius:14px;gap:8px}
       .topbar-brand{gap:8px;flex:1}
       .topbar-logo{width:40px;height:40px}
       .topbar-info h1{font-size:16px}
       .topbar-info p{font-size:10px}
+      .topbar-actions{display:none}
+      .hamburger{display:flex}
       .stats{grid-template-columns:repeat(2,1fr);gap:10px}
       .stat{padding:14px}
       .stat-num{font-size:20px}
       .stat-icon{font-size:20px}
+      .charts{grid-template-columns:1fr}
+      .content{grid-template-columns:1fr}
       .filter-bar{flex-direction:column;align-items:stretch;padding:12px 14px;gap:8px}
       .filter-bar label{display:none}
       .filter-bar .sep{display:none}
@@ -240,7 +287,7 @@
       .sidebar{gap:12px}
       .priority-item{padding:10px}
       .priority-item-title{font-size:12px}
-      .settings-dropdown{width:calc(100vw - 32px);max-width:300px}
+      .settings-dropdown{width:calc(100vw - 32px);max-width:320px;left:auto}
     }
     @media(max-width:480px){
       .stats{grid-template-columns:1fr 1fr;gap:8px}
@@ -260,15 +307,19 @@
       .hamburger{width:36px;height:36px}
       .hamburger span{width:16px}
     }
+
+    /* SCROLLBAR */
     ::-webkit-scrollbar{width:6px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+    /* TOUCH OPTIMIZATIONS */
     @media(hover:hover){
       .stat:hover{transform:translateY(-3px)}
     }
     @media(hover:none){
       .stat:active{transform:scale(.95)}
-      .hamburger:active{transform:scale(.95)}
+      .btn-nav:active{transform:scale(.95)}
       .cal-cell:active{transform:scale(.95)}
     }
   </style>
@@ -287,8 +338,15 @@
         <p id="topbarUser">Sistem Monitoring Organisasi Kerja</p>
       </div>
     </div>
+    <div class="topbar-actions" id="topbarActions">
+      <a href="dashboard.html" class="btn-nav active-nav">📊 <span>Dashboard</span></a>
+      <a href="entri.html"     class="btn-nav primary">➕ <span>Entri</span></a>
+      <a href="notulen.html"   class="btn-nav purple">📝 <span>Notulen</span></a>
+      <a href="assistant.html" class="btn-nav">🤖 <span>Assistant</span></a>
+      <button class="btn-nav danger" id="logoutBtn">🚪 <span>Logout</span></button>
+    </div>
 
-    <!-- HAMBURGER + MENU -->
+    <!-- HAMBURGER + SETTINGS (MOBILE) -->
     <div class="settings-wrap">
       <button class="hamburger" id="hamburgerBtn" title="Menu">
         <span></span>
@@ -303,15 +361,15 @@
           <p>BEKARYE v1.0</p>
         </div>
 
-        <!-- DESKTOP NAVIGATION -->
-        <div class="desktop-nav-section">
+        <!-- DESKTOP NAVIGATION (MOBILE) -->
+        <div class="mobile-nav-section show" id="mobileNav">
           <h4>Navigasi</h4>
-          <div class="desktop-nav-links">
+          <div class="mobile-nav-links">
             <a href="dashboard.html" class="active">📊 Dashboard</a>
             <a href="entri.html">➕ Entri</a>
             <a href="notulen.html">📝 Notulen</a>
             <a href="assistant.html">🤖 Assistant</a>
-            <button id="logoutBtnMenu">🚪 Logout</button>
+            <button class="btn-nav danger" id="logoutBtnMobile" style="width:100%;border:none;padding:10px 12px;font-size:13px;margin-top:4px">🚪 Logout</button>
           </div>
         </div>
 
@@ -327,33 +385,21 @@
           </div>
         </div>
 
-        <!-- TOOLS -->
+        <!-- NOTULEN -->
         <div class="sd-section">
           <div class="sd-label">Tools</div>
-          <button class="sd-btn sd-notulen" id="openNotulenBtn">
+          <a href="notulen.html" class="sd-btn sd-notulen">
             <span class="sd-icon">📝</span>
-            <div class="sd-btn-text">
+            <div>
               <strong>Buka Notulen</strong><br>
-              <span>Kelola notulen rapat</span>
+              <span style="font-size:11px;opacity:.7">Kelola notulen rapat</span>
             </div>
-          </button>
-        </div>
-
-        <!-- ADMIN SECTION -->
-        <div class="sd-section" id="adminSection" style="display:none">
-          <div class="sd-label">Admin</div>
-          <button class="sd-btn" id="openAdminBtnMenu">
-            <span class="sd-icon">👥</span>
-            <div class="sd-btn-text">
-              <strong>Kelola Users</strong><br>
-              <span>Kelola semua pengguna</span>
-            </div>
-          </button>
+          </a>
         </div>
 
         <!-- EXPORT -->
         <div class="sd-section">
-          <div class="sd-label">📥 Export Data</div>
+          <div class="sd-label">Export Data</div>
           <div class="export-range">
             <div class="export-range-item">
               <label>Dari</label>
@@ -366,30 +412,42 @@
           </div>
           <button class="sd-btn" id="exportFilterMonth">
             <span class="sd-icon">📅</span>
-            <div class="sd-btn-text">
+            <div>
               <strong>Export Bulan Ini</strong><br>
-              <span>Filter bulan aktif</span>
+              <span style="font-size:11px;color:var(--text4)">Filter bulan aktif</span>
             </div>
           </button>
           <button class="sd-btn" id="exportPDF">
             <span class="sd-icon">📄</span>
-            <div class="sd-btn-text">
+            <div>
               <strong>Export PDF</strong><br>
-              <span>Sesuai rentang di atas</span>
+              <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
             </div>
           </button>
           <button class="sd-btn" id="exportExcel">
             <span class="sd-icon">📊</span>
-            <div class="sd-btn-text">
+            <div>
               <strong>Export Excel</strong><br>
-              <span>Sesuai rentang di atas</span>
+              <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- ADMIN SECTION -->
+        <div class="sd-section" id="adminSection" style="display:none">
+          <div class="sd-label">Admin</div>
+          <button class="sd-btn" id="openAdminBtnMenu">
+            <span class="sd-icon">👥</span>
+            <div>
+              <strong>Kelola Users</strong><br>
+              <span style="font-size:11px;color:var(--text4)">Kelola semua pengguna</span>
             </div>
           </button>
         </div>
 
       </div>
     </div>
-    <!-- END MENU -->
+    <!-- END HAMBURGER -->
 
   </div>
 
@@ -433,7 +491,7 @@
   var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
 
   // ============================================================
-  // AUTH GUARD
+  // AUTH GUARD (REVISED)
   // ============================================================
   var SESSION = null;
 
@@ -467,6 +525,7 @@
                          (SESSION.role === 'admin' ? ' — Admin' : ' — User');
     }
 
+    // Tampilkan admin section jika role admin
     if (SESSION.role === 'admin') {
       document.getElementById('adminSection').style.display = 'block';
     }
@@ -482,6 +541,18 @@
       + '&user='   + encodeURIComponent(SESSION.username)
       + '&token='  + encodeURIComponent(SESSION.token);
   }
+
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+  function doLogout() {
+    if (!confirm('Yakin ingin logout?')) return;
+    localStorage.removeItem('bekarye-session');
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  document.getElementById('logoutBtnMobile').addEventListener('click', doLogout);
 
   // ============================================================
   // HAMBURGER MENU
@@ -503,7 +574,8 @@
 
   document.addEventListener('click', function(e) {
     if (menuOpen && !document.getElementById('settingsDropdown').contains(e.target)
-        && e.target !== document.getElementById('hamburgerBtn')) {
+        && e.target !== document.getElementById('hamburgerBtn')
+        && !document.querySelector('.hamburger').contains(e.target)) {
       closeMenu();
     }
   });
@@ -513,25 +585,7 @@
   });
 
   // ============================================================
-  // LOGOUT
-  // ============================================================
-  function doLogout() {
-    if (!confirm('Yakin ingin logout?')) return;
-    localStorage.removeItem('bekarye-session');
-    window.location.href = 'index.html';
-  }
-
-  document.getElementById('logoutBtnMenu').addEventListener('click', doLogout);
-
-  // ============================================================
-  // NAVIGATION
-  // ============================================================
-  document.getElementById('openNotulenBtn').addEventListener('click', function() {
-    window.location.href = 'notulen.html';
-  });
-
-  // ============================================================
-  // THEME
+  // THEME — sinkron dengan logo
   // ============================================================
   function initTheme() {
     var t = localStorage.getItem('bekarye-theme');
@@ -615,7 +669,7 @@
   }
 
   // ============================================================
-  // MODALS
+  // MODALS — task detail & calendar
   // ============================================================
   var modal1 = document.getElementById('popupModal');
   function openPopup(h)  { document.getElementById('modalBody').innerHTML = h; modal1.classList.add('active'); }
@@ -659,26 +713,6 @@
     return isNaN(d.getTime()) ? null : d;
   }
   function daysBetween(a,b) { return Math.ceil((b-a)/(1000*60*60*24)); }
-
-  // ============================================================
-  // EXTRACT LINKS FROM TEXT
-  // ============================================================
-  function extractLinks(text) {
-    if (!text) return { text: '', links: [] };
-    
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
-    var links = [];
-    var matches = text.match(urlRegex) || [];
-    
-    matches.forEach(function(url) {
-      links.push({ url: url });
-    });
-    
-    return {
-      text: text.replace(urlRegex, ''),
-      links: links
-    };
-  }
 
   // ============================================================
   // SHOW DETAIL TASK
@@ -761,7 +795,7 @@
         }
 
         if (!j.data || j.data.length === 0) {
-          console.warn("DEBUG: Login berhasil, tapi sheet kosong atau tidak ditemukan.");
+          console.warn("DEBUG: Login berhasil, tapi sheet '" + SESSION.sheet_name + "' kosong atau tidak ditemukan.");
           DATA = [];
         } else {
           DATA = j.data;
@@ -962,7 +996,7 @@
       '</div></div>' +
 
       '<div class="card" style="text-align:center">' +
-      '<button onclick="loadData()" class="sd-btn" style="width:100%;margin:0">🔄 Refresh Data</button>' +
+      '<button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh Data</button>' +
       '</div>' +
 
       '</div></div>';
@@ -1119,258 +1153,77 @@
   function exportPDF(tasks, title) {
     var jsPDF = window.jspdf.jsPDF;
     var doc   = new jsPDF('l','mm','a4');
-    
-    var pageWidth = doc.internal.pageSize.getWidth();
-    var pageHeight = doc.internal.pageSize.getHeight();
-    
-    doc.setFontSize(18);
-    doc.setFont(undefined,'bold');
+    doc.setFontSize(18); doc.setFont(undefined,'bold');
     doc.text('BEKARYE', 14, 18);
-    
-    doc.setFontSize(10);
-    doc.setFont(undefined,'normal');
+    doc.setFontSize(10); doc.setFont(undefined,'normal');
     doc.text('Sistem Monitoring Organisasi Kerja', 14, 24);
-    
-    doc.setFontSize(9);
-    doc.setFont(undefined,'bold');
-    doc.text('Pengguna: ' + (SESSION.name || SESSION.username), 14, 29);
-    doc.setFont(undefined,'normal');
-    
-    doc.setFontSize(12);
-    doc.setFont(undefined,'bold');
-    doc.text(title, 14, 36);
-    
-    doc.setFontSize(9);
-    doc.setFont(undefined,'normal');
-    doc.text('Dicetak: '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric', hour:'2-digit', minute:'2-digit'}), 14, 41);
-    
-    var rows = [];
-    tasks.forEach(function(t, i) {
-      var noteText = (t.note || '').substring(0, 100);
-      rows.push({
-        no: i + 1,
-        title: t.title || '',
-        status: t.status || '',
-        priority: t.priority || '',
-        dueDate: t.due_date || '',
-        updated: t.updated_at || '',
-        note: noteText,
-        fullNote: t.note || ''
-      });
+    doc.setFontSize(12); doc.setFont(undefined,'bold');
+    doc.text(title, 14, 34);
+    doc.setFontSize(9); doc.setFont(undefined,'normal');
+    doc.text('Dicetak: '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), 14, 40);
+    var rows = tasks.map(function(t,i) {
+      return [i+1, t.title||'', t.status||'', t.priority||'', t.due_date||'', t.updated_at||'', (t.note||'').substring(0,60)];
     });
-    
-    var tableConfig = {
-      startY: 47,
+    doc.autoTable({
+      startY: 46,
       head: [['No','Task','Status','Priority','Due Date','Updated','Note']],
-      body: rows.map(function(r) {
-        return [
-          r.no,
-          r.title,
-          r.status,
-          r.priority,
-          r.dueDate,
-          r.updated,
-          r.note
-        ];
-      }),
-      styles: {
-        fontSize: 8,
-        cellPadding: 3,
-        overflow: 'linebreak',
-        halign: 'left',
-        valign: 'top'
-      },
-      headStyles: {
-        fillColor: [37, 99, 235],
-        textColor: 255,
-        fontStyle: 'bold',
-        halign: 'center'
-      },
-      alternateRowStyles: {
-        fillColor: [248, 250, 252]
-      },
-      columnStyles: {
-        0: { cellWidth: 10, halign: 'center' },
-        1: { cellWidth: 50 },
-        2: { cellWidth: 15, halign: 'center' },
-        3: { cellWidth: 15, halign: 'center' },
-        4: { cellWidth: 20, halign: 'center' },
-        5: { cellWidth: 20, halign: 'center' },
-        6: { cellWidth: 60 }
-      },
-      didDrawCell: function(data) {
-        if (data.column.index === 6 && data.row.index > 0) {
-          var rowData = rows[data.row.index - 1];
-          var links = extractLinks(rowData.fullNote).links;
-          
-          if (links.length > 0) {
-            var cellX = data.cell.x;
-            var cellY = data.cell.y;
-            var cellPadding = 2;
-            var textX = cellX + cellPadding;
-            var textY = cellY + cellPadding + 3;
-            
-            doc.setFont(undefined, 'normal');
-            doc.setFontSize(7);
-            doc.setTextColor(37, 99, 235);
-            
-            links.forEach(function(link, idx) {
-              var linkText = link.url.replace(/https?:\/\//, '').substring(0, 30) + '...';
-              
-              doc.textWithLink(
-                linkText,
-                textX,
-                textY + (idx * 4),
-                { pageNumber: data.pageNumber, zoom: 0 },
-                link.url
-              );
-            });
-            
-            doc.setTextColor(0, 0, 0);
-          }
-        }
-      }
-    };
-    
-    doc.autoTable(tableConfig);
-    
+      body: rows,
+      styles: { fontSize:9, cellPadding:3 },
+      headStyles: { fillColor:[37,99,235], textColor:255, fontStyle:'bold' },
+      alternateRowStyles: { fillColor:[248,250,252] },
+      columnStyles: { 0:{cellWidth:10}, 1:{cellWidth:70}, 6:{cellWidth:50} }
+    });
     var total = doc.internal.getNumberOfPages();
-    for (var p = 1; p <= total; p++) {
-      doc.setPage(p);
-      doc.setFontSize(8);
-      doc.setTextColor(150);
-      doc.text(
-        'BEKARYE - Hal ' + p + '/' + total,
-        pageWidth - 14,
-        pageHeight - 8,
-        { align: 'right' }
-      );
+    for (var p=1; p<=total; p++) {
+      doc.setPage(p); doc.setFontSize(8); doc.setTextColor(150);
+      doc.text('BEKARYE - Hal '+p+'/'+total, doc.internal.pageSize.getWidth()-14, doc.internal.pageSize.getHeight()-8, { align:'right' });
     }
-    
-    var fileName = 'BEKARYE_' + title.replace(/\s/g, '_') + '_' + (SESSION.name || SESSION.username).replace(/\s/g, '_') + '.pdf';
-    doc.save(fileName);
-    
-    console.log('✅ PDF exported: ' + fileName);
+    doc.save('BEKARYE_'+title.replace(/\s/g,'_')+'.pdf');
   }
 
   function exportExcel(tasks, title) {
-    var rows = [
-      ['BEKARYE - Sistem Monitoring Organisasi Kerja'],
-      ['Pengguna: ' + (SESSION.name || SESSION.username)],
-      ['Periode: ' + title],
-      ['Dicetak: ' + new Date().toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric', hour:'2-digit', minute:'2-digit'})],
-      [],
-      ['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note','Links']
-    ];
-    
-    tasks.forEach(function(t, i) {
-      var linkData = extractLinks(t.note || '');
-      var linksText = linkData.links.map(function(l) { return l.url; }).join(' | ');
-      
-      rows.push([
-        i + 1,
-        t.id,
-        t.title,
-        t.status,
-        t.priority,
-        t.due_date,
-        t.updated_at,
-        t.created_at,
-        t.note,
-        linksText
-      ]);
+    var rows = [['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note']];
+    tasks.forEach(function(t,i) {
+      rows.push([i+1, t.id, t.title, t.status, t.priority, t.due_date, t.updated_at, t.created_at, t.note]);
     });
-    
     var wb = XLSX.utils.book_new();
     var ws = XLSX.utils.aoa_to_sheet(rows);
-    
-    ws['!cols'] = [
-      { wch: 5 },
-      { wch: 15 },
-      { wch: 40 },
-      { wch: 12 },
-      { wch: 10 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 14 },
-      { wch: 40 },
-      { wch: 60 }
-    ];
-    
-    ws['!freeze'] = { xSplit: 0, ySplit: 6 };
-    
+    ws['!cols'] = [{wch:5},{wch:15},{wch:40},{wch:12},{wch:10},{wch:14},{wch:14},{wch:14},{wch:40}];
     XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
-    
-    var fileName = 'BEKARYE_' + title.replace(/\s/g, '_') + '_' + (SESSION.name || SESSION.username).replace(/\s/g, '_') + '.xlsx';
-    XLSX.writeFile(wb, fileName);
-    
-    console.log('✅ Excel exported: ' + fileName);
+    XLSX.writeFile(wb, 'BEKARYE_'+title.replace(/\s/g,'_')+'.xlsx');
   }
 
   document.getElementById('exportFilterMonth').addEventListener('click', function() {
     var range = getMonthRange();
     var tasks = getExportData(range.from, range.to);
-    var title = MONTHS[filterMonth] + ' ' + filterYear;
-    if (!tasks.length) {
-      alert('Tidak ada data di ' + title);
-      return;
-    }
+    var title = MONTHS[filterMonth]+' '+filterYear;
+    if (!tasks.length) { alert('Tidak ada data di '+title); return; }
     exportPDF(tasks, title);
     closeMenu();
   });
 
   document.getElementById('exportPDF').addEventListener('click', function() {
     var from = document.getElementById('exportFrom').value;
-    var to = document.getElementById('exportTo').value;
+    var to   = document.getElementById('exportTo').value;
     var tasks = getExportData(from, to);
-    if (!tasks.length) {
-      alert('Tidak ada data di rentang ini');
-      return;
-    }
-    
-    var rangeLabel = '';
-    if (from && to) {
-      rangeLabel = from + ' s.d. ' + to;
-    } else if (from) {
-      rangeLabel = 'Dari ' + from;
-    } else if (to) {
-      rangeLabel = 'Hingga ' + to;
-    } else {
-      rangeLabel = 'Semua Data';
-    }
-    
-    exportPDF(tasks, rangeLabel);
+    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
+    exportPDF(tasks, (from||'Semua')+' - '+(to||'Semua'));
     closeMenu();
   });
 
   document.getElementById('exportExcel').addEventListener('click', function() {
     var from = document.getElementById('exportFrom').value;
-    var to = document.getElementById('exportTo').value;
+    var to   = document.getElementById('exportTo').value;
     var tasks = getExportData(from, to);
-    if (!tasks.length) {
-      alert('Tidak ada data di rentang ini');
-      return;
-    }
-    
-    var rangeLabel = '';
-    if (from && to) {
-      rangeLabel = from + ' s.d. ' + to;
-    } else if (from) {
-      rangeLabel = 'Dari ' + from;
-    } else if (to) {
-      rangeLabel = 'Hingga ' + to;
-    } else {
-      rangeLabel = 'Semua Data';
-    }
-    
-    exportExcel(tasks, rangeLabel);
+    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
+    exportExcel(tasks, (from||'Semua')+' - '+(to||'Semua'));
     closeMenu();
   });
 
   (function() {
     var now = new Date();
-    document.getElementById('exportFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
-    document.getElementById('exportTo').value = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10);
+    document.getElementById('exportFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+    document.getElementById('exportTo').value   = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
   })();
 
   window.addEventListener('DOMContentLoaded', loadData);
