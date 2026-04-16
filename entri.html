@@ -809,73 +809,81 @@
     // UPLOAD FILE
     // ============================================================
     function uploadFile(file) {
-      if (!state.editingId) {
-        showMessage('⚠️ Simpan task dulu sebelum upload file', false);
-        return;
+  console.log('🚀 START UPLOAD');
+  console.log('📝 editingId:', state.editingId);
+  console.log('📝 file:', file.name, file.size, file.type);
+  console.log('📝 SESSION:', SESSION);
+
+  if (!state.editingId) {
+    showMessage('⚠️ Simpan task dulu sebelum upload file', false);
+    return;
+  }
+  if (file.size > MAX_FILE_BYTES) {
+    showMessage('⚠️ File "' + file.name + '" terlalu besar (maks. 5 MB)', false);
+    return;
+  }
+
+  state.uploading = true;
+  $('submitBtn').disabled = true;
+  $('uploadProgress').classList.add('show');
+  $('uploadProgressText').textContent = 'Mengupload ' + file.name + '...';
+  $('uploadProgressBar').style.width  = '30%';
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    $('uploadProgressBar').style.width = '60%';
+    var base64 = ev.target.result.split(',')[1];
+
+    console.log('📤 Sending upload request...');
+    console.log('📤 taskId:', String(state.editingId));
+    console.log('📤 base64 length:', base64.length);
+
+    sendPost('upload', {
+      base64:   base64,
+      fileName: file.name,
+      mimeType: file.type || 'application/octet-stream',
+      taskId:   String(state.editingId)
+    })
+    .then(function(res) {
+      console.log('✅ UPLOAD SUCCESS:', res);
+      $('uploadProgressBar').style.width = '100%';
+
+      var t = findById(state.editingId);
+      if (t) {
+        t.note = res.note;
+        $('note').value = res.note;
       }
-      if (file.size > MAX_FILE_BYTES) {
-        showMessage('⚠️ File "' + file.name + '" terlalu besar (maks. 5 MB)', false);
-        return;
-      }
 
-      // Tampilkan progress
-      state.uploading = true;
-      $('submitBtn').disabled = true;
-      $('uploadProgress').classList.add('show');
-      $('uploadProgressText').textContent = 'Mengupload ' + file.name + '...';
-      $('uploadProgressBar').style.width  = '30%';
-
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        $('uploadProgressBar').style.width = '60%';
-
-        // Ambil base64 tanpa prefix "data:...;base64,"
-        var base64 = ev.target.result.split(',')[1];
-
-        sendPost('upload', {
-          base64:   base64,
-          fileName: file.name,
-          mimeType: file.type || 'application/octet-stream',
-          taskId:   String(state.editingId)
-        })
-        .then(function(res) {
-          $('uploadProgressBar').style.width = '100%';
-
-          // Update note di state lokal agar file list langsung muncul
-          var t = findById(state.editingId);
-          if (t) {
-            t.note = res.note;
-            $('note').value = res.note; // update textarea
-          }
-
-          setTimeout(function() {
-            $('uploadProgress').classList.remove('show');
-            $('uploadProgressBar').style.width = '0%';
-            state.uploading = false;
-            $('submitBtn').disabled = false;
-            renderFileList();
-            showMessage('✅ File "' + res.file_name + '" berhasil diupload');
-          }, 400);
-        })
-        .catch(function(err) {
-          $('uploadProgress').classList.remove('show');
-          $('uploadProgressBar').style.width = '0%';
-          state.uploading = false;
-          $('submitBtn').disabled = false;
-          showMessage('❌ Upload gagal: ' + err.message, false);
-        });
-      };
-
-      reader.onerror = function() {
+      setTimeout(function() {
         $('uploadProgress').classList.remove('show');
+        $('uploadProgressBar').style.width = '0%';
         state.uploading = false;
         $('submitBtn').disabled = false;
-        showMessage('❌ Gagal membaca file', false);
-      };
+        renderFileList();
+        showMessage('✅ File "' + res.file_name + '" berhasil diupload');
+      }, 400);
+    })
+    .catch(function(err) {
+      console.error('❌ UPLOAD ERROR:', err);
+      $('uploadProgress').classList.remove('show');
+      $('uploadProgressBar').style.width = '0%';
+      state.uploading = false;
+      $('submitBtn').disabled = false;
+      showMessage('❌ Upload gagal: ' + err.message, false);
+    });
+  };
 
-      reader.readAsDataURL(file);
-    }
+  reader.onerror = function(err) {
+    console.error('❌ FILEREADER ERROR:', err);
+    $('uploadProgress').classList.remove('show');
+    state.uploading = false;
+    $('submitBtn').disabled = false;
+    showMessage('❌ Gagal membaca file', false);
+  };
 
+  reader.readAsDataURL(file);
+}
+    
     // ============================================================
     // DELETE FILE (tanpa hapus task)
     // ============================================================
