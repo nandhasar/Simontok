@@ -11,7 +11,7 @@
   // ================================================================
   // 1) CONFIG
   // ================================================================
-  var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbyS2etJ3c11TcTD3dPmJTcV6J0cqELfKxhUYToMpk_GUMKRjwDpg-nmLJ-xNx7DdyYH/exec';
   var SESSION_KEY = 'bekarye-session';
   var LEGACY_SESSION_KEY = 'simontok-session';
   var THEME_KEY = 'bekarye-theme';
