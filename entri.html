@@ -633,32 +633,32 @@
     // ============================================================
     // SEND POST
     // ============================================================
-    function sendPost(action, bodyData) {
-      var url     = authURL(action);
-      var payload = authBody(Object.assign({}, bodyData));
+function sendPost(action, bodyData) {
+  var payload    = authBody(Object.assign({}, bodyData));
+  payload.action = action; // ← action masuk ke BODY, bukan URL
 
-      return fetch(url, {
-        method:   'POST',
-        headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
-        body:     JSON.stringify(payload),
-        redirect: 'follow'
-      })
-      .then(function(res) { return res.text(); })
-      .then(function(text) {
-        var json;
-        try { json = JSON.parse(text); }
-        catch(e) {
-          showDebug('Response bukan JSON:\n' + text.substring(0, 500));
-          throw new Error('Response bukan JSON');
-        }
-        if (!json.ok) {
-          showDebug('Error: ' + (json.message || 'Unknown'));
-          throw new Error(json.message || 'Gagal');
-        }
-        $('debugBox').classList.remove('show');
-        return json;
-      });
+  return fetch(API_URL, { // ← API_URL polos, TANPA query string
+    method:   'POST',
+    headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
+    body:     JSON.stringify(payload),
+    redirect: 'follow'
+  })
+  .then(function(res) { return res.text(); })
+  .then(function(text) {
+    var json;
+    try { json = JSON.parse(text); }
+    catch(e) {
+      showDebug('Response bukan JSON:\n' + text.substring(0, 500));
+      throw new Error('Response bukan JSON');
     }
+    if (!json.ok) {
+      showDebug('Error: ' + (json.message || 'Unknown'));
+      throw new Error(json.message || 'Gagal');
+    }
+    $('debugBox').classList.remove('show');
+    return json;
+  });
+}
 
     // ============================================================
     // LOAD DATA
