@@ -39,7 +39,7 @@
     .page{max-width:1400px;margin:0 auto;padding:16px;min-height:100vh}
 
     /* TOPBAR */
-    .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .topbar-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
     .topbar-logo{width:52px;height:52px;background:transparent;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
     .topbar-logo img{width:100%;height:100%;object-fit:contain}
@@ -55,18 +55,31 @@
     .btn-nav.purple:hover{opacity:.9;transform:translateY(-1px)}
     .btn-nav.danger{background:#fff1f2;color:var(--red2);border-color:#fecdd3}
     .btn-nav.danger:hover{background:#ffe4e6}
-    .btn-icon{width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;position:relative}
-    .btn-icon:hover{background:var(--bg3);transform:translateY(-1px)}
 
-    /* HAMBURGER MENU */
-    .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:5px;transition:all .2s;position:relative}
+    /* EXPORT DROPDOWN DESKTOP */
+    .export-dropdown-wrap{position:relative}
+    .export-dropdown-menu{position:absolute;top:calc(100% + 8px);right:0;width:290px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow3);z-index:9998;overflow:hidden;display:none;animation:dropIn .2s ease}
+    .export-dropdown-menu.open{display:block}
+    .export-menu-header{padding:14px 14px 10px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+    .export-menu-header strong{display:block;font-size:14px;font-weight:800;margin-bottom:10px}
+    .export-menu-header .export-range{margin-bottom:0}
+    .export-menu-header .export-range-item label{color:rgba(255,255,255,.8)}
+    .export-menu-header .export-range-item input{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+    .export-menu-header .export-range-item input::-webkit-calendar-picker-indicator{filter:invert(1)}
+    .export-menu-body{padding:10px 14px 14px}
+    .export-menu-item{width:100%;padding:11px 14px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);text-align:left;font-weight:600;font-size:13px;margin-bottom:8px;border-radius:var(--radius2);transition:all .2s;cursor:pointer;display:flex;align-items:center;gap:8px}
+    .export-menu-item:last-child{margin-bottom:0}
+    .export-menu-item:hover{background:var(--blue-bg2);border-color:var(--blue);color:var(--blue)}
+
+    /* HAMBURGER */
+    .hamburger{display:none;width:40px;height:40px;border:1px solid var(--border);background:var(--bg2);border-radius:12px;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:5px;transition:all .2s}
     .hamburger span{width:20px;height:2px;background:var(--text2);border-radius:2px;transition:all .3s}
-    .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px, 8px)}
+    .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px)}
     .hamburger.active span:nth-child(2){opacity:0}
-    .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(8px, -8px)}
+    .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(8px,-8px)}
     .hamburger:hover{background:var(--bg3)}
 
-    /* SETTINGS DROPDOWN / MOBILE MENU */
+    /* MOBILE DROPDOWN */
     .settings-wrap{position:relative}
     .settings-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow3);z-index:9999;overflow:hidden;display:none;animation:dropIn .2s ease;max-height:85vh;overflow-y:auto}
     .settings-dropdown.open{display:block}
@@ -84,7 +97,7 @@
     .toggle.on{background:var(--blue)}
     .toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
     .toggle.on::after{left:23px}
-    .sd-btn{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:11px 14px;border-radius:var(--radius2);font-weight:600;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s;text-align:left}
+    .sd-btn{width:100%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);padding:11px 14px;border-radius:var(--radius2);font-weight:600;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .2s;text-align:left;cursor:pointer}
     .sd-btn:last-child{margin-bottom:0}
     .sd-btn:hover{background:var(--blue-bg2);border-color:var(--blue);color:var(--blue)}
     .sd-btn .sd-icon{font-size:18px;width:24px;text-align:center}
@@ -94,24 +107,11 @@
     .export-range-item label{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:4px;display:block}
     .export-range-item input{width:100%;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px;outline:none}
     .export-range-item input:focus{border-color:var(--blue)}
-
-    /* MOBILE NAV SECTION */
-    .mobile-nav-section{display:none;padding:12px 18px;border-bottom:1px solid var(--border)}
-    .mobile-nav-section.show{display:block}
+    .mobile-nav-section{padding:12px 18px;border-bottom:1px solid var(--border)}
     .mobile-nav-section h4{font-size:12px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
     .mobile-nav-links{display:flex;flex-direction:column;gap:6px}
     .mobile-nav-links a{padding:10px 12px;border-radius:10px;background:var(--bg3);color:var(--text2);font-weight:600;font-size:13px;text-align:center;transition:all .2s;display:block}
-    .mobile-nav-links a:hover{background:var(--blue);color:#fff}
-    .mobile-nav-links a.active{background:var(--blue);color:#fff}
-
-    /* ADMIN BANNER */
-    .admin-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius2);margin-bottom:16px;flex-wrap:wrap}
-    .admin-banner-left{display:flex;align-items:center;gap:10px}
-    .admin-banner-icon{font-size:24px}
-    .admin-banner-text h4{font-size:14px;font-weight:700;color:var(--purple)}
-    .admin-banner-text p{font-size:12px;color:var(--text3)}
-    .btn-admin{padding:10px 18px;border-radius:var(--radius2);font-size:13px;font-weight:700;background:var(--purple);color:#fff;border:none;transition:all .2s}
-    .btn-admin:hover{opacity:.85;transform:translateY(-1px)}
+    .mobile-nav-links a:hover,.mobile-nav-links a.active{background:var(--blue);color:#fff}
 
     /* ADMIN MODAL */
     .admin-modal{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px;backdrop-filter:blur(4px)}
@@ -126,7 +126,7 @@
     .user-info{flex:1;min-width:0}
     .user-info h4{font-size:14px;font-weight:700;color:var(--text)}
     .user-info p{font-size:12px;color:var(--text3)}
-    .user-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .user-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
     .role-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
     .role-admin{background:var(--purple-bg);color:var(--purple)}
     .role-user{background:var(--blue-bg);color:var(--blue)}
@@ -134,7 +134,7 @@
     .active-true{background:var(--green-bg);color:var(--green)}
     .active-false{background:var(--red-bg);color:var(--red)}
 
-    /* FILTER BAR */
+    /* FILTER */
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;padding:14px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .filter-bar label{font-size:13px;font-weight:600;color:var(--text3)}
     .filter-select{border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-weight:600;outline:none;min-width:100px}
@@ -143,7 +143,7 @@
     .filter-search{flex:1;min-width:140px;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;outline:none}
     .filter-search:focus{border-color:var(--blue)}
     .status-pills{display:flex;gap:6px;flex-wrap:wrap}
-    .pill{border:1px solid var(--border);background:var(--bg2);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;transition:all .2s}
+    .pill{border:1px solid var(--border);background:var(--bg2);color:var(--text2);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;transition:all .2s;cursor:pointer}
     .pill:hover{background:var(--bg3)}
     .pill.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 
@@ -161,7 +161,7 @@
     /* CONTENT */
     .content{display:grid;gap:16px}
     @media(min-width:1024px){.content{grid-template-columns:1fr 380px}}
-    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:transform .2s}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
     .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
     .card-head h2{font-size:18px;font-weight:700}
     .card-head h3{font-size:16px;font-weight:700}
@@ -195,7 +195,7 @@
     .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
     .cal-head h3{font-size:17px;font-weight:700}
     .cal-nav{display:flex;gap:6px}
-    .cal-nav button{width:34px;height:34px;border:1px solid var(--border);background:var(--bg2);border-radius:10px;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .2s}
+    .cal-nav button{width:34px;height:34px;border:1px solid var(--border);background:var(--bg2);border-radius:10px;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .2s;cursor:pointer}
     .cal-nav button:hover{background:var(--bg3)}
     .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
     .cal-day-name{text-align:center;font-size:11px;font-weight:700;color:var(--text4);padding:6px 2px;text-transform:uppercase}
@@ -224,8 +224,6 @@
     .deadline-overdue{background:var(--red-bg);color:var(--red)}
     .deadline-soon{background:var(--yellow-bg);color:var(--yellow)}
     .deadline-ok{background:var(--green-bg);color:var(--green)}
-
-    /* SHORTCUT NOTULEN CARD */
     .notulen-shortcut{background:linear-gradient(135deg,var(--purple-bg),var(--blue-bg2));border:1px solid var(--purple);border-radius:var(--radius);padding:20px;text-align:center;transition:all .2s;cursor:pointer;text-decoration:none;display:block}
     .notulen-shortcut:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
     .notulen-shortcut h3{font-size:15px;font-weight:700;color:var(--purple);margin:8px 0 4px}
@@ -239,24 +237,23 @@
     .modal-close:hover{color:var(--text)}
     .modal-box h3{margin-bottom:14px;font-size:20px;font-weight:700}
     .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    @media(max-width:480px){.modal-grid{grid-template-columns:1fr}}
     .modal-item{padding:14px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border2)}
     .modal-item strong{display:block;font-size:11px;color:var(--text3);margin-bottom:4px}
     .modal-item span{font-size:15px;font-weight:700;color:var(--text)}
     .modal-note{margin-top:12px;padding:14px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--border);color:var(--yellow);font-size:13px;line-height:1.7;white-space:pre-wrap}
     .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
-    .btn-m{padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;border:1px solid var(--border);transition:all .2s}
+    .btn-m{padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;border:1px solid var(--border);transition:all .2s;cursor:pointer}
     .btn-m-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
     .btn-m-primary:hover{background:var(--blue2)}
     .btn-m-secondary{background:var(--bg2);color:var(--text2)}
     .btn-m-secondary:hover{background:var(--bg3)}
     @keyframes popIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
 
-    /* MOBILE OPTIMIZATIONS */
+    /* RESPONSIVE */
     @media(max-width:768px){
       .page{padding:12px}
       .topbar{padding:12px 14px;border-radius:14px;gap:8px}
-      .topbar-brand{gap:8px;flex:1}
+      .topbar-brand{gap:8px}
       .topbar-logo{width:40px;height:40px}
       .topbar-info h1{font-size:16px}
       .topbar-info p{font-size:10px}
@@ -266,14 +263,10 @@
       .stat{padding:14px}
       .stat-num{font-size:20px}
       .stat-icon{font-size:20px}
-      .charts{grid-template-columns:1fr}
-      .content{grid-template-columns:1fr}
       .filter-bar{flex-direction:column;align-items:stretch;padding:12px 14px;gap:8px}
-      .filter-bar label{display:none}
-      .filter-bar .sep{display:none}
+      .filter-bar label,.filter-bar .sep{display:none}
       .filter-select{width:100%;padding:8px 12px;font-size:12px}
       .filter-search{min-width:auto;font-size:12px;padding:8px 12px}
-      .status-pills{justify-content:flex-start;gap:4px}
       .pill{padding:5px 10px;font-size:11px}
       .cal{padding:14px}
       .cal-head{flex-direction:column;align-items:flex-start}
@@ -284,10 +277,8 @@
       table{font-size:12px}
       th{padding:8px 10px;font-size:10px}
       td{padding:10px}
-      .sidebar{gap:12px}
-      .priority-item{padding:10px}
-      .priority-item-title{font-size:12px}
-      .settings-dropdown{width:calc(100vw - 32px);max-width:320px;left:auto}
+      .settings-dropdown{width:calc(100vw - 32px);max-width:320px}
+      .modal-grid{grid-template-columns:1fr}
     }
     @media(max-width:480px){
       .stats{grid-template-columns:1fr 1fr;gap:8px}
@@ -295,9 +286,6 @@
       .stat-num{font-size:18px}
       .stat-icon{font-size:18px}
       .stat-label{font-size:11px}
-      .filter-select{font-size:11px;padding:6px 10px}
-      .filter-search{font-size:11px;padding:6px 10px}
-      .pill{padding:4px 8px;font-size:10px}
       .cal-grid{gap:1px}
       .cal-cell{min-height:35px;padding:2px}
       .cal-day-name{padding:4px 1px;font-size:9px}
@@ -307,21 +295,11 @@
       .hamburger{width:36px;height:36px}
       .hamburger span{width:16px}
     }
-
-    /* SCROLLBAR */
     ::-webkit-scrollbar{width:6px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-
-    /* TOUCH OPTIMIZATIONS */
-    @media(hover:hover){
-      .stat:hover{transform:translateY(-3px)}
-    }
-    @media(hover:none){
-      .stat:active{transform:scale(.95)}
-      .btn-nav:active{transform:scale(.95)}
-      .cal-cell:active{transform:scale(.95)}
-    }
+    @media(hover:hover){.stat:hover{transform:translateY(-3px)}}
+    @media(hover:none){.stat:active{transform:scale(.95)}.btn-nav:active{transform:scale(.95)}.cal-cell:active{transform:scale(.95)}}
   </style>
 </head>
 <body>
@@ -338,42 +316,66 @@
         <p id="topbarUser">Sistem Monitoring Organisasi Kerja</p>
       </div>
     </div>
+
+    <!-- DESKTOP NAV -->
     <div class="topbar-actions" id="topbarActions">
-      <a href="dashboard.html" class="btn-nav active-nav">📊 <span>Dashboard</span></a>
-      <a href="entri.html"     class="btn-nav primary">➕ <span>Entri</span></a>
-      <a href="notulen.html"   class="btn-nav purple">📝 <span>Notulen</span></a>
-      <a href="assistant.html" class="btn-nav">🤖 <span>Assistant</span></a>
-      <button class="btn-nav danger" id="logoutBtn">🚪 <span>Logout</span></button>
+      <a href="dashboard.html" class="btn-nav">📊 Dashboard</a>
+      <a href="entri.html" class="btn-nav primary">➕ Entri</a>
+      <a href="notulen.html" class="btn-nav purple">📝 Notulen</a>
+      <a href="assistant.html" class="btn-nav">🤖 Assistant</a>
+
+      <!-- EXPORT DROPDOWN DESKTOP -->
+      <div class="export-dropdown-wrap">
+        <button class="btn-nav" id="exportDropdownBtn">📥 Export ▾</button>
+        <div class="export-dropdown-menu" id="exportDropdownMenu">
+          <div class="export-menu-header">
+            <strong>📥 Export Data</strong>
+            <div class="export-range">
+              <div class="export-range-item">
+                <label>Dari</label>
+                <input type="date" id="exportFromDesktop" />
+              </div>
+              <div class="export-range-item">
+                <label>Sampai</label>
+                <input type="date" id="exportToDesktop" />
+              </div>
+            </div>
+          </div>
+          <div class="export-menu-body">
+            <button class="export-menu-item" id="exportFilterMonthDesktop">📅 Export Bulan Ini (PDF)</button>
+            <button class="export-menu-item" id="exportPDFDesktop">📄 Export PDF (Rentang)</button>
+            <button class="export-menu-item" id="exportExcelDesktop">📊 Export Excel (Rentang)</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-nav danger" id="logoutBtn">🚪 Logout</button>
     </div>
 
-    <!-- HAMBURGER + SETTINGS (MOBILE) -->
+    <!-- HAMBURGER MOBILE -->
     <div class="settings-wrap">
       <button class="hamburger" id="hamburgerBtn" title="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
       <div class="settings-dropdown" id="settingsDropdown">
-
-        <!-- HEADER -->
         <div class="sd-header">
           <h3>⚙️ Menu</h3>
           <p>BEKARYE v1.0</p>
         </div>
 
-        <!-- DESKTOP NAVIGATION (MOBILE) -->
-        <div class="mobile-nav-section show" id="mobileNav">
+        <!-- NAV MOBILE -->
+        <div class="mobile-nav-section">
           <h4>Navigasi</h4>
           <div class="mobile-nav-links">
             <a href="dashboard.html" class="active">📊 Dashboard</a>
             <a href="entri.html">➕ Entri</a>
             <a href="notulen.html">📝 Notulen</a>
             <a href="assistant.html">🤖 Assistant</a>
-            <button class="btn-nav danger" id="logoutBtnMobile" style="width:100%;border:none;padding:10px 12px;font-size:13px;margin-top:4px">🚪 Logout</button>
+            <button id="logoutBtnMobile" style="width:100%;border:none;padding:10px 12px;border-radius:10px;background:#fff1f2;color:#be123c;font-weight:600;font-size:13px;margin-top:4px;cursor:pointer">🚪 Logout</button>
           </div>
         </div>
 
-        <!-- TAMPILAN -->
+        <!-- DARK MODE -->
         <div class="sd-section">
           <div class="sd-label">Tampilan</div>
           <div class="sd-row">
@@ -385,19 +387,16 @@
           </div>
         </div>
 
-        <!-- NOTULEN -->
+        <!-- TOOLS -->
         <div class="sd-section">
           <div class="sd-label">Tools</div>
           <a href="notulen.html" class="sd-btn sd-notulen">
             <span class="sd-icon">📝</span>
-            <div>
-              <strong>Buka Notulen</strong><br>
-              <span style="font-size:11px;opacity:.7">Kelola notulen rapat</span>
-            </div>
+            <div><strong>Buka Notulen</strong><br><span style="font-size:11px;opacity:.7">Kelola notulen rapat</span></div>
           </a>
         </div>
 
-        <!-- EXPORT -->
+        <!-- EXPORT MOBILE -->
         <div class="sd-section">
           <div class="sd-label">Export Data</div>
           <div class="export-range">
@@ -412,51 +411,33 @@
           </div>
           <button class="sd-btn" id="exportFilterMonth">
             <span class="sd-icon">📅</span>
-            <div>
-              <strong>Export Bulan Ini</strong><br>
-              <span style="font-size:11px;color:var(--text4)">Filter bulan aktif</span>
-            </div>
+            <div><strong>Export Bulan Ini</strong><br><span style="font-size:11px;color:var(--text4)">Filter bulan aktif</span></div>
           </button>
           <button class="sd-btn" id="exportPDF">
             <span class="sd-icon">📄</span>
-            <div>
-              <strong>Export PDF</strong><br>
-              <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
-            </div>
+            <div><strong>Export PDF</strong><br><span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span></div>
           </button>
           <button class="sd-btn" id="exportExcel">
             <span class="sd-icon">📊</span>
-            <div>
-              <strong>Export Excel</strong><br>
-              <span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span>
-            </div>
+            <div><strong>Export Excel</strong><br><span style="font-size:11px;color:var(--text4)">Sesuai rentang di atas</span></div>
           </button>
         </div>
 
-        <!-- ADMIN SECTION -->
+        <!-- ADMIN -->
         <div class="sd-section" id="adminSection" style="display:none">
           <div class="sd-label">Admin</div>
           <button class="sd-btn" id="openAdminBtnMenu">
             <span class="sd-icon">👥</span>
-            <div>
-              <strong>Kelola Users</strong><br>
-              <span style="font-size:11px;color:var(--text4)">Kelola semua pengguna</span>
-            </div>
+            <div><strong>Kelola Users</strong><br><span style="font-size:11px;color:var(--text4)">Kelola semua pengguna</span></div>
           </button>
         </div>
-
       </div>
     </div>
-    <!-- END HAMBURGER -->
-
   </div>
+  <!-- END TOPBAR -->
 
-  <!-- LOADING -->
   <div id="loadingState" class="loading">⏳ Memuat data dari Spreadsheet...</div>
-
-  <!-- APP -->
   <div id="app" style="display:none"></div>
-
 </div>
 
 <!-- ADMIN MODAL -->
@@ -476,7 +457,7 @@
   </div>
 </div>
 
-<!-- CALENDAR DAY MODAL -->
+<!-- CALENDAR MODAL -->
 <div id="calModal" class="modal-overlay">
   <div class="modal-box">
     <button class="modal-close" id="closeCalModal">&times;</button>
@@ -485,29 +466,17 @@
 </div>
 
 <script>
-  // ============================================================
-  // CONFIG
-  // ============================================================
   var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
-
-  // ============================================================
-  // AUTH GUARD (REVISED)
-  // ============================================================
   var SESSION = null;
 
+  // ============================================================
+  // SESSION
+  // ============================================================
   function getSession() {
     try {
       var s = localStorage.getItem('bekarye-session');
-      if (s) {
-        var parsed = JSON.parse(s);
-        if (parsed && parsed.token) {
-          SESSION = parsed;
-          return true;
-        }
-      }
-    } catch(e) { 
-      console.error("Error parsing session:", e);
-    }
+      if (s) { var p = JSON.parse(s); if (p && p.token) { SESSION = p; return true; } }
+    } catch(e) { console.error(e); }
     return false;
   }
 
@@ -519,27 +488,14 @@
   }
 
   function initDashboard() {
-    var topbar = document.getElementById('topbarUser');
-    if (topbar) {
-      topbar.textContent = '👤 ' + (SESSION.name || SESSION.username) +
-                         (SESSION.role === 'admin' ? ' — Admin' : ' — User');
-    }
-
-    // Tampilkan admin section jika role admin
-    if (SESSION.role === 'admin') {
-      document.getElementById('adminSection').style.display = 'block';
-    }
-
-    if (typeof loadDashboardData === 'function') {
-      loadDashboardData();
-    }
+    var el = document.getElementById('topbarUser');
+    if (el) el.textContent = '👤 ' + (SESSION.name || SESSION.username) + (SESSION.role === 'admin' ? ' — Admin' : ' — User');
+    if (SESSION.role === 'admin') document.getElementById('adminSection').style.display = 'block';
+    if (typeof loadDashboardData === 'function') loadDashboardData();
   }
 
   function authURL(action) {
-    return API_URL
-      + '?action=' + encodeURIComponent(action)
-      + '&user='   + encodeURIComponent(SESSION.username)
-      + '&token='  + encodeURIComponent(SESSION.token);
+    return API_URL + '?action=' + encodeURIComponent(action) + '&user=' + encodeURIComponent(SESSION.username) + '&token=' + encodeURIComponent(SESSION.token);
   }
 
   // ============================================================
@@ -550,52 +506,51 @@
     localStorage.removeItem('bekarye-session');
     window.location.href = 'index.html';
   }
-
   document.getElementById('logoutBtn').addEventListener('click', doLogout);
   document.getElementById('logoutBtnMobile').addEventListener('click', doLogout);
 
   // ============================================================
-  // HAMBURGER MENU
+  // HAMBURGER MOBILE
   // ============================================================
   var menuOpen = false;
-
   function closeMenu() {
     menuOpen = false;
     document.getElementById('hamburgerBtn').classList.remove('active');
     document.getElementById('settingsDropdown').classList.remove('open');
   }
-
   document.getElementById('hamburgerBtn').addEventListener('click', function(e) {
     e.stopPropagation();
     menuOpen = !menuOpen;
     document.getElementById('hamburgerBtn').classList.toggle('active', menuOpen);
     document.getElementById('settingsDropdown').classList.toggle('open', menuOpen);
   });
-
   document.addEventListener('click', function(e) {
-    if (menuOpen && !document.getElementById('settingsDropdown').contains(e.target)
-        && e.target !== document.getElementById('hamburgerBtn')
-        && !document.querySelector('.hamburger').contains(e.target)) {
-      closeMenu();
-    }
+    if (menuOpen && !document.getElementById('settingsDropdown').contains(e.target) && e.target !== document.getElementById('hamburgerBtn')) closeMenu();
+    if (exportMenuOpen && !document.getElementById('exportDropdownMenu').contains(e.target) && e.target !== document.getElementById('exportDropdownBtn')) closeExportMenu();
   });
-
-  document.getElementById('settingsDropdown').addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
+  document.getElementById('settingsDropdown').addEventListener('click', function(e) { e.stopPropagation(); });
 
   // ============================================================
-  // THEME — sinkron dengan logo
+  // EXPORT DROPDOWN DESKTOP
   // ============================================================
-  function initTheme() {
-    var t = localStorage.getItem('bekarye-theme');
-    var isDark = t === 'dark';
-    applyTheme(isDark);
+  var exportMenuOpen = false;
+  function closeExportMenu() {
+    exportMenuOpen = false;
+    document.getElementById('exportDropdownMenu').classList.remove('open');
   }
+  document.getElementById('exportDropdownBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    exportMenuOpen = !exportMenuOpen;
+    document.getElementById('exportDropdownMenu').classList.toggle('open', exportMenuOpen);
+  });
+  document.getElementById('exportDropdownMenu').addEventListener('click', function(e) { e.stopPropagation(); });
 
+  // ============================================================
+  // THEME
+  // ============================================================
   function applyTheme(isDark) {
     if (isDark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.setAttribute('data-theme','dark');
       document.getElementById('darkToggle').classList.add('on');
       document.getElementById('logoImage').src = 'assets/logo/logo-dark.png';
     } else {
@@ -604,7 +559,6 @@
       document.getElementById('logoImage').src = 'assets/logo/logo-light.png';
     }
   }
-
   document.getElementById('darkToggle').addEventListener('click', function() {
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     isDark = !isDark;
@@ -612,68 +566,35 @@
     applyTheme(isDark);
     if (DATA.length) render();
   });
-
-  initTheme();
+  applyTheme(localStorage.getItem('bekarye-theme') === 'dark');
 
   // ============================================================
   // ADMIN MODAL
   // ============================================================
-  document.getElementById('adminClose').addEventListener('click', function() {
-    document.getElementById('adminModal').classList.remove('active');
-  });
-  document.getElementById('adminModal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('active');
-  });
-
-  function openAdminModal() {
+  document.getElementById('adminClose').addEventListener('click', function() { document.getElementById('adminModal').classList.remove('active'); });
+  document.getElementById('adminModal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+  document.getElementById('openAdminBtnMenu').addEventListener('click', function() {
     document.getElementById('adminModal').classList.add('active');
     closeMenu();
-    loadUsers();
-  }
-
-  document.getElementById('openAdminBtnMenu').addEventListener('click', openAdminModal);
-
-  function loadUsers() {
     var box = document.getElementById('adminUserList');
-    box.innerHTML = '<div class="loading">⏳ Memuat data users...</div>';
-
-    fetch(authURL('users'), { redirect: 'follow' })
-      .then(function(r) { return r.text(); })
-      .then(function(text) {
-        var j;
-        try { j = JSON.parse(text); } catch(e) {
-          box.innerHTML = '<div class="empty">❌ Gagal parse response</div>'; return;
-        }
-        if (!j.ok || !j.users) {
-          box.innerHTML = '<div class="empty">❌ ' + esc(j.message || 'Gagal memuat') + '</div>'; return;
-        }
-        var html = '';
-        j.users.forEach(function(u) {
-          html +=
-            '<div class="user-card">' +
-            '<div class="user-avatar">' + esc(u.name.charAt(0).toUpperCase()) + '</div>' +
-            '<div class="user-info">' +
-            '<h4>' + esc(u.name) + '</h4>' +
-            '<p>@' + esc(u.username) + ' · Sheet: ' + esc(u.sheet_name) + '</p>' +
-            '<div class="user-meta" style="margin-top:4px">' +
-            '<span class="role-badge ' + (u.role === 'admin' ? 'role-admin' : 'role-user') + '">' + esc(u.role) + '</span>' +
-            '<span class="active-badge ' + (u.active.toUpperCase() === 'TRUE' ? 'active-true' : 'active-false') + '">' +
-            (u.active.toUpperCase() === 'TRUE' ? '✅ Aktif' : '❌ Nonaktif') + '</span>' +
-            '</div></div></div>';
-        });
-        box.innerHTML = html || '<div class="empty">Tidak ada user</div>';
-      })
-      .catch(function(err) {
-        box.innerHTML = '<div class="empty">❌ Error: ' + esc(err.message) + '</div>';
+    box.innerHTML = '<div class="loading">⏳ Memuat...</div>';
+    fetch(authURL('users'), { redirect:'follow' }).then(function(r){ return r.text(); }).then(function(text){
+      var j; try { j = JSON.parse(text); } catch(e) { box.innerHTML = '<div class="empty">❌ Gagal parse</div>'; return; }
+      if (!j.ok || !j.users) { box.innerHTML = '<div class="empty">❌ ' + esc(j.message||'Gagal') + '</div>'; return; }
+      var html = '';
+      j.users.forEach(function(u) {
+        html += '<div class="user-card"><div class="user-avatar">'+esc(u.name.charAt(0).toUpperCase())+'</div><div class="user-info"><h4>'+esc(u.name)+'</h4><p>@'+esc(u.username)+' · Sheet: '+esc(u.sheet_name)+'</p><div class="user-meta"><span class="role-badge '+(u.role==='admin'?'role-admin':'role-user')+'">'+esc(u.role)+'</span><span class="active-badge '+(u.active.toUpperCase()==='TRUE'?'active-true':'active-false')+'">'+(u.active.toUpperCase()==='TRUE'?'✅ Aktif':'❌ Nonaktif')+'</span></div></div></div>';
       });
-  }
+      box.innerHTML = html || '<div class="empty">Tidak ada user</div>';
+    }).catch(function(err){ box.innerHTML = '<div class="empty">❌ '+esc(err.message)+'</div>'; });
+  });
 
   // ============================================================
-  // MODALS — task detail & calendar
+  // MODALS
   // ============================================================
   var modal1 = document.getElementById('popupModal');
-  function openPopup(h)  { document.getElementById('modalBody').innerHTML = h; modal1.classList.add('active'); }
-  function closePopup()  { modal1.classList.remove('active'); }
+  function openPopup(h) { document.getElementById('modalBody').innerHTML = h; modal1.classList.add('active'); }
+  function closePopup() { modal1.classList.remove('active'); }
   document.getElementById('closeModal').addEventListener('click', closePopup);
   modal1.addEventListener('click', function(e) { if (e.target === modal1) closePopup(); });
 
@@ -686,78 +607,43 @@
   // ============================================================
   // STATE & UTILS
   // ============================================================
-  var DATA = [];
-  var searchQ      = '';
-  var filterStatus = 'All';
-  var filterMonth  = new Date().getMonth();
-  var filterYear   = new Date().getFullYear();
-  var calMonth     = new Date().getMonth();
-  var calYear      = new Date().getFullYear();
+  var DATA = [], searchQ = '', filterStatus = 'All';
+  var filterMonth = new Date().getMonth(), filterYear = new Date().getFullYear();
+  var calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
   var chartStatus, chartPriority;
-
   var MONTHS = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  var DAYS   = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  var DAYS = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
 
-  function esc(s) {
-    return String(s||'')
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function badgeCls(s) { return {'To Do':'b-todo','Doing':'b-doing','Done':'b-done','Blocked':'b-blocked'}[s]||'b-todo'; }
-  function priCls(s)   { return {'High':'p-high','Medium':'p-medium','Low':'p-low'}[s]||''; }
+  function priCls(s) { return {'High':'p-high','Medium':'p-medium','Low':'p-low'}[s]||''; }
   function dotColor(s) { return {'To Do':'#94a3b8','Doing':'#3b82f6','Done':'#10b981','Blocked':'#ef4444'}[s]||'#94a3b8'; }
-
-  function parseDate(s) {
-    if (!s) return null;
-    var d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
+  function parseDate(s) { if (!s) return null; var d = new Date(s); return isNaN(d.getTime()) ? null : d; }
   function daysBetween(a,b) { return Math.ceil((b-a)/(1000*60*60*24)); }
 
+  function extractLinks(text) {
+    if (!text) return { links: [] };
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    var links = [], m;
+    while ((m = urlRegex.exec(text)) !== null) links.push({ url: m[1] });
+    return { links: links };
+  }
+
   // ============================================================
-  // SHOW DETAIL TASK
+  // SHOW DETAIL
   // ============================================================
   function showDetail(id) {
     var t = null;
-    for (var i = 0; i < DATA.length; i++) {
-      if (String(DATA[i].id) === String(id)) { t = DATA[i]; break; }
-    }
+    for (var i = 0; i < DATA.length; i++) { if (String(DATA[i].id) === String(id)) { t = DATA[i]; break; } }
     if (!t) return;
-    openPopup(
-      '<h3>📋 Detail Task</h3>' +
-      '<p style="font-size:18px;font-weight:700;margin-bottom:14px">' + esc(t.title) + '</p>' +
-      '<div class="modal-grid">' +
-      '<div class="modal-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:12px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
-      '<div class="modal-item"><strong>Priority</strong><span class="' + priCls(t.priority) + '">' + esc(t.priority||'-') + '</span></div>' +
-      '<div class="modal-item"><strong>Due Date</strong><span>' + esc(t.due_date||'-') + '</span></div>' +
-      '<div class="modal-item"><strong>Updated</strong><span>' + esc(t.updated_at||'-') + '</span></div>' +
-      '<div class="modal-item"><strong>Created</strong><span>' + esc(t.created_at||'-') + '</span></div>' +
-      '<div class="modal-item"><strong>ID</strong><span style="font-size:10px;color:var(--text4)">' + esc(t.id) + '</span></div>' +
-      '</div>' +
-      (t.note
-        ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
-        : '<p style="color:var(--text4);margin-top:12px;font-size:13px">Tidak ada catatan.</p>') +
-      '<div class="modal-footer">' +
-      '<a href="entri.html?editId=' + esc(t.id) + '" class="btn-m btn-m-primary">✏️ Edit Task</a>' +
-      '<button class="btn-m btn-m-secondary" onclick="closePopup()">Tutup</button>' +
-      '</div>'
-    );
+    openPopup('<h3>📋 Detail Task</h3><p style="font-size:18px;font-weight:700;margin-bottom:14px">'+esc(t.title)+'</p><div class="modal-grid"><div class="modal-item"><strong>Status</strong><span class="badge '+badgeCls(t.status)+'" style="font-size:12px;padding:4px 12px">'+esc(t.status)+'</span></div><div class="modal-item"><strong>Priority</strong><span class="'+priCls(t.priority)+'">'+esc(t.priority||'-')+'</span></div><div class="modal-item"><strong>Due Date</strong><span>'+esc(t.due_date||'-')+'</span></div><div class="modal-item"><strong>Updated</strong><span>'+esc(t.updated_at||'-')+'</span></div><div class="modal-item"><strong>Created</strong><span>'+esc(t.created_at||'-')+'</span></div><div class="modal-item"><strong>ID</strong><span style="font-size:10px;color:var(--text4)">'+esc(t.id)+'</span></div></div>'+(t.note?'<div class="modal-note"><strong>📝 Catatan:</strong><br>'+esc(t.note)+'</div>':'<p style="color:var(--text4);margin-top:12px;font-size:13px">Tidak ada catatan.</p>')+'<div class="modal-footer"><a href="entri.html?editId='+esc(t.id)+'" class="btn-m btn-m-primary">✏️ Edit Task</a><button class="btn-m btn-m-secondary" onclick="closePopup()">Tutup</button></div>');
   }
 
   function showDayTasks(dateStr, tasks) {
-    var html = '<h3>📅 ' + dateStr + '</h3>';
-    if (!tasks.length) {
-      html += '<p class="empty">Tidak ada task di tanggal ini.</p>';
-    } else {
+    var html = '<h3>📅 '+dateStr+'</h3>';
+    if (!tasks.length) { html += '<p class="empty">Tidak ada task.</p>'; } else {
       html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">';
-      tasks.forEach(function(t) {
-        html +=
-          '<div class="priority-item" onclick="closeCalPopup();showDetail(\'' + esc(t.id) + '\')">' +
-          '<div class="priority-dot" style="background:' + dotColor(t.status) + '"></div>' +
-          '<div class="priority-item-title">' + esc(t.title) + '</div>' +
-          '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status) + '</span>' +
-          '</div>';
-      });
+      tasks.forEach(function(t) { html += '<div class="priority-item" onclick="closeCalPopup();showDetail(\''+esc(t.id)+'\')"><div class="priority-dot" style="background:'+dotColor(t.status)+'"></div><div class="priority-item-title">'+esc(t.title)+'</div><span class="badge '+badgeCls(t.status)+'">'+esc(t.status)+'</span></div>'; });
       html += '</div>';
     }
     html += '<div class="modal-footer"><button class="btn-m btn-m-secondary" onclick="closeCalPopup()">Tutup</button></div>';
@@ -771,55 +657,22 @@
     document.getElementById('loadingState').style.display = '';
     document.getElementById('loadingState').innerHTML = '⏳ Memuat data dari Spreadsheet...';
     document.getElementById('app').style.display = 'none';
-
-    var url = authURL('list');
-    console.log("DEBUG: Mencoba mengambil data dari URL:", url);
-
-    fetch(url, { redirect: 'follow' })
-      .then(function(r) { 
-        console.log("DEBUG: HTTP Status:", r.status);
-        return r.text(); 
-      })
+    fetch(authURL('list'), { redirect:'follow' })
+      .then(function(r) { return r.text(); })
       .then(function(text) {
-        console.log("DEBUG: Response Mentah:", text);
         var j;
-        try { 
-          j = JSON.parse(text); 
-        } catch(e) {
-          throw new Error('Gagal membaca format JSON dari server. Periksa apakah Anda sudah melakukan "New Deployment" di Apps Script.');
-        }
-
-        if (!j.ok) {
-          console.error("DEBUG: Server mengirim pesan error:", j.message);
-          throw new Error(j.message);
-        }
-
-        if (!j.data || j.data.length === 0) {
-          console.warn("DEBUG: Login berhasil, tapi sheet '" + SESSION.sheet_name + "' kosong atau tidak ditemukan.");
-          DATA = [];
-        } else {
-          DATA = j.data;
-          console.log("DEBUG: Berhasil mengambil " + DATA.length + " baris data.");
-        }
-
+        try { j = JSON.parse(text); } catch(e) { throw new Error('Gagal membaca JSON dari server.'); }
+        if (!j.ok) throw new Error(j.message || 'Server error');
+        DATA = j.data || [];
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('app').style.display = '';
         render();
       })
       .catch(function(err) {
-        console.error("DEBUG: Error Fatal:", err);
-        document.getElementById('loadingState').innerHTML =
-          '<div style="color:var(--red); padding:20px; text-align:center;">' +
-          '⚠️ <strong>Gagal Memuat Data</strong><br>' +
-          err.message +
-          '<br><button onclick="loadData()" style="margin-top:15px; padding:8px 16px; border-radius:8px; cursor:pointer;">🔄 Coba Lagi</button>' +
-          '</div>';
+        document.getElementById('loadingState').innerHTML = '<div style="color:var(--red);padding:20px;text-align:center">⚠️ <strong>Gagal Memuat Data</strong><br>'+err.message+'<br><button onclick="loadData()" style="margin-top:15px;padding:8px 16px;border-radius:8px;cursor:pointer">🔄 Coba Lagi</button></div>';
       });
   }
-
-  function loadDashboardData() {
-    loadData();
-  }
+  function loadDashboardData() { loadData(); }
 
   // ============================================================
   // FILTER
@@ -827,199 +680,55 @@
   function getFiltered() {
     return DATA.filter(function(t) {
       if (filterStatus !== 'All' && t.status !== filterStatus) return false;
-      if (searchQ) {
-        var q = searchQ.toLowerCase();
-        if ((t.title+' '+t.note+' '+t.priority).toLowerCase().indexOf(q) === -1) return false;
-      }
+      if (searchQ) { var q = searchQ.toLowerCase(); if ((t.title+' '+t.note+' '+t.priority).toLowerCase().indexOf(q) === -1) return false; }
       var d = parseDate(t.due_date);
-      if (d) {
-        if (d.getMonth() !== filterMonth || d.getFullYear() !== filterYear) return false;
-      } else {
-        var c = parseDate(t.created_at);
-        if (c && (c.getMonth() !== filterMonth || c.getFullYear() !== filterYear)) return false;
-      }
+      if (d) { if (d.getMonth() !== filterMonth || d.getFullYear() !== filterYear) return false; }
+      else { var c = parseDate(t.created_at); if (c && (c.getMonth() !== filterMonth || c.getFullYear() !== filterYear)) return false; }
       return true;
     });
   }
-
   function getMonthData(m, y) {
-    return DATA.filter(function(t) {
-      var d = parseDate(t.due_date);
-      return d && d.getMonth() === m && d.getFullYear() === y;
-    });
+    return DATA.filter(function(t) { var d = parseDate(t.due_date); return d && d.getMonth() === m && d.getFullYear() === y; });
   }
 
   // ============================================================
   // RENDER
   // ============================================================
   function render() {
-    var app   = document.getElementById('app');
+    var app = document.getElementById('app');
     var tasks = getFiltered();
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-
-    var total = tasks.length;
-    var todo=0, doing=0, done=0, blocked=0;
-    tasks.forEach(function(t) {
-      if      (t.status==='To Do')   todo++;
-      else if (t.status==='Doing')   doing++;
-      else if (t.status==='Done')    done++;
-      else if (t.status==='Blocked') blocked++;
-    });
-
-    var totalAll = DATA.length;
-    var doneAll  = DATA.filter(function(t){ return t.status==='Done'; }).length;
-
+    var total = tasks.length, todo=0, doing=0, done=0, blocked=0;
+    tasks.forEach(function(t) { if(t.status==='To Do')todo++; else if(t.status==='Doing')doing++; else if(t.status==='Done')done++; else if(t.status==='Blocked')blocked++; });
+    var totalAll = DATA.length, doneAll = DATA.filter(function(t){ return t.status==='Done'; }).length;
     var urgent = DATA.filter(function(t){ return t.priority==='High' && t.status!=='Done'; }).slice(0,5);
-
     var now = new Date(); now.setHours(0,0,0,0);
-    var deadlines = DATA
-      .filter(function(t){ return t.status!=='Done' && parseDate(t.due_date); })
-      .map(function(t){ return { task:t, diff:daysBetween(now, parseDate(t.due_date)) }; })
-      .sort(function(a,b){ return a.diff-b.diff; })
-      .slice(0,6);
-
-    var years = {};
-    DATA.forEach(function(t) {
-      var d1 = parseDate(t.due_date), d2 = parseDate(t.created_at);
-      if (d1) years[d1.getFullYear()] = true;
-      if (d2) years[d2.getFullYear()] = true;
-    });
-    years[new Date().getFullYear()] = true;
+    var deadlines = DATA.filter(function(t){ return t.status!=='Done' && parseDate(t.due_date); }).map(function(t){ return {task:t,diff:daysBetween(now,parseDate(t.due_date))}; }).sort(function(a,b){ return a.diff-b.diff; }).slice(0,6);
+    var years = {}; DATA.forEach(function(t){ var d1=parseDate(t.due_date),d2=parseDate(t.created_at); if(d1)years[d1.getFullYear()]=true; if(d2)years[d2.getFullYear()]=true; }); years[new Date().getFullYear()]=true;
     var yearList = Object.keys(years).sort();
-
-    var monthOpts = MONTHS.map(function(m,i){
-      return '<option value="'+i+'"'+(i===filterMonth?' selected':'')+'>'+m+'</option>';
-    }).join('');
-    var yearOpts = yearList.map(function(y){
-      return '<option value="'+y+'"'+(parseInt(y)===filterYear?' selected':'')+'>'+y+'</option>';
-    }).join('');
-
-    var pTodo    = total ? Math.round(todo/total*100)    : 0;
-    var pDoing   = total ? Math.round(doing/total*100)   : 0;
-    var pDone    = total ? Math.round(done/total*100)    : 0;
-    var pBlocked = total ? Math.round(blocked/total*100) : 0;
-    var pDoneAll = totalAll ? Math.round(doneAll/totalAll*100) : 0;
+    var monthOpts = MONTHS.map(function(m,i){ return '<option value="'+i+'"'+(i===filterMonth?' selected':'')+'>'+m+'</option>'; }).join('');
+    var yearOpts = yearList.map(function(y){ return '<option value="'+y+'"'+(parseInt(y)===filterYear?' selected':'')+'>'+y+'</option>'; }).join('');
+    var pTodo=total?Math.round(todo/total*100):0, pDoing=total?Math.round(doing/total*100):0, pDone=total?Math.round(done/total*100):0, pBlocked=total?Math.round(blocked/total*100):0, pDoneAll=totalAll?Math.round(doneAll/totalAll*100):0;
 
     app.innerHTML =
-      '<div class="filter-bar">' +
-      '<label>📅 Bulan:</label>' +
-      '<select class="filter-select" id="fMonth">'+monthOpts+'</select>' +
-      '<select class="filter-select" id="fYear">'+yearOpts+'</select>' +
-      '<div class="sep"></div>' +
-      '<input class="filter-search" id="fSearch" placeholder="🔍 Cari task..." value="'+esc(searchQ)+'" />' +
-      '<div class="sep"></div>' +
-      '<div class="status-pills">' +
-      ['All','To Do','Doing','Done','Blocked'].map(function(s){
-        return '<button class="pill'+(filterStatus===s?' active':'')+'" data-f="'+s+'">'+(s==='All'?'Semua':s)+'</button>';
-      }).join('') +
-      '</div></div>' +
+      '<div class="filter-bar"><label>📅 Bulan:</label><select class="filter-select" id="fMonth">'+monthOpts+'</select><select class="filter-select" id="fYear">'+yearOpts+'</select><div class="sep"></div><input class="filter-search" id="fSearch" placeholder="🔍 Cari task..." value="'+esc(searchQ)+'" /><div class="sep"></div><div class="status-pills">'+['All','To Do','Doing','Done','Blocked'].map(function(s){ return '<button class="pill'+(filterStatus===s?' active':'')+'" data-f="'+s+'">'+(s==='All'?'Semua':s)+'</button>'; }).join('')+'</div></div>'+
+      '<div class="stats"><div class="stat"><div class="stat-icon">📊</div><div class="stat-num">'+total+'</div><div class="stat-label">'+MONTHS[filterMonth]+'</div><div class="stat-sub">Total bulan ini</div><div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div></div><div class="stat"><div class="stat-icon">📋</div><div class="stat-num">'+todo+'</div><div class="stat-label">To Do</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pTodo+'%;background:#94a3b8"></div></div></div><div class="stat"><div class="stat-icon">⚡</div><div class="stat-num">'+doing+'</div><div class="stat-label">Doing</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDoing+'%;background:#3b82f6"></div></div></div><div class="stat"><div class="stat-icon">✅</div><div class="stat-num">'+done+'</div><div class="stat-label">Done</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDone+'%;background:#10b981"></div></div></div><div class="stat"><div class="stat-icon">🚫</div><div class="stat-num">'+blocked+'</div><div class="stat-label">Blocked</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pBlocked+'%;background:#ef4444"></div></div></div></div>'+
+      '<div class="charts"><div class="chart-card"><div class="card-head"><h3>Status — '+MONTHS[filterMonth]+'</h3></div><canvas id="chartStatus"></canvas></div><div class="chart-card"><div class="card-head"><h3>Priority — Semua Data</h3></div><canvas id="chartPriority"></canvas></div></div>'+
+      '<div id="calendarArea"></div>'+
+      '<div class="content"><div><div class="card"><div class="card-head"><h2>📋 '+MONTHS[filterMonth]+' '+filterYear+'</h2><span style="font-size:12px;color:var(--text4)">'+tasks.length+' task</span></div>'+(tasks.length?'<div class="table-wrap"><table><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Updated</th></tr></thead><tbody>'+tasks.map(function(t){ return '<tr data-id="'+esc(t.id)+'"><td style="font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(t.title)+'</td><td><span class="badge '+badgeCls(t.status)+'">'+esc(t.status)+'</span></td><td class="'+priCls(t.priority)+'">'+esc(t.priority)+'</td><td>'+esc(t.due_date||'-')+'</td><td>'+esc(t.updated_at||'-')+'</td></tr>'; }).join('')+'</tbody></table></div>':'<div class="empty">Tidak ada task di '+MONTHS[filterMonth]+' '+filterYear+'</div>')+'</div></div>'+
+      '<div class="sidebar"><a href="notulen.html" class="notulen-shortcut"><div style="font-size:32px">📝</div><h3>Tools Notulen</h3><p>Buat & kelola notulen rapat Anda</p></a>'+
+      '<div class="card"><div class="card-head"><h3>🔥 Prioritas Tinggi</h3></div>'+(urgent.length?'<div class="priority-list">'+urgent.map(function(t){ return '<div class="priority-item" data-id="'+esc(t.id)+'"><div class="priority-dot" style="background:'+dotColor(t.status)+'"></div><div class="priority-item-title">'+esc(t.title)+'</div><div class="priority-item-meta">'+esc(t.due_date||'-')+'</div></div>'; }).join('')+'</div>':'<div class="empty">Tidak ada 🎉</div>')+'</div>'+
+      '<div class="card"><div class="card-head"><h3>⏰ Deadline</h3></div>'+(deadlines.length?'<div>'+deadlines.map(function(d){ var cls=d.diff<0?'deadline-overdue':d.diff<=3?'deadline-soon':'deadline-ok'; var label=d.diff<0?Math.abs(d.diff)+'h lalu':d.diff===0?'Hari ini!':d.diff+' hari'; return '<div class="deadline-item" data-id="'+esc(d.task.id)+'"><span class="deadline-days '+cls+'">'+label+'</span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(d.task.title)+'</div><div style="font-size:11px;color:var(--text4)">'+esc(d.task.due_date)+'</div></div></div>'; }).join('')+'</div>':'<div class="empty">Tidak ada deadline</div>')+'</div>'+
+      '<div class="card"><div class="card-head"><h3>📈 Ringkasan</h3></div><div style="font-size:13px;color:var(--text2);line-height:2.4"><div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Bulan Ini ('+MONTHS[filterMonth]+')</div><div>Total: <strong>'+total+'</strong></div><div>Selesai: <strong>'+done+'</strong> <span style="color:var(--green)">('+pDone+'%)</span></div><div>Blocked: <strong style="color:var(--red)">'+blocked+'</strong></div><div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px">Semua Data</div><div>Total: <strong>'+totalAll+'</strong></div><div>Selesai: <strong>'+doneAll+'</strong> <span style="color:var(--green)">('+pDoneAll+'%)</span></div><div>High Priority: <strong>'+DATA.filter(function(t){return t.priority==='High';}).length+'</strong></div></div></div>'+
+      '<div class="card" style="text-align:center"><button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh Data</button></div></div></div>';
 
-      '<div class="stats">' +
-      '<div class="stat"><div class="stat-icon">📊</div><div class="stat-num">'+total+'</div><div class="stat-label">'+MONTHS[filterMonth]+'</div><div class="stat-sub">Total bulan ini</div><div class="stat-bar"><div class="stat-bar-fill" style="width:100%;background:var(--blue)"></div></div></div>' +
-      '<div class="stat"><div class="stat-icon">📋</div><div class="stat-num">'+todo+'</div><div class="stat-label">To Do</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pTodo+'%;background:#94a3b8"></div></div></div>' +
-      '<div class="stat"><div class="stat-icon">⚡</div><div class="stat-num">'+doing+'</div><div class="stat-label">Doing</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDoing+'%;background:#3b82f6"></div></div></div>' +
-      '<div class="stat"><div class="stat-icon">✅</div><div class="stat-num">'+done+'</div><div class="stat-label">Done</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pDone+'%;background:#10b981"></div></div></div>' +
-      '<div class="stat"><div class="stat-icon">🚫</div><div class="stat-num">'+blocked+'</div><div class="stat-label">Blocked</div><div class="stat-bar"><div class="stat-bar-fill" style="width:'+pBlocked+'%;background:#ef4444"></div></div></div>' +
-      '</div>' +
-
-      '<div class="charts">' +
-      '<div class="chart-card"><div class="card-head"><h3>Status — '+MONTHS[filterMonth]+'</h3></div><canvas id="chartStatus"></canvas></div>' +
-      '<div class="chart-card"><div class="card-head"><h3>Priority — Semua Data</h3></div><canvas id="chartPriority"></canvas></div>' +
-      '</div>' +
-
-      '<div id="calendarArea"></div>' +
-
-      '<div class="content">' +
-
-      '<div><div class="card">' +
-      '<div class="card-head"><h2>📋 '+MONTHS[filterMonth]+' '+filterYear+'</h2><span style="font-size:12px;color:var(--text4)">'+tasks.length+' task</span></div>' +
-      (tasks.length
-        ? '<div class="table-wrap"><table><thead><tr><th>Task</th><th>Status</th><th>Priority</th><th>Due</th><th>Updated</th></tr></thead><tbody>' +
-          tasks.map(function(t) {
-            return '<tr data-id="'+esc(t.id)+'">' +
-              '<td style="font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(t.title)+'</td>' +
-              '<td><span class="badge '+badgeCls(t.status)+'">'+esc(t.status)+'</span></td>' +
-              '<td class="'+priCls(t.priority)+'">'+esc(t.priority)+'</td>' +
-              '<td>'+esc(t.due_date||'-')+'</td>' +
-              '<td>'+esc(t.updated_at||'-')+'</td>' +
-              '</tr>';
-          }).join('') +
-          '</tbody></table></div>'
-        : '<div class="empty">Tidak ada task di '+MONTHS[filterMonth]+' '+filterYear+'</div>') +
-      '</div></div>' +
-
-      '<div class="sidebar">' +
-
-      '<a href="notulen.html" class="notulen-shortcut">' +
-      '<div style="font-size:32px">📝</div>' +
-      '<h3>Tools Notulen</h3>' +
-      '<p>Buat & kelola notulen rapat Anda</p>' +
-      '</a>' +
-
-      '<div class="card"><div class="card-head"><h3>🔥 Prioritas Tinggi</h3></div>' +
-      (urgent.length
-        ? '<div class="priority-list">' + urgent.map(function(t) {
-            return '<div class="priority-item" data-id="'+esc(t.id)+'">' +
-              '<div class="priority-dot" style="background:'+dotColor(t.status)+'"></div>' +
-              '<div class="priority-item-title">'+esc(t.title)+'</div>' +
-              '<div class="priority-item-meta">'+esc(t.due_date||'-')+'</div>' +
-              '</div>';
-          }).join('') + '</div>'
-        : '<div class="empty">Tidak ada 🎉</div>') +
-      '</div>' +
-
-      '<div class="card"><div class="card-head"><h3>⏰ Deadline</h3></div>' +
-      (deadlines.length
-        ? '<div>' + deadlines.map(function(d) {
-            var cls   = d.diff<0?'deadline-overdue':d.diff<=3?'deadline-soon':'deadline-ok';
-            var label = d.diff<0?Math.abs(d.diff)+'h lalu':d.diff===0?'Hari ini!':d.diff+' hari';
-            return '<div class="deadline-item" data-id="'+esc(d.task.id)+'">' +
-              '<span class="deadline-days '+cls+'">'+label+'</span>' +
-              '<div style="flex:1;min-width:0">' +
-              '<div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(d.task.title)+'</div>' +
-              '<div style="font-size:11px;color:var(--text4)">'+esc(d.task.due_date)+'</div>' +
-              '</div></div>';
-          }).join('') + '</div>'
-        : '<div class="empty">Tidak ada deadline</div>') +
-      '</div>' +
-
-      '<div class="card"><div class="card-head"><h3>📈 Ringkasan</h3></div>' +
-      '<div style="font-size:13px;color:var(--text2);line-height:2.4">' +
-      '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Bulan Ini ('+MONTHS[filterMonth]+')</div>' +
-      '<div>Total: <strong>'+total+'</strong></div>' +
-      '<div>Selesai: <strong>'+done+'</strong> <span style="color:var(--green)">('+pDone+'%)</span></div>' +
-      '<div>Blocked: <strong style="color:var(--red)">'+blocked+'</strong></div>' +
-      '<div style="color:var(--text4);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px">Semua Data</div>' +
-      '<div>Total: <strong>'+totalAll+'</strong></div>' +
-      '<div>Selesai: <strong>'+doneAll+'</strong> <span style="color:var(--green)">('+pDoneAll+'%)</span></div>' +
-      '<div>High Priority: <strong>'+DATA.filter(function(t){return t.priority==='High';}).length+'</strong></div>' +
-      '</div></div>' +
-
-      '<div class="card" style="text-align:center">' +
-      '<button onclick="loadData()" class="btn-nav" style="width:100%">🔄 Refresh Data</button>' +
-      '</div>' +
-
-      '</div></div>';
-
-    document.getElementById('fMonth').addEventListener('change', function() { filterMonth=parseInt(this.value); calMonth=filterMonth; render(); });
-    document.getElementById('fYear').addEventListener('change',  function() { filterYear=parseInt(this.value);  calYear=filterYear;   render(); });
-    document.getElementById('fSearch').addEventListener('input', function() { searchQ=this.value; render(); });
-
-    document.querySelectorAll('[data-f]').forEach(function(btn) {
-      btn.addEventListener('click', function() { filterStatus=btn.getAttribute('data-f'); render(); });
-    });
-
-    document.querySelectorAll('tr[data-id]').forEach(function(r) {
-      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-    });
-
-    document.querySelectorAll('.priority-item[data-id]').forEach(function(r) {
-      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-    });
-    document.querySelectorAll('.deadline-item[data-id]').forEach(function(r) {
-      r.addEventListener('click', function() { showDetail(r.getAttribute('data-id')); });
-    });
-
+    document.getElementById('fMonth').addEventListener('change', function(){ filterMonth=parseInt(this.value); calMonth=filterMonth; render(); });
+    document.getElementById('fYear').addEventListener('change', function(){ filterYear=parseInt(this.value); calYear=filterYear; render(); });
+    document.getElementById('fSearch').addEventListener('input', function(){ searchQ=this.value; render(); });
+    document.querySelectorAll('[data-f]').forEach(function(btn){ btn.addEventListener('click', function(){ filterStatus=btn.getAttribute('data-f'); render(); }); });
+    document.querySelectorAll('tr[data-id]').forEach(function(r){ r.addEventListener('click', function(){ showDetail(r.getAttribute('data-id')); }); });
+    document.querySelectorAll('.priority-item[data-id]').forEach(function(r){ r.addEventListener('click', function(){ showDetail(r.getAttribute('data-id')); }); });
+    document.querySelectorAll('.deadline-item[data-id]').forEach(function(r){ r.addEventListener('click', function(){ showDetail(r.getAttribute('data-id')); }); });
     renderCalendar();
     renderCharts(todo, doing, done, blocked, isDark);
   }
@@ -1030,200 +739,232 @@
   function renderCalendar() {
     var area = document.getElementById('calendarArea');
     if (!area) return;
-
-    var firstDay    = new Date(calYear, calMonth, 1).getDay();
-    var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-    var today       = new Date();
-
-    var monthTasks  = getMonthData(calMonth, calYear);
-    var tasksByDay  = {};
-    monthTasks.forEach(function(t) {
-      var d = parseDate(t.due_date);
-      if (d) {
-        var day = d.getDate();
-        if (!tasksByDay[day]) tasksByDay[day] = [];
-        tasksByDay[day].push(t);
-      }
-    });
-
-    var html = '<div class="cal">';
-    html += '<div class="cal-head"><h3>📅 '+MONTHS[calMonth]+' '+calYear+'</h3>';
-    html += '<div class="cal-nav"><button id="calPrev">◀</button><button id="calToday">Hari Ini</button><button id="calNext">▶</button></div></div>';
-    html += '<div class="cal-grid">';
-    DAYS.forEach(function(d) { html += '<div class="cal-day-name">'+d+'</div>'; });
-    for (var e=0; e<firstDay; e++) html += '<div class="cal-cell empty-cell"></div>';
-    for (var day=1; day<=daysInMonth; day++) {
-      var isToday  = day===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear();
-      var dayTasks = tasksByDay[day] || [];
-      html += '<div class="cal-cell'+(isToday?' today':'')+'" data-day="'+day+'">';
-      html += '<div class="cal-date">'+day+'</div>';
-      if (dayTasks.length) {
-        html += '<span class="cal-count">'+dayTasks.length+'</span>';
-        dayTasks.slice(0,2).forEach(function(t) {
-          html += '<div class="cal-task-preview"><span class="cal-dot" style="background:'+dotColor(t.status)+'"></span>'+esc(t.title)+'</div>';
-        });
-        if (dayTasks.length>2) html += '<div class="cal-task-preview" style="color:var(--blue);font-weight:600">+'+(dayTasks.length-2)+' lagi</div>';
-      }
+    var firstDay = new Date(calYear,calMonth,1).getDay();
+    var daysInMonth = new Date(calYear,calMonth+1,0).getDate();
+    var today = new Date();
+    var monthTasks = getMonthData(calMonth,calYear);
+    var tasksByDay = {};
+    monthTasks.forEach(function(t){ var d=parseDate(t.due_date); if(d){ var day=d.getDate(); if(!tasksByDay[day])tasksByDay[day]=[]; tasksByDay[day].push(t); } });
+    var html = '<div class="cal"><div class="cal-head"><h3>📅 '+MONTHS[calMonth]+' '+calYear+'</h3><div class="cal-nav"><button id="calPrev">◀</button><button id="calToday">Hari Ini</button><button id="calNext">▶</button></div></div><div class="cal-grid">';
+    DAYS.forEach(function(d){ html += '<div class="cal-day-name">'+d+'</div>'; });
+    for(var e=0;e<firstDay;e++) html += '<div class="cal-cell empty-cell"></div>';
+    for(var day=1;day<=daysInMonth;day++){
+      var isToday = day===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear();
+      var dayTasks = tasksByDay[day]||[];
+      html += '<div class="cal-cell'+(isToday?' today':'')+'" data-day="'+day+'"><div class="cal-date">'+day+'</div>';
+      if(dayTasks.length){ html += '<span class="cal-count">'+dayTasks.length+'</span>'; dayTasks.slice(0,2).forEach(function(t){ html += '<div class="cal-task-preview"><span class="cal-dot" style="background:'+dotColor(t.status)+'"></span>'+esc(t.title)+'</div>'; }); if(dayTasks.length>2) html += '<div class="cal-task-preview" style="color:var(--blue);font-weight:600">+'+(dayTasks.length-2)+' lagi</div>'; }
       html += '</div>';
     }
     html += '</div></div>';
     area.innerHTML = html;
-
-    document.getElementById('calPrev').addEventListener('click', function() {
-      calMonth--; if (calMonth<0){ calMonth=11; calYear--; } renderCalendar();
-    });
-    document.getElementById('calNext').addEventListener('click', function() {
-      calMonth++; if (calMonth>11){ calMonth=0; calYear++; } renderCalendar();
-    });
-    document.getElementById('calToday').addEventListener('click', function() {
-      calMonth=new Date().getMonth(); calYear=new Date().getFullYear(); renderCalendar();
-    });
-    document.querySelectorAll('.cal-cell[data-day]').forEach(function(cell) {
-      cell.addEventListener('click', function() {
-        var d2 = parseInt(cell.getAttribute('data-day'));
-        showDayTasks(d2+' '+MONTHS[calMonth]+' '+calYear, tasksByDay[d2]||[]);
-      });
-    });
+    document.getElementById('calPrev').addEventListener('click', function(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
+    document.getElementById('calNext').addEventListener('click', function(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
+    document.getElementById('calToday').addEventListener('click', function(){ calMonth=new Date().getMonth(); calYear=new Date().getFullYear(); renderCalendar(); });
+    document.querySelectorAll('.cal-cell[data-day]').forEach(function(cell){ cell.addEventListener('click', function(){ var d2=parseInt(cell.getAttribute('data-day')); showDayTasks(d2+' '+MONTHS[calMonth]+' '+calYear, tasksByDay[d2]||[]); }); });
   }
 
   // ============================================================
   // CHARTS
   // ============================================================
-  function renderCharts(todo, doing, done, blocked, isDark) {
-    if (chartStatus)   chartStatus.destroy();
-    if (chartPriority) chartPriority.destroy();
-
-    var high=0, med=0, low=0;
-    DATA.forEach(function(t) {
-      if      (t.priority==='High')   high++;
-      else if (t.priority==='Medium') med++;
-      else if (t.priority==='Low')    low++;
-    });
-
-    var txtColor = isDark ? '#94a3b8' : '#475569';
+  function renderCharts(todo,doing,done,blocked,isDark) {
+    if(chartStatus) chartStatus.destroy();
+    if(chartPriority) chartPriority.destroy();
+    var high=0,med=0,low=0;
+    DATA.forEach(function(t){ if(t.priority==='High')high++; else if(t.priority==='Medium')med++; else if(t.priority==='Low')low++; });
+    var tc = isDark?'#94a3b8':'#475569';
     var el1 = document.getElementById('chartStatus');
     var el2 = document.getElementById('chartPriority');
-
-    if (el1) {
-      chartStatus = new Chart(el1, {
-        type: 'doughnut',
-        data: {
-          labels: ['To Do','Doing','Done','Blocked'],
-          datasets: [{ data:[todo,doing,done,blocked], backgroundColor:['#94a3b8','#3b82f6','#10b981','#ef4444'], borderWidth:0, spacing:4, borderRadius:6 }]
-        },
-        options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:txtColor, padding:12, usePointStyle:true, pointStyleWidth:10 } } } }
-      });
-    }
-    if (el2) {
-      chartPriority = new Chart(el2, {
-        type: 'bar',
-        data: {
-          labels: ['High','Medium','Low'],
-          datasets: [{ label:'Jumlah', data:[high,med,low], backgroundColor:['#ef4444','#f59e0b','#10b981'], borderRadius:10, borderSkipped:false }]
-        },
-        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ color:txtColor, stepSize:1 }, grid:{ color: isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)' } }, x:{ ticks:{ color:txtColor }, grid:{ display:false } } } }
-      });
-    }
+    if(el1) chartStatus = new Chart(el1,{ type:'doughnut', data:{ labels:['To Do','Doing','Done','Blocked'], datasets:[{ data:[todo,doing,done,blocked], backgroundColor:['#94a3b8','#3b82f6','#10b981','#ef4444'], borderWidth:0, spacing:4, borderRadius:6 }] }, options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:tc, padding:12, usePointStyle:true, pointStyleWidth:10 } } } } });
+    if(el2) chartPriority = new Chart(el2,{ type:'bar', data:{ labels:['High','Medium','Low'], datasets:[{ label:'Jumlah', data:[high,med,low], backgroundColor:['#ef4444','#f59e0b','#10b981'], borderRadius:10, borderSkipped:false }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ color:tc, stepSize:1 }, grid:{ color: isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.04)' } }, x:{ ticks:{ color:tc }, grid:{ display:false } } } } });
   }
 
   // ============================================================
-  // EXPORT
+  // EXPORT UTILS
   // ============================================================
   function getExportData(from, to) {
-    var fromD = from ? new Date(from) : null;
-    var toD   = to   ? new Date(to)   : null;
-    if (fromD) fromD.setHours(0,0,0,0);
-    if (toD)   toD.setHours(23,59,59,999);
-    return DATA.filter(function(t) {
-      var d = parseDate(t.due_date) || parseDate(t.created_at);
-      if (!d) return !fromD && !toD;
-      if (fromD && d < fromD) return false;
-      if (toD   && d > toD)   return false;
+    var fromD=from?new Date(from):null, toD=to?new Date(to):null;
+    if(fromD) fromD.setHours(0,0,0,0);
+    if(toD) toD.setHours(23,59,59,999);
+    return DATA.filter(function(t){
+      var d=parseDate(t.due_date)||parseDate(t.created_at);
+      if(!d) return !fromD&&!toD;
+      if(fromD&&d<fromD) return false;
+      if(toD&&d>toD) return false;
       return true;
     });
   }
-
   function getMonthRange() {
-    return {
-      from: new Date(filterYear, filterMonth, 1).toISOString().slice(0,10),
-      to:   new Date(filterYear, filterMonth+1, 0).toISOString().slice(0,10)
-    };
+    return { from:new Date(filterYear,filterMonth,1).toISOString().slice(0,10), to:new Date(filterYear,filterMonth+1,0).toISOString().slice(0,10) };
   }
 
-  function exportPDF(tasks, title) {
+ function exportPDF(tasks, title) {
     var jsPDF = window.jspdf.jsPDF;
-    var doc   = new jsPDF('l','mm','a4');
-    doc.setFontSize(18); doc.setFont(undefined,'bold');
-    doc.text('BEKARYE', 14, 18);
-    doc.setFontSize(10); doc.setFont(undefined,'normal');
-    doc.text('Sistem Monitoring Organisasi Kerja', 14, 24);
-    doc.setFontSize(12); doc.setFont(undefined,'bold');
-    doc.text(title, 14, 34);
+    var doc = new jsPDF('l','mm','a4');
+    var pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+
+    // HEADER
+    doc.setFontSize(18); doc.setFont(undefined,'bold'); doc.text('BEKARYE',14,18);
+    doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.text('Sistem Monitoring Organisasi Kerja',14,24);
+    doc.setFontSize(9); doc.setFont(undefined,'bold'); doc.text('Pengguna: '+(SESSION.name||SESSION.username),14,29);
+    doc.setFont(undefined,'normal'); doc.setFontSize(12); doc.setFont(undefined,'bold'); doc.text(title,14,36);
     doc.setFontSize(9); doc.setFont(undefined,'normal');
-    doc.text('Dicetak: '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}), 14, 40);
-    var rows = tasks.map(function(t,i) {
-      return [i+1, t.title||'', t.status||'', t.priority||'', t.due_date||'', t.updated_at||'', (t.note||'').substring(0,60)];
+    doc.text('Dicetak: '+new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}),14,41);
+
+    // SIAPKAN DATA — pisahkan note dan links
+    var rows = tasks.map(function(t, i) {
+      var noteRaw = t.note || '';
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      var noteClean = noteRaw.replace(urlRegex, '').trim();
+      var linksFound = noteRaw.match(urlRegex) || [];
+      return {
+        no: i + 1,
+        title: t.title || '',
+        status: t.status || '',
+        priority: t.priority || '',
+        due: t.due_date || '',
+        note: noteClean.substring(0, 80),
+        links: linksFound
+      };
     });
+
+    // BUAT TABEL — tanpa kolom Updated
     doc.autoTable({
       startY: 46,
-      head: [['No','Task','Status','Priority','Due Date','Updated','Note']],
-      body: rows,
-      styles: { fontSize:9, cellPadding:3 },
-      headStyles: { fillColor:[37,99,235], textColor:255, fontStyle:'bold' },
-      alternateRowStyles: { fillColor:[248,250,252] },
-      columnStyles: { 0:{cellWidth:10}, 1:{cellWidth:70}, 6:{cellWidth:50} }
+      head: [['No','Task','Status','Priority','Due Date','Catatan','Link']],
+      body: rows.map(function(r) {
+        return [
+          r.no,
+          r.title,
+          r.status,
+          r.priority,
+          r.due,
+          r.note,
+          r.links.length ? r.links.length + ' link' : '-'
+        ];
+      }),
+      styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak', valign: 'top' },
+      headStyles: { fillColor: [37,99,235], textColor: 255, fontStyle: 'bold', halign: 'center' },
+      alternateRowStyles: { fillColor: [248,250,252] },
+      columnStyles: {
+        0: { cellWidth: 12,  halign: 'center' },
+        1: { cellWidth: 70 },
+        2: { cellWidth: 20, halign: 'center' },
+        3: { cellWidth: 20, halign: 'center' },
+        4: { cellWidth: 26, halign: 'center' },
+        5: { cellWidth: 70 },
+        6: { cellWidth: 35 }
+      },
+
+      // RENDER LINK DI KOLOM TERAKHIR (index 6)
+      didDrawCell: function(data) {
+        if (data.section === 'body' && data.column.index === 6) {
+          var rowData = rows[data.row.index];
+          if (!rowData || !rowData.links.length) return;
+
+          var x = data.cell.x + 2;
+          var y = data.cell.y + 5;
+
+          rowData.links.forEach(function(url, idx) {
+            var display = url.replace(/^https?:\/\/(www\.)?/, '').substring(0, 30);
+            if (url.length > 35) display += '…';
+
+            var lineY = y + (idx * 9);
+
+            if (lineY < data.cell.y + data.cell.height - 3) {
+              doc.setFontSize(7);
+              doc.setTextColor(37, 99, 235);
+              doc.setFont(undefined, 'normal');
+              doc.textWithLink(display, x, lineY, { url: url });
+
+              // Garis bawah
+              var textWidth = doc.getTextWidth(display);
+              doc.setDrawColor(37, 99, 235);
+              doc.setLineWidth(0.2);
+              doc.line(x, lineY + 0.8, x + textWidth, lineY + 0.8);
+            }
+          });
+
+          doc.setTextColor(0, 0, 0);
+          doc.setDrawColor(0, 0, 0);
+        }
+      }
     });
-    var total = doc.internal.getNumberOfPages();
-    for (var p=1; p<=total; p++) {
-      doc.setPage(p); doc.setFontSize(8); doc.setTextColor(150);
-      doc.text('BEKARYE - Hal '+p+'/'+total, doc.internal.pageSize.getWidth()-14, doc.internal.pageSize.getHeight()-8, { align:'right' });
+
+    // FOOTER HALAMAN
+    var totalPages = doc.internal.getNumberOfPages();
+    for (var p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text('BEKARYE - Hal '+p+'/'+totalPages, pw-14, ph-8, { align:'right' });
     }
-    doc.save('BEKARYE_'+title.replace(/\s/g,'_')+'.pdf');
-  }
+
+    var fileName = 'BEKARYE_'+title.replace(/\s/g,'_')+'_'+(SESSION.name||SESSION.username).replace(/\s/g,'_')+'.pdf';
+    doc.save(fileName);
+}
 
   function exportExcel(tasks, title) {
-    var rows = [['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note']];
-    tasks.forEach(function(t,i) {
-      rows.push([i+1, t.id, t.title, t.status, t.priority, t.due_date, t.updated_at, t.created_at, t.note]);
-    });
-    var wb = XLSX.utils.book_new();
-    var ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:5},{wch:15},{wch:40},{wch:12},{wch:10},{wch:14},{wch:14},{wch:14},{wch:40}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
-    XLSX.writeFile(wb, 'BEKARYE_'+title.replace(/\s/g,'_')+'.xlsx');
+    var rows=[['No','ID','Task','Status','Priority','Due Date','Updated','Created','Note']];
+    tasks.forEach(function(t,i){ rows.push([i+1,t.id,t.title,t.status,t.priority,t.due_date,t.updated_at,t.created_at,t.note]); });
+    var wb=XLSX.utils.book_new(), ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:5},{wch:15},{wch:40},{wch:12},{wch:10},{wch:14},{wch:14},{wch:14},{wch:40}];
+    XLSX.utils.book_append_sheet(wb,ws,'Tasks');
+    XLSX.writeFile(wb,'BEKARYE_'+title.replace(/\s/g,'_')+'_'+(SESSION.name||SESSION.username).replace(/\s/g,'_')+'.xlsx');
   }
 
-  document.getElementById('exportFilterMonth').addEventListener('click', function() {
-    var range = getMonthRange();
-    var tasks = getExportData(range.from, range.to);
-    var title = MONTHS[filterMonth]+' '+filterYear;
-    if (!tasks.length) { alert('Tidak ada data di '+title); return; }
-    exportPDF(tasks, title);
-    closeMenu();
+  // ============================================================
+  // EXPORT EVENTS — DESKTOP
+  // ============================================================
+  document.getElementById('exportFilterMonthDesktop').addEventListener('click', function(){
+    var r=getMonthRange(), tasks=getExportData(r.from,r.to), title=MONTHS[filterMonth]+' '+filterYear;
+    if(!tasks.length){ alert('Tidak ada data di '+title); return; }
+    exportPDF(tasks,title); closeExportMenu();
+  });
+  document.getElementById('exportPDFDesktop').addEventListener('click', function(){
+    var from=document.getElementById('exportFromDesktop').value, to=document.getElementById('exportToDesktop').value;
+    var tasks=getExportData(from,to);
+    if(!tasks.length){ alert('Tidak ada data di rentang ini'); return; }
+    exportPDF(tasks,(from||'Semua')+' - '+(to||'Semua')); closeExportMenu();
+  });
+  document.getElementById('exportExcelDesktop').addEventListener('click', function(){
+    var from=document.getElementById('exportFromDesktop').value, to=document.getElementById('exportToDesktop').value;
+    var tasks=getExportData(from,to);
+    if(!tasks.length){ alert('Tidak ada data di rentang ini'); return; }
+    exportExcel(tasks,(from||'Semua')+' - '+(to||'Semua')); closeExportMenu();
   });
 
-  document.getElementById('exportPDF').addEventListener('click', function() {
-    var from = document.getElementById('exportFrom').value;
-    var to   = document.getElementById('exportTo').value;
-    var tasks = getExportData(from, to);
-    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
-    exportPDF(tasks, (from||'Semua')+' - '+(to||'Semua'));
-    closeMenu();
+  // ============================================================
+  // EXPORT EVENTS — MOBILE
+  // ============================================================
+  document.getElementById('exportFilterMonth').addEventListener('click', function(){
+    var r=getMonthRange(), tasks=getExportData(r.from,r.to), title=MONTHS[filterMonth]+' '+filterYear;
+    if(!tasks.length){ alert('Tidak ada data di '+title); return; }
+    exportPDF(tasks,title); closeMenu();
+  });
+  document.getElementById('exportPDF').addEventListener('click', function(){
+    var from=document.getElementById('exportFrom').value, to=document.getElementById('exportTo').value;
+    var tasks=getExportData(from,to);
+    if(!tasks.length){ alert('Tidak ada data di rentang ini'); return; }
+    exportPDF(tasks,(from||'Semua')+' - '+(to||'Semua')); closeMenu();
+  });
+  document.getElementById('exportExcel').addEventListener('click', function(){
+    var from=document.getElementById('exportFrom').value, to=document.getElementById('exportTo').value;
+    var tasks=getExportData(from,to);
+    if(!tasks.length){ alert('Tidak ada data di rentang ini'); return; }
+    exportExcel(tasks,(from||'Semua')+' - '+(to||'Semua')); closeMenu();
   });
 
-  document.getElementById('exportExcel').addEventListener('click', function() {
-    var from = document.getElementById('exportFrom').value;
-    var to   = document.getElementById('exportTo').value;
-    var tasks = getExportData(from, to);
-    if (!tasks.length) { alert('Tidak ada data di rentang ini'); return; }
-    exportExcel(tasks, (from||'Semua')+' - '+(to||'Semua'));
-    closeMenu();
-  });
-
-  (function() {
-    var now = new Date();
-    document.getElementById('exportFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
-    document.getElementById('exportTo').value   = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
+  // ============================================================
+  // INISIALISASI DATE
+  // ============================================================
+  (function(){
+    var now=new Date();
+    var f=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);
+    var t=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().slice(0,10);
+    document.getElementById('exportFrom').value=f;
+    document.getElementById('exportTo').value=t;
+    document.getElementById('exportFromDesktop').value=f;
+    document.getElementById('exportToDesktop').value=t;
   })();
 
   window.addEventListener('DOMContentLoaded', loadData);
