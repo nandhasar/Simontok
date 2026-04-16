@@ -401,6 +401,11 @@
 
   <script>
     // ============================================================
+    // SHORTCUT — dideklarasi paling awal agar bisa dipakai di mana saja
+    // ============================================================
+    function $(id) { return document.getElementById(id); }
+
+    // ============================================================
     // CONFIG
     // ============================================================
     var API_URL = 'https://script.google.com/macros/s/AKfycbyS2etJ3c11TcTD3dPmJTcV6J0cqELfKxhUYToMpk_GUMKRjwDpg-nmLJ-xNx7DdyYH/exec';
@@ -498,8 +503,6 @@
     // ============================================================
     // UTILS
     // ============================================================
-    function $(id) { return document.getElementById(id); }
-
     function esc(s) {
       return String(s || '')
         .replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -507,6 +510,22 @@
     }
 
     function todayISO() { return new Date().toISOString().slice(0, 10); }
+
+    // ✅ FIX: Normalisasi tanggal ke format YYYY-MM-DD (local time, bukan UTC)
+    // Mendukung input: "2026-04-17", "2026-04-17T00:00:00.000Z", Date object, dll.
+    function toDateInput(v) {
+      if (!v) return '';
+      // Sudah format YYYY-MM-DD → langsung return
+      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+      // Coba parse sebagai Date
+      var d = new Date(v);
+      if (isNaN(d.getTime())) return '';
+      // Pakai local time agar tidak mundur sehari di timezone WIB
+      var y  = d.getFullYear();
+      var m  = String(d.getMonth() + 1).padStart(2, '0');
+      var dd = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + dd;
+    }
 
     function badgeCls(s) {
       var map = { 'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked' };
@@ -553,12 +572,12 @@
     modalEl.addEventListener('click', function(e) { if (e.target === modalEl) closePopup(); });
 
     // Render catatan: link jadi <a> yang bisa diklik
+    // ✅ FIX: Regex URL tidak berhenti di karakter "&"
     function renderNote(note) {
       if (!note) return '';
-      // Escape dulu, lalu ubah URL jadi link
       var escaped = esc(note);
       return escaped.replace(
-        /(https?:\/\/[^\s&]+)/g,
+        /(https?:\/\/[^\s<>"]+)/g,
         '<a href="$1" target="_blank" rel="noopener">$1</a>'
       );
     }
@@ -572,9 +591,9 @@
         '<div class="modal-detail">' +
         '<div class="modal-detail-item"><strong>Status</strong><span class="badge ' + badgeCls(t.status) + '" style="font-size:13px;padding:4px 12px">' + esc(t.status) + '</span></div>' +
         '<div class="modal-detail-item"><strong>Priority</strong><span>' + esc(t.priority || '-') + '</span></div>' +
-        '<div class="modal-detail-item"><strong>Due Date</strong><span>' + esc(t.due_date || 'Tidak ada') + '</span></div>' +
-        '<div class="modal-detail-item"><strong>Updated</strong><span>' + esc(t.updated_at || '-') + '</span></div>' +
-        '<div class="modal-detail-item"><strong>Created</strong><span>' + esc(t.created_at || '-') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Due Date</strong><span>' + esc(toDateInput(t.due_date) || 'Tidak ada') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Updated</strong><span>' + esc(toDateInput(t.updated_at) || '-') + '</span></div>' +
+        '<div class="modal-detail-item"><strong>Created</strong><span>' + esc(toDateInput(t.created_at) || '-') + '</span></div>' +
         '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:var(--text3)">' + esc(t.id) + '</span></div>' +
         '</div>' +
         (t.note
@@ -615,7 +634,6 @@
         $('formMode').textContent  = '✏️ Mode: Edit Task';
         $('formMode').className    = 'form-mode editing';
         $('deleteBtn').classList.add('show');
-        // Tampilkan upload section, sembunyikan peringatan
         $('uploadDisabled').classList.remove('show');
         $('uploadSection').style.display = '';
         renderFileList();
@@ -623,7 +641,6 @@
         $('formMode').textContent  = '➕ Mode: Tambah Baru';
         $('formMode').className    = 'form-mode';
         $('deleteBtn').classList.remove('show');
-        // Sembunyikan upload section, tampilkan peringatan
         $('uploadDisabled').classList.add('show');
         $('uploadSection').style.display = 'none';
         $('fileList').innerHTML = '';
@@ -704,8 +721,8 @@
       for (var i = state.data.length - 1; i >= 0; i--) {
         var t      = state.data[i];
         var active = state.editingId && String(state.editingId) === String(t.id);
-        // Cek apakah ada lampiran di note
         var hasFile = t.note && t.note.indexOf('drive.google.com') !== -1;
+        var dueDisplay = toDateInput(t.due_date) || 'No date';
         html +=
           '<div class="task-item' + (active ? ' active' : '') + '">' +
           '<div class="task-item-title">' + esc(t.title || '-') +
@@ -714,7 +731,7 @@
           '<div class="task-item-meta">' +
           '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status || '-') + '</span>' +
           '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>' +
-          '<span style="color:var(--text4)">' + esc(t.due_date || 'No date') + '</span>' +
+          '<span style="color:var(--text4)">' + esc(dueDisplay) + '</span>' +
           '</div>' +
           '<div class="task-item-actions">' +
           '<button class="task-btn task-btn-view" data-view="' + esc(t.id) + '">👁 Lihat</button>' +
@@ -761,18 +778,16 @@
 
     // ============================================================
     // FILE LIST RENDERER
-    //   Parse baris 📎 dari note, tampilkan sebagai daftar file
+    // ✅ FIX: Regex lebih toleran (multiple space, query string di URL)
     // ============================================================
     function renderFileList() {
       var t = findById(state.editingId);
       if (!t || !t.note) { $('fileList').innerHTML = ''; return; }
 
-      // Cari semua baris yang mengandung drive link
       var lines = t.note.split('\n');
       var files = [];
       lines.forEach(function(line) {
-        // Format: 📎 nama_file: https://drive.google.com/file/d/ID/view
-        var match = line.match(/📎\s(.+?):\s(https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view)/);
+        var match = line.match(/📎\s+(.+?):\s+(https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/[^\s]*)/);
         if (match) {
           files.push({ name: match[1].trim(), url: match[2].trim(), id: match[3].trim() });
         }
@@ -795,7 +810,6 @@
       });
       $('fileList').innerHTML = html;
 
-      // Event hapus per file
       $('fileList').querySelectorAll('.file-item-del').forEach(function(btn) {
         btn.addEventListener('click', function() {
           var fileId  = btn.getAttribute('data-fileid');
@@ -807,73 +821,78 @@
 
     // ============================================================
     // UPLOAD FILE
+    // ✅ FIX: Return Promise agar upload sequential benar-benar berjalan
     // ============================================================
     function uploadFile(file) {
-      if (!state.editingId) {
-        showMessage('⚠️ Simpan task dulu sebelum upload file', false);
-        return;
-      }
-      if (file.size > MAX_FILE_BYTES) {
-        showMessage('⚠️ File "' + file.name + '" terlalu besar (maks. 5 MB)', false);
-        return;
-      }
+      return new Promise(function(resolve) {
+        if (!state.editingId) {
+          showMessage('⚠️ Simpan task dulu sebelum upload file', false);
+          resolve();
+          return;
+        }
+        if (file.size > MAX_FILE_BYTES) {
+          showMessage('⚠️ File "' + file.name + '" terlalu besar (maks. 5 MB)', false);
+          resolve();
+          return;
+        }
 
-      // Tampilkan progress
-      state.uploading = true;
-      $('submitBtn').disabled = true;
-      $('uploadProgress').classList.add('show');
-      $('uploadProgressText').textContent = 'Mengupload ' + file.name + '...';
-      $('uploadProgressBar').style.width  = '30%';
+        state.uploading = true;
+        $('submitBtn').disabled = true;
+        $('uploadProgress').classList.add('show');
+        $('uploadProgressText').textContent = 'Mengupload ' + file.name + '...';
+        $('uploadProgressBar').style.width  = '30%';
 
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        $('uploadProgressBar').style.width = '60%';
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          $('uploadProgressBar').style.width = '60%';
 
-        // Ambil base64 tanpa prefix "data:...;base64,"
-        var base64 = ev.target.result.split(',')[1];
+          var base64 = ev.target.result.split(',')[1];
 
-        sendPost('upload', {
-          base64:   base64,
-          fileName: file.name,
-          mimeType: file.type || 'application/octet-stream',
-          taskId:   String(state.editingId)
-        })
-        .then(function(res) {
-          $('uploadProgressBar').style.width = '100%';
+          sendPost('upload', {
+            base64:   base64,
+            fileName: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            taskId:   String(state.editingId)
+          })
+          .then(function(res) {
+            $('uploadProgressBar').style.width = '100%';
 
-          // Update note di state lokal agar file list langsung muncul
-          var t = findById(state.editingId);
-          if (t) {
-            t.note = res.note;
-            $('note').value = res.note; // update textarea
-          }
+            var t = findById(state.editingId);
+            if (t) {
+              t.note = res.note;
+              $('note').value = res.note;
+            }
 
-          setTimeout(function() {
+            setTimeout(function() {
+              $('uploadProgress').classList.remove('show');
+              $('uploadProgressBar').style.width = '0%';
+              state.uploading = false;
+              $('submitBtn').disabled = false;
+              renderFileList();
+              showMessage('✅ File "' + res.file_name + '" berhasil diupload');
+              resolve();
+            }, 400);
+          })
+          .catch(function(err) {
             $('uploadProgress').classList.remove('show');
             $('uploadProgressBar').style.width = '0%';
             state.uploading = false;
             $('submitBtn').disabled = false;
-            renderFileList();
-            showMessage('✅ File "' + res.file_name + '" berhasil diupload');
-          }, 400);
-        })
-        .catch(function(err) {
+            showMessage('❌ Upload gagal: ' + err.message, false);
+            resolve();
+          });
+        };
+
+        reader.onerror = function() {
           $('uploadProgress').classList.remove('show');
-          $('uploadProgressBar').style.width = '0%';
           state.uploading = false;
           $('submitBtn').disabled = false;
-          showMessage('❌ Upload gagal: ' + err.message, false);
-        });
-      };
+          showMessage('❌ Gagal membaca file', false);
+          resolve();
+        };
 
-      reader.onerror = function() {
-        $('uploadProgress').classList.remove('show');
-        state.uploading = false;
-        $('submitBtn').disabled = false;
-        showMessage('❌ Gagal membaca file', false);
-      };
-
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
     }
 
     // ============================================================
@@ -888,7 +907,6 @@
         file_url: fileUrl
       })
       .then(function() {
-        // Update note di state lokal
         var t = findById(state.editingId);
         if (t && t.note) {
           var lines    = t.note.split('\n');
@@ -910,16 +928,14 @@
     var uploadArea  = $('uploadArea');
     var fileInput   = $('fileInput');
 
-    // Klik area = trigger file input
     uploadArea.addEventListener('click', function(e) {
       if (e.target !== fileInput) fileInput.click();
     });
 
     fileInput.addEventListener('change', function() {
       var files = Array.from(fileInput.files);
-      fileInput.value = ''; // reset agar bisa upload file yang sama lagi
+      fileInput.value = '';
       if (!files.length) return;
-      // Upload satu per satu secara sekuensial
       files.reduce(function(promise, file) {
         return promise.then(function() { return uploadFile(file); });
       }, Promise.resolve());
@@ -959,6 +975,7 @@
       renderList();
     }
 
+    // ✅ FIX UTAMA: Pakai toDateInput() agar tanggal muncul saat edit
     function loadTaskForEdit(id) {
       var t = findById(id);
       if (!t) return;
@@ -967,8 +984,8 @@
       $('title').value      = t.title  || '';
       $('status').value     = t.status || 'To Do';
       $('priority').value   = t.priority || 'Medium';
-      $('due_date').value   = t.due_date  || '';
-      $('updated_at').value = t.updated_at || todayISO();
+      $('due_date').value   = toDateInput(t.due_date);
+      $('updated_at').value = toDateInput(t.updated_at) || todayISO();
       $('note').value       = t.note   || '';
       updateFormMode();
       renderList();
@@ -1003,7 +1020,7 @@
         action = 'update';
         var existing   = findById(state.editingId);
         taskData.id         = state.editingId;
-        taskData.created_at = existing ? existing.created_at : todayISO();
+        taskData.created_at = existing ? (toDateInput(existing.created_at) || todayISO()) : todayISO();
         body = { task: taskData };
       } else {
         action = 'add';
