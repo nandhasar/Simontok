@@ -508,20 +508,6 @@
 
     function todayISO() { return new Date().toISOString().slice(0, 10); }
 
-    function toDateInput(v) {
-  if (!v) return '';
-  // Sudah format YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  // Coba parse sebagai Date
-  var d = new Date(v);
-  if (isNaN(d.getTime())) return '';
-  // Format ke YYYY-MM-DD pakai local time (bukan UTC, biar tidak mundur sehari)
-  var y  = d.getFullYear();
-  var m  = String(d.getMonth() + 1).padStart(2, '0');
-  var dd = String(d.getDate()).padStart(2, '0');
-  return y + '-' + m + '-' + dd;
-}
-    
     function badgeCls(s) {
       var map = { 'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked' };
       return map[s] || 'badge-todo';
@@ -973,22 +959,22 @@
       renderList();
     }
 
- function loadTaskForEdit(id) {
-  var t = findById(id);
-  if (!t) return;
-  state.editingId       = t.id;
-  $('taskId').value     = t.id     || '';
-  $('title').value      = t.title  || '';
-  $('status').value     = t.status || 'To Do';
-  $('priority').value   = t.priority || 'Medium';
-  $('due_date').value   = toDateInput(t.due_date);              // ← FIX
-  $('updated_at').value = toDateInput(t.updated_at) || todayISO(); // ← FIX
-  $('note').value       = t.note   || '';
-  updateFormMode();
-  renderList();
-  showMessage('📝 Task dimuat untuk diedit');
-  $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+    function loadTaskForEdit(id) {
+      var t = findById(id);
+      if (!t) return;
+      state.editingId       = t.id;
+      $('taskId').value     = t.id     || '';
+      $('title').value      = t.title  || '';
+      $('status').value     = t.status || 'To Do';
+      $('priority').value   = t.priority || 'Medium';
+      $('due_date').value   = t.due_date  || '';
+      $('updated_at').value = t.updated_at || todayISO();
+      $('note').value       = t.note   || '';
+      updateFormMode();
+      renderList();
+      showMessage('📝 Task dimuat untuk diedit');
+      $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     // ============================================================
     // SAVE
