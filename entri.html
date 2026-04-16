@@ -83,6 +83,36 @@
     .form-mode{font-size:12px;font-weight:500;margin-top:4px;color:var(--blue)}
     .form-mode.editing{color:var(--yellow)}
 
+    /* ── UPLOAD AREA ── */
+    .upload-area{border:2px dashed var(--border);border-radius:var(--radius2);padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3);position:relative}
+    .upload-area:hover,.upload-area.dragover{border-color:var(--blue);background:var(--blue-bg2)}
+    .upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .upload-area-text{font-size:13px;color:var(--text3);pointer-events:none}
+    .upload-area-text strong{color:var(--blue)}
+    .upload-area-icon{font-size:28px;margin-bottom:6px;pointer-events:none}
+    .upload-hint{font-size:11px;color:var(--text4);margin-top:4px;pointer-events:none}
+
+    /* Upload progress */
+    .upload-progress{display:none;margin-top:10px;padding:10px 14px;border-radius:var(--radius2);background:var(--blue-bg2);border:1px solid var(--blue-bg);font-size:13px;color:var(--blue);align-items:center;gap:8px}
+    .upload-progress.show{display:flex}
+    .upload-progress-bar-wrap{flex:1;height:6px;background:var(--blue-bg);border-radius:3px;overflow:hidden}
+    .upload-progress-bar{height:100%;background:var(--blue);border-radius:3px;transition:width .3s;width:0%}
+
+    /* File list */
+    .file-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .file-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border);font-size:13px}
+    .file-item-icon{font-size:20px;flex-shrink:0}
+    .file-item-info{flex:1;min-width:0}
+    .file-item-name{font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-item-url{font-size:11px;color:var(--blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-item-url a{color:var(--blue)}
+    .file-item-del{flex-shrink:0;border:none;background:var(--red-bg);color:var(--red2);width:28px;height:28px;border-radius:8px;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .file-item-del:hover{background:var(--red);color:#fff}
+
+    /* Disabled upload */
+    .upload-disabled{display:none;padding:10px 14px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);font-size:13px;color:var(--yellow)}
+    .upload-disabled.show{display:block}
+
     /* MESSAGE */
     .message{margin-top:16px;padding:12px 16px;border-radius:var(--radius2);font-size:14px;display:none;animation:slideIn .3s ease}
     .message.show{display:block}
@@ -130,6 +160,7 @@
     /* SPINNER */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+    .spinner-blue{border-color:rgba(37,99,235,.2);border-top-color:var(--blue)}
 
     /* MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(4px)}
@@ -143,7 +174,7 @@
     .modal-detail-item{padding:14px;border-radius:var(--radius2);background:var(--bg3);border:1px solid var(--border)}
     .modal-detail-item strong{display:block;font-size:12px;color:var(--text3);margin-bottom:4px}
     .modal-detail-item span{font-size:16px;font-weight:700;color:var(--text)}
-    .modal-note{margin-top:14px;padding:14px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);color:var(--yellow);font-size:14px;line-height:1.7;white-space:pre-wrap}
+    .modal-note{margin-top:14px;padding:14px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);color:var(--yellow);font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-all}
     .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
     .btn-modal-edit{background:var(--blue);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius2);font-weight:600;transition:all .2s}
     .btn-modal-edit:hover{background:var(--blue2)}
@@ -151,11 +182,14 @@
     .btn-modal-close:hover{background:var(--border2)}
     @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 
+    /* Modal note — link tampil biru */
+    .modal-note a{color:var(--blue);word-break:break-all}
+
     /* DEBUG */
     .debug-box{margin-top:16px;padding:12px;border-radius:var(--radius2);background:var(--yellow-bg);border:1px solid var(--yellow);font-size:12px;font-family:monospace;white-space:pre-wrap;display:none;max-height:200px;overflow:auto}
     .debug-box.show{display:block}
 
-    /* MOBILE OPTIMIZATIONS */
+    /* MOBILE */
     @media(max-width:768px){
       .container{padding:16px 12px}
       .topbar{padding:12px 14px}
@@ -193,7 +227,7 @@
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-    /* TOUCH OPTIMIZATIONS */
+    /* TOUCH */
     @media(hover:none){
       .task-item:active{transform:scale(.98)}
       .btn-outline:active{transform:scale(.95)}
@@ -204,6 +238,7 @@
 </head>
 <body>
   <div class="container">
+
     <!-- TOPBAR -->
     <div class="topbar">
       <div class="topbar-brand">
@@ -223,6 +258,8 @@
     </div>
 
     <div class="main-grid">
+
+      <!-- ── FORM CARD ── -->
       <section class="card">
         <div class="card-header">
           <div>
@@ -232,46 +269,97 @@
           </div>
           <button id="newBtn" class="btn-primary">+ New Task</button>
         </div>
+
         <form id="taskForm" class="form-grid">
           <input type="hidden" id="taskId" value="" />
+
           <div class="col-span-2">
             <label for="title">Task <span class="required">*</span></label>
             <input id="title" class="form-input" placeholder="Contoh: Kirim surat pemeriksaan" required />
           </div>
+
           <div>
             <label for="status">Status</label>
             <select id="status" class="form-input">
-              <option>To Do</option><option>Doing</option><option>Done</option><option>Blocked</option>
+              <option>To Do</option>
+              <option>Doing</option>
+              <option>Done</option>
+              <option>Blocked</option>
             </select>
           </div>
+
           <div>
             <label for="priority">Priority</label>
             <select id="priority" class="form-input">
-              <option>High</option><option selected>Medium</option><option>Low</option>
+              <option>High</option>
+              <option selected>Medium</option>
+              <option>Low</option>
             </select>
           </div>
+
           <div>
             <label for="due_date">Due date</label>
             <input id="due_date" type="date" class="form-input" />
           </div>
+
           <div>
             <label for="updated_at">Updated</label>
             <input id="updated_at" type="date" class="form-input" />
           </div>
+
           <div class="col-span-2">
             <label for="note">Note</label>
             <textarea id="note" rows="5" class="form-input" placeholder="Catatan singkat..."></textarea>
           </div>
+
+          <!-- ── UPLOAD SECTION ── -->
+          <div class="col-span-2">
+            <label>Lampiran File</label>
+
+            <!-- Peringatan: hanya muncul saat mode tambah baru -->
+            <div id="uploadDisabled" class="upload-disabled show">
+              💡 Simpan task terlebih dahulu, lalu edit untuk melampirkan file.
+            </div>
+
+            <!-- Upload area: hanya muncul saat mode edit -->
+            <div id="uploadSection" style="display:none">
+              <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" multiple />
+                <div class="upload-area-icon">📎</div>
+                <div class="upload-area-text">
+                  <strong>Klik untuk pilih file</strong> atau drag &amp; drop
+                </div>
+                <div class="upload-hint">JPG, PNG, PDF, Word, Excel, PPT, ZIP — maks. 5 MB/file</div>
+              </div>
+
+              <!-- Progress bar -->
+              <div id="uploadProgress" class="upload-progress">
+                <span class="spinner spinner-blue"></span>
+                <div style="flex:1">
+                  <div id="uploadProgressText" style="margin-bottom:4px">Mengupload...</div>
+                  <div class="upload-progress-bar-wrap">
+                    <div id="uploadProgressBar" class="upload-progress-bar"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Daftar file yang sudah terupload -->
+              <div id="fileList" class="file-list"></div>
+            </div>
+          </div>
+
           <div class="col-span-2 form-actions">
             <button type="button" id="deleteBtn" class="btn-delete">🗑 Hapus</button>
             <button type="button" id="cancelBtn" class="btn-cancel">Batal</button>
             <button type="submit" id="submitBtn" class="btn-primary">Simpan</button>
           </div>
         </form>
+
         <div id="message" class="message"></div>
         <div id="debugBox" class="debug-box"></div>
       </section>
 
+      <!-- ── SIDEBAR ── -->
       <aside class="sidebar">
         <div class="card">
           <h3>Panduan singkat</h3>
@@ -279,9 +367,12 @@
             <li>Isi task lalu klik <strong>Simpan</strong>.</li>
             <li>Task baru langsung masuk ke Spreadsheet.</li>
             <li>Klik <strong>👁</strong> untuk popup detail, <strong>✏️</strong> untuk edit.</li>
-            <li>Klik <strong>🗑 Hapus</strong> untuk menghapus (muncul saat edit).</li>
+            <li>Upload file hanya bisa saat mode <strong>Edit</strong>.</li>
+            <li>Link file otomatis masuk ke kolom <strong>Note</strong>.</li>
+            <li>Klik <strong>🗑 Hapus</strong> untuk hapus task + file-nya.</li>
           </ul>
         </div>
+
         <div class="card">
           <div class="card-header">
             <h3>Data terakhir</h3>
@@ -290,14 +381,17 @@
           <div id="taskListLoading" class="loading-text">⏳ Memuat data...</div>
           <div id="taskList" class="task-list"></div>
         </div>
+
         <div id="statsCard" class="card" style="display:none">
           <h3>Statistik</h3>
           <div id="statsContent" class="stats-grid"></div>
         </div>
       </aside>
+
     </div>
   </div>
 
+  <!-- MODAL -->
   <div id="popupModal" class="modal-overlay">
     <div class="modal-box">
       <button class="modal-close" id="closeModal">&times;</button>
@@ -307,32 +401,49 @@
 
   <script>
     // ============================================================
-    // CONFIG — satu tempat saja
+    // CONFIG
     // ============================================================
     var API_URL = 'https://script.google.com/macros/s/AKfycbwLLIv2AH5v4FiYImDN2-u5WhxAYvsTXq1ZUqdRUWqBM0K6pBuI3q_ZQn3_eFIii2bU/exec';
+    var MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
 
     // ============================================================
-    // THEME SWITCHING
+    // SESSION MIGRATION
     // ============================================================
-    function initTheme() {
-      var t = localStorage.getItem('bekarye-theme');
-      var isDark = t === 'dark';
-      applyTheme(isDark);
+    function migrateSession() {
+      try {
+        if (!localStorage.getItem('bekarye-session')) {
+          var old = localStorage.getItem('simontok-session');
+          if (old) localStorage.setItem('bekarye-session', old);
+        }
+        if (!localStorage.getItem('bekarye-theme')) {
+          var oldT = localStorage.getItem('simontok-theme');
+          if (oldT) localStorage.setItem('bekarye-theme', oldT);
+        }
+      } catch(e) {}
     }
+    migrateSession();
 
+    // ============================================================
+    // THEME
+    // ============================================================
     function applyTheme(isDark) {
       if (isDark) {
         document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('themeToggle').textContent = '☀️';
-        document.getElementById('logoImage').src = 'assets/logo/logo-dark.png';
+        $('themeToggle').textContent = '☀️';
+        $('logoImage').src = 'assets/logo/logo-dark.png';
       } else {
         document.documentElement.removeAttribute('data-theme');
-        document.getElementById('themeToggle').textContent = '🌙';
-        document.getElementById('logoImage').src = 'assets/logo/logo-light.png';
+        $('themeToggle').textContent = '🌙';
+        $('logoImage').src = 'assets/logo/logo-light.png';
       }
     }
 
-    document.getElementById('themeToggle').addEventListener('click', function() {
+    function initTheme() {
+      var t = localStorage.getItem('bekarye-theme') || localStorage.getItem('simontok-theme');
+      applyTheme(t === 'dark');
+    }
+
+    $('themeToggle').addEventListener('click', function() {
       var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       isDark = !isDark;
       localStorage.setItem('bekarye-theme', isDark ? 'dark' : 'light');
@@ -361,7 +472,6 @@
 
     if (!getSession()) throw new Error('Not logged in');
 
-    // Helper: buat URL dengan auth query param
     function authURL(action) {
       return API_URL
         + '?action=' + encodeURIComponent(action)
@@ -369,22 +479,21 @@
         + '&token='  + encodeURIComponent(SESSION.token);
     }
 
-    // Helper: tambahkan auth ke object body POST
     function authBody(obj) {
       obj.user  = SESSION.username;
       obj.token = SESSION.token;
       return obj;
     }
 
-    function logout() {
-      localStorage.removeItem('bekarye-session');
-      window.location.href = 'index.html';
-    }
-
     // ============================================================
     // STATE
     // ============================================================
-    var state = { data: [], editingId: null, loading: false };
+    var state = {
+      data:      [],
+      editingId: null,
+      loading:   false,
+      uploading: false
+    };
 
     // ============================================================
     // UTILS
@@ -400,14 +509,36 @@
     function todayISO() { return new Date().toISOString().slice(0, 10); }
 
     function badgeCls(s) {
-      var map = { 'To Do':'badge-todo', 'Doing':'badge-doing', 'Done':'badge-done', 'Blocked':'badge-blocked' };
+      var map = { 'To Do':'badge-todo','Doing':'badge-doing','Done':'badge-done','Blocked':'badge-blocked' };
       return map[s] || 'badge-todo';
+    }
+
+    function fileIcon(name) {
+      var ext = (name || '').split('.').pop().toLowerCase();
+      var map = {
+        pdf:'📄', doc:'📝', docx:'📝',
+        xls:'📊', xlsx:'📊',
+        ppt:'📑', pptx:'📑',
+        jpg:'🖼️', jpeg:'🖼️', png:'🖼️', gif:'🖼️', webp:'🖼️',
+        zip:'🗜️', rar:'🗜️', txt:'📃'
+      };
+      return map[ext] || '📎';
     }
 
     function showDebug(text) {
       var box = $('debugBox');
       box.textContent = text;
       box.classList.add('show');
+    }
+
+    var msgTO;
+    function showMessage(t, ok) {
+      if (ok === undefined) ok = true;
+      var b = $('message');
+      b.className = 'message show ' + (ok ? 'success' : 'error');
+      b.textContent = t;
+      clearTimeout(msgTO);
+      msgTO = setTimeout(function() { b.classList.remove('show'); }, 4000);
     }
 
     // ============================================================
@@ -421,11 +552,19 @@
     $('closeModal').addEventListener('click', closePopup);
     modalEl.addEventListener('click', function(e) { if (e.target === modalEl) closePopup(); });
 
+    // Render catatan: link jadi <a> yang bisa diklik
+    function renderNote(note) {
+      if (!note) return '';
+      // Escape dulu, lalu ubah URL jadi link
+      var escaped = esc(note);
+      return escaped.replace(
+        /(https?:\/\/[^\s&]+)/g,
+        '<a href="$1" target="_blank" rel="noopener">$1</a>'
+      );
+    }
+
     function showTaskDetail(id) {
-      var t = null;
-      for (var i = 0; i < state.data.length; i++) {
-        if (String(state.data[i].id) === String(id)) { t = state.data[i]; break; }
-      }
+      var t = findById(id);
       if (!t) return;
       openPopup(
         '<h3>📋 Detail Task</h3>' +
@@ -439,7 +578,7 @@
         '<div class="modal-detail-item"><strong>ID</strong><span style="font-size:11px;color:var(--text3)">' + esc(t.id) + '</span></div>' +
         '</div>' +
         (t.note
-          ? '<div class="modal-note"><strong>📝 Catatan:</strong><br>' + esc(t.note) + '</div>'
+          ? '<div class="modal-note"><strong>📝 Catatan:</strong><br><br>' + renderNote(t.note) + '</div>'
           : '<p style="color:var(--text4);margin-top:14px">Tidak ada catatan.</p>') +
         '<div class="modal-footer">' +
         '<button class="btn-modal-edit" onclick="editFromPopup(\'' + esc(t.id) + '\')">✏️ Edit</button>' +
@@ -451,57 +590,61 @@
     function editFromPopup(id) { closePopup(); loadTaskForEdit(id); }
 
     // ============================================================
+    // FIND HELPER
+    // ============================================================
+    function findById(id) {
+      for (var i = 0; i < state.data.length; i++) {
+        if (String(state.data[i].id) === String(id)) return state.data[i];
+      }
+      return null;
+    }
+
+    // ============================================================
     // UI HELPERS
     // ============================================================
     function setLoading(v) {
       state.loading = v;
-      $('submitBtn').disabled = v;
+      $('submitBtn').disabled  = v || state.uploading;
       $('submitBtn').innerHTML = v ? '<span class="spinner"></span> Menyimpan...' : 'Simpan';
-      $('refreshBtn').disabled = v;
+      $('refreshBtn').disabled  = v;
       $('refreshBtn').textContent = v ? 'Memuat...' : 'Refresh';
-    }
-
-    var msgTO;
-    function showMessage(t, ok) {
-      if (ok === undefined) ok = true;
-      var b = $('message');
-      b.className = 'message show ' + (ok ? 'success' : 'error');
-      b.textContent = t;
-      clearTimeout(msgTO);
-      msgTO = setTimeout(function() { b.classList.remove('show'); }, 4000);
     }
 
     function updateFormMode() {
       if (state.editingId) {
-        $('formMode').textContent = '✏️ Mode: Edit Task';
-        $('formMode').className = 'form-mode editing';
+        $('formMode').textContent  = '✏️ Mode: Edit Task';
+        $('formMode').className    = 'form-mode editing';
         $('deleteBtn').classList.add('show');
+        // Tampilkan upload section, sembunyikan peringatan
+        $('uploadDisabled').classList.remove('show');
+        $('uploadSection').style.display = '';
+        renderFileList();
       } else {
-        $('formMode').textContent = '➕ Mode: Tambah Baru';
-        $('formMode').className = 'form-mode';
+        $('formMode').textContent  = '➕ Mode: Tambah Baru';
+        $('formMode').className    = 'form-mode';
         $('deleteBtn').classList.remove('show');
+        // Sembunyikan upload section, tampilkan peringatan
+        $('uploadDisabled').classList.add('show');
+        $('uploadSection').style.display = 'none';
+        $('fileList').innerHTML = '';
       }
     }
 
     // ============================================================
-    // SEND POST WITH AUTH
+    // SEND POST
     // ============================================================
     function sendPost(action, bodyData) {
-      var url = authURL(action);
+      var url     = authURL(action);
       var payload = authBody(Object.assign({}, bodyData));
 
-      console.log('📤 POST to:', url);
-      console.log('📤 Body:', JSON.stringify(payload));
-
       return fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload),
+        method:   'POST',
+        headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
+        body:     JSON.stringify(payload),
         redirect: 'follow'
       })
       .then(function(res) { return res.text(); })
       .then(function(text) {
-        console.log('📥 Response:', text);
         var json;
         try { json = JSON.parse(text); }
         catch(e) {
@@ -509,11 +652,7 @@
           throw new Error('Response bukan JSON');
         }
         if (!json.ok) {
-          var dbg = 'Error: ' + (json.message || 'Unknown');
-          if (json.debug_param)     dbg += '\nURL params: '  + json.debug_param;
-          if (json.debug_body_keys) dbg += '\nBody keys: '   + json.debug_body_keys;
-          if (json.raw)             dbg += '\nRaw: '         + json.raw;
-          showDebug(dbg);
+          showDebug('Error: ' + (json.message || 'Unknown'));
           throw new Error(json.message || 'Gagal');
         }
         $('debugBox').classList.remove('show');
@@ -530,10 +669,9 @@
       ld.classList.add('show');
       list.innerHTML = '';
 
-      fetch(authURL('list'), { redirect: 'follow' })
+      return fetch(authURL('list'), { redirect: 'follow' })
         .then(function(res) { return res.text(); })
         .then(function(text) {
-          console.log('📥 loadData response:', text);
           var json;
           try { json = JSON.parse(text); }
           catch(e) {
@@ -541,13 +679,11 @@
             throw new Error('Response bukan JSON');
           }
           if (!json.ok) throw new Error(json.message || 'Gagal memuat data');
-
           state.data = Array.isArray(json.data) ? json.data : [];
           renderList();
           renderStats();
         })
         .catch(function(err) {
-          console.error('loadData error:', err);
           list.innerHTML =
             '<div class="task-empty" style="border-color:var(--red);color:var(--red);background:var(--red-bg)">' +
             '⚠️ ' + esc(err.message) +
@@ -558,7 +694,7 @@
     }
 
     // ============================================================
-    // RENDER
+    // RENDER LIST & STATS
     // ============================================================
     function renderList() {
       var list = $('taskList');
@@ -566,11 +702,15 @@
 
       var html = '';
       for (var i = state.data.length - 1; i >= 0; i--) {
-        var t = state.data[i];
+        var t      = state.data[i];
         var active = state.editingId && String(state.editingId) === String(t.id);
+        // Cek apakah ada lampiran di note
+        var hasFile = t.note && t.note.indexOf('drive.google.com') !== -1;
         html +=
           '<div class="task-item' + (active ? ' active' : '') + '">' +
-          '<div class="task-item-title">' + esc(t.title || '-') + '</div>' +
+          '<div class="task-item-title">' + esc(t.title || '-') +
+          (hasFile ? ' <span title="Ada lampiran">📎</span>' : '') +
+          '</div>' +
           '<div class="task-item-meta">' +
           '<span class="badge ' + badgeCls(t.status) + '">' + esc(t.status || '-') + '</span>' +
           '<span class="badge badge-priority">' + esc(t.priority || '-') + '</span>' +
@@ -620,40 +760,220 @@
     }
 
     // ============================================================
+    // FILE LIST RENDERER
+    //   Parse baris 📎 dari note, tampilkan sebagai daftar file
+    // ============================================================
+    function renderFileList() {
+      var t = findById(state.editingId);
+      if (!t || !t.note) { $('fileList').innerHTML = ''; return; }
+
+      // Cari semua baris yang mengandung drive link
+      var lines = t.note.split('\n');
+      var files = [];
+      lines.forEach(function(line) {
+        // Format: 📎 nama_file: https://drive.google.com/file/d/ID/view
+        var match = line.match(/📎\s(.+?):\s(https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view)/);
+        if (match) {
+          files.push({ name: match[1].trim(), url: match[2].trim(), id: match[3].trim() });
+        }
+      });
+
+      if (!files.length) { $('fileList').innerHTML = ''; return; }
+
+      var html = '';
+      files.forEach(function(f) {
+        html +=
+          '<div class="file-item">' +
+          '<div class="file-item-icon">' + fileIcon(f.name) + '</div>' +
+          '<div class="file-item-info">' +
+          '<div class="file-item-name">' + esc(f.name) + '</div>' +
+          '<div class="file-item-url"><a href="' + esc(f.url) + '" target="_blank" rel="noopener">Buka file ↗</a></div>' +
+          '</div>' +
+          '<button class="file-item-del" title="Hapus file" ' +
+          'data-fileid="' + esc(f.id) + '" data-fileurl="' + esc(f.url) + '">✕</button>' +
+          '</div>';
+      });
+      $('fileList').innerHTML = html;
+
+      // Event hapus per file
+      $('fileList').querySelectorAll('.file-item-del').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var fileId  = btn.getAttribute('data-fileid');
+          var fileUrl = btn.getAttribute('data-fileurl');
+          deleteFile(fileId, fileUrl);
+        });
+      });
+    }
+
+    // ============================================================
+    // UPLOAD FILE
+    // ============================================================
+    function uploadFile(file) {
+      if (!state.editingId) {
+        showMessage('⚠️ Simpan task dulu sebelum upload file', false);
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        showMessage('⚠️ File "' + file.name + '" terlalu besar (maks. 5 MB)', false);
+        return;
+      }
+
+      // Tampilkan progress
+      state.uploading = true;
+      $('submitBtn').disabled = true;
+      $('uploadProgress').classList.add('show');
+      $('uploadProgressText').textContent = 'Mengupload ' + file.name + '...';
+      $('uploadProgressBar').style.width  = '30%';
+
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        $('uploadProgressBar').style.width = '60%';
+
+        // Ambil base64 tanpa prefix "data:...;base64,"
+        var base64 = ev.target.result.split(',')[1];
+
+        sendPost('upload', {
+          base64:   base64,
+          fileName: file.name,
+          mimeType: file.type || 'application/octet-stream',
+          taskId:   String(state.editingId)
+        })
+        .then(function(res) {
+          $('uploadProgressBar').style.width = '100%';
+
+          // Update note di state lokal agar file list langsung muncul
+          var t = findById(state.editingId);
+          if (t) {
+            t.note = res.note;
+            $('note').value = res.note; // update textarea
+          }
+
+          setTimeout(function() {
+            $('uploadProgress').classList.remove('show');
+            $('uploadProgressBar').style.width = '0%';
+            state.uploading = false;
+            $('submitBtn').disabled = false;
+            renderFileList();
+            showMessage('✅ File "' + res.file_name + '" berhasil diupload');
+          }, 400);
+        })
+        .catch(function(err) {
+          $('uploadProgress').classList.remove('show');
+          $('uploadProgressBar').style.width = '0%';
+          state.uploading = false;
+          $('submitBtn').disabled = false;
+          showMessage('❌ Upload gagal: ' + err.message, false);
+        });
+      };
+
+      reader.onerror = function() {
+        $('uploadProgress').classList.remove('show');
+        state.uploading = false;
+        $('submitBtn').disabled = false;
+        showMessage('❌ Gagal membaca file', false);
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // ============================================================
+    // DELETE FILE (tanpa hapus task)
+    // ============================================================
+    function deleteFile(fileId, fileUrl) {
+      if (!confirm('Hapus file ini dari Drive?')) return;
+
+      sendPost('delete-file', {
+        file_id:  fileId,
+        task_id:  String(state.editingId),
+        file_url: fileUrl
+      })
+      .then(function() {
+        // Update note di state lokal
+        var t = findById(state.editingId);
+        if (t && t.note) {
+          var lines    = t.note.split('\n');
+          var newLines = lines.filter(function(l) { return l.indexOf(fileUrl) === -1; });
+          t.note       = newLines.join('\n').trim();
+          $('note').value = t.note;
+        }
+        renderFileList();
+        showMessage('🗑 File berhasil dihapus dari Drive');
+      })
+      .catch(function(err) {
+        showMessage('❌ Hapus file gagal: ' + err.message, false);
+      });
+    }
+
+    // ============================================================
+    // DRAG & DROP + FILE INPUT
+    // ============================================================
+    var uploadArea  = $('uploadArea');
+    var fileInput   = $('fileInput');
+
+    // Klik area = trigger file input
+    uploadArea.addEventListener('click', function(e) {
+      if (e.target !== fileInput) fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function() {
+      var files = Array.from(fileInput.files);
+      fileInput.value = ''; // reset agar bisa upload file yang sama lagi
+      if (!files.length) return;
+      // Upload satu per satu secara sekuensial
+      files.reduce(function(promise, file) {
+        return promise.then(function() { return uploadFile(file); });
+      }, Promise.resolve());
+    });
+
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', function() {
+      uploadArea.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      var files = Array.from(e.dataTransfer.files);
+      if (!files.length) return;
+      files.reduce(function(promise, file) {
+        return promise.then(function() { return uploadFile(file); });
+      }, Promise.resolve());
+    });
+
+    // ============================================================
     // FORM
     // ============================================================
     function clearForm() {
       state.editingId = null;
-      $('taskId').value    = '';
-      $('title').value     = '';
-      $('status').value    = 'To Do';
-      $('priority').value  = 'Medium';
-      $('due_date').value  = '';
+      $('taskId').value     = '';
+      $('title').value      = '';
+      $('status').value     = 'To Do';
+      $('priority').value   = 'Medium';
+      $('due_date').value   = '';
       $('updated_at').value = todayISO();
-      $('note').value      = '';
+      $('note').value       = '';
       $('debugBox').classList.remove('show');
       updateFormMode();
       renderList();
     }
 
     function loadTaskForEdit(id) {
-      var t = null;
-      for (var i = 0; i < state.data.length; i++) {
-        if (String(state.data[i].id) === String(id)) { t = state.data[i]; break; }
-      }
+      var t = findById(id);
       if (!t) return;
       state.editingId       = t.id;
-      $('taskId').value     = t.id || '';
-      $('title').value      = t.title || '';
+      $('taskId').value     = t.id     || '';
+      $('title').value      = t.title  || '';
       $('status').value     = t.status || 'To Do';
       $('priority').value   = t.priority || 'Medium';
-      $('due_date').value   = t.due_date || '';
+      $('due_date').value   = t.due_date  || '';
       $('updated_at').value = t.updated_at || todayISO();
-      $('note').value       = t.note || '';
+      $('note').value       = t.note   || '';
       updateFormMode();
       renderList();
       showMessage('📝 Task dimuat untuk diedit');
-      $('taskForm').scrollIntoView({ behavior:'smooth', block:'start' });
+      $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // ============================================================
@@ -661,7 +981,7 @@
     // ============================================================
     $('taskForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      if (state.loading) return;
+      if (state.loading || state.uploading) return;
 
       var title = $('title').value.trim();
       if (!title) { showMessage('⚠️ Task tidak boleh kosong', false); $('title').focus(); return; }
@@ -681,10 +1001,7 @@
 
       if (isEdit) {
         action = 'update';
-        var existing = null;
-        for (var i = 0; i < state.data.length; i++) {
-          if (String(state.data[i].id) === String(state.editingId)) { existing = state.data[i]; break; }
-        }
+        var existing   = findById(state.editingId);
         taskData.id         = state.editingId;
         taskData.created_at = existing ? existing.created_at : todayISO();
         body = { task: taskData };
@@ -702,78 +1019,50 @@
           return loadData();
         })
         .catch(function(err) {
-          console.error('Save error:', err);
           showMessage('❌ ' + err.message, false);
         })
         .then(function() { setLoading(false); });
     });
 
     // ============================================================
-    // DELETE
+    // DELETE TASK
     // ============================================================
     $('deleteBtn').addEventListener('click', function() {
       if (!state.editingId) return;
-      var t = null;
-      for (var i = 0; i < state.data.length; i++) {
-        if (String(state.data[i].id) === String(state.editingId)) { t = state.data[i]; break; }
-      }
-      if (!confirm('Yakin hapus task:\n"' + (t ? t.title : state.editingId) + '"?')) return;
+      var t = findById(state.editingId);
+      if (!confirm('Yakin hapus task:\n"' + (t ? t.title : state.editingId) + '"?\n\nSemua file lampiran juga akan dihapus.')) return;
 
       setLoading(true);
       sendPost('delete', { id: String(state.editingId) })
         .then(function() {
-          showMessage('🗑 Task berhasil dihapus');
+          showMessage('🗑 Task dan semua lampiran berhasil dihapus');
           clearForm();
           return loadData();
         })
         .catch(function(err) { showMessage('❌ ' + err.message, false); })
         .then(function() { setLoading(false); });
     });
-// ============================================================
-// SESSION MIGRATION & HELPERS
-// ============================================================
-function migrateSession() {
-  try {
-    // Migrasi session dari simontok ke bekarye
-    if (!localStorage.getItem('bekarye-session')) {
-      var oldSession = localStorage.getItem('simontok-session');
-      if (oldSession) {
-        localStorage.setItem('bekarye-session', oldSession);
-        console.log('✅ Session berhasil dimigrasi dari SIMONTOK ke BEKARYE');
-      }
-    }
-    
-    // Migrasi theme dari simontok ke bekarye
-    if (!localStorage.getItem('bekarye-theme')) {
-      var oldTheme = localStorage.getItem('simontok-theme');
-      if (oldTheme) {
-        localStorage.setItem('bekarye-theme', oldTheme);
-        console.log('✅ Theme berhasil dimigrasi dari SIMONTOK ke BEKARYE');
-      }
-    }
-  } catch(e) {
-    console.error('Error migrasi session/theme:', e);
-  }
-}
 
-// ============================================================
-// THEME SWITCHING
-// ============================================================
-function initTheme() {
-  // Prioritas: bekarye-theme dulu, lalu fallback ke simontok-theme
-  var t = localStorage.getItem('bekarye-theme') || localStorage.getItem('simontok-theme');
-  // ...
-}
     // ============================================================
     // BUTTONS & INIT
     // ============================================================
-    $('newBtn').addEventListener('click', function() { clearForm(); $('title').focus(); showMessage('➕ Mode input baru aktif'); });
-    $('cancelBtn').addEventListener('click', function() { clearForm(); showMessage('🔄 Form dibersihkan'); });
-    $('refreshBtn').addEventListener('click', function() { if (!state.loading) loadData(); });
+    $('newBtn').addEventListener('click', function() {
+      clearForm();
+      $('title').focus();
+      showMessage('➕ Mode input baru aktif');
+    });
+    $('cancelBtn').addEventListener('click', function() {
+      clearForm();
+      showMessage('🔄 Form dibersihkan');
+    });
+    $('refreshBtn').addEventListener('click', function() {
+      if (!state.loading) loadData();
+    });
 
-    window.addEventListener('DOMContentLoaded', function() { clearForm(); loadData(); });
-    migrateSession();
-    initTheme();
+    window.addEventListener('DOMContentLoaded', function() {
+      clearForm();
+      loadData();
+    });
   </script>
 </body>
 </html>
