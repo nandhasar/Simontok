@@ -959,22 +959,22 @@
       renderList();
     }
 
-    function loadTaskForEdit(id) {
-      var t = findById(id);
-      if (!t) return;
-      state.editingId       = t.id;
-      $('taskId').value     = t.id     || '';
-      $('title').value      = t.title  || '';
-      $('status').value     = t.status || 'To Do';
-      $('priority').value   = t.priority || 'Medium';
-      $('due_date').value   = t.due_date  || '';
-      $('updated_at').value = t.updated_at || todayISO();
-      $('note').value       = t.note   || '';
-      updateFormMode();
-      renderList();
-      showMessage('📝 Task dimuat untuk diedit');
-      $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+function loadTaskForEdit(id) {
+  var t = findById(id);
+  if (!t) return;
+  state.editingId       = t.id;
+  $('taskId').value     = t.id     || '';
+  $('title').value      = t.title  || '';
+  $('status').value     = t.status || 'To Do';
+  $('priority').value   = t.priority || 'Medium';
+  $('due_date').value   = formatDateInput(t.due_date);   // ← FIX
+  $('updated_at').value = formatDateInput(t.updated_at) || todayISO(); // ← FIX
+  $('note').value       = t.note   || '';
+  updateFormMode();
+  renderList();
+  showMessage('📝 Task dimuat untuk diedit');
+  $('taskForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
     // Helper format tanggal → yyyy-MM-dd
 function formatDateInput(val) {
